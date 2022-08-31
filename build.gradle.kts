@@ -4,7 +4,7 @@ val ktorVersion = "2.1.0"
 
 plugins {
     kotlin("multiplatform")
-    kotlin("plugin.serialization") version "1.4.0"
+    kotlin("plugin.serialization") version "1.7.10"
     id("org.jetbrains.compose")
 }
 
@@ -43,7 +43,7 @@ kotlin {
                 implementation("io.ktor:ktor-client-json-js:$ktorVersion")
                 implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
                 implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
-//                implementation("app.softwork:routing-compose:0.2.8")
+                implementation("app.softwork:routing-compose:0.2.7")
             }
         }
         val jsTest by getting {
