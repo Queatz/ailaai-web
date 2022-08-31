@@ -1,9 +1,10 @@
 import org.jetbrains.compose.compose
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
+val ktorVersion = "2.1.0"
 
 plugins {
     kotlin("multiplatform")
+    kotlin("plugin.serialization") version "1.4.0"
     id("org.jetbrains.compose")
 }
 
@@ -19,6 +20,9 @@ repositories {
 kotlin {
     js(IR) {
         browser {
+            runTask {
+                devServer = devServer?.copy(port = 4040)
+            }
             testTask {
                 testLogging.showStandardStreams = true
                 useKarma {
@@ -34,6 +38,12 @@ kotlin {
             dependencies {
                 implementation(compose.web.core)
                 implementation(compose.runtime)
+//                implementation("org.jetbrains.compose.material3:material3-js:1.2.0-alpha01-dev750")
+                implementation("io.ktor:ktor-client-js:$ktorVersion")
+                implementation("io.ktor:ktor-client-json-js:$ktorVersion")
+                implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
+                implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
+//                implementation("app.softwork:routing-compose:0.2.8")
             }
         }
         val jsTest by getting {
