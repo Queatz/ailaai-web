@@ -1,3 +1,4 @@
+import Styles.style
 import androidx.compose.runtime.*
 import app.softwork.routingcompose.BrowserRouter
 import app.softwork.routingcompose.Router
@@ -12,12 +13,11 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
 import org.jetbrains.compose.web.css.*
-import org.jetbrains.compose.web.dom.Button
-import org.jetbrains.compose.web.dom.Div
-import org.jetbrains.compose.web.dom.Text
+import org.jetbrains.compose.web.dom.*
 import org.jetbrains.compose.web.renderComposableInBody
 
-const val baseUrl = "http://localhost:8080"
+//const val baseUrl = "http://localhost:8080"
+const val baseUrl = "https://api.ailaai.app"
 
 val http = HttpClient(Js) {
     install(ContentNegotiation) { json(Json) }
@@ -50,79 +50,233 @@ data class ConversationItem(
     var items: MutableList<ConversationItem> = mutableListOf()
 )
 
-@OptIn(InternalSerializationApi::class)
+@Composable
+fun CardNameAndLocation(card: Card?) {
+    Span({
+        style {
+            fontWeight("bold")
+        }
+    }) {
+        Text(card?.name ?: "")
+    }
+    Span({
+        style {
+            marginLeft(PaddingDefault / 2)
+            fontSize(14.px)
+            opacity(.75f)
+        }
+    }) {
+        Text(card?.location ?: "")
+    }
+}
+
 fun main() {
     renderComposableInBody {
+        Style(Styles)
+
+        var isLoading by remember { mutableStateOf(false) }
         var card by remember { mutableStateOf<Card?>(null) }
+        var cards by remember { mutableStateOf<List<Card>>(emptyList()) }
+        val stack = remember { mutableListOf<ConversationItem>() }
         var cardConversation by remember { mutableStateOf<ConversationItem?>(null) }
 
-        BrowserRouter("/card") {
-            route("/card") {
+        BrowserRouter("") {
+            route("card") {
                 string { cardId ->
-                    LaunchedEffect(true) {
-                        card = http.get("$baseUrl/cards/$cardId").body()
-                        cardConversation = DefaultJson.decodeFromString(ConversationItem::class.serializer(), card?.conversation ?: "{}")
+                    LaunchedEffect(cardId) {
+                        isLoading = true
+                        try {
+                            card = http.get("$baseUrl/cards/$cardId").body()
+                            cardConversation = card!!.getConversation()
+                            cards = http.get("$baseUrl/cards/$cardId/cards").body()
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        } finally {
+                            isLoading = false
+                        }
                     }
 
-                    Div({
-                        style {
-                            display(DisplayStyle.Flex)
-                            height(100.percent)
-                            width(100.percent)
-                            alignItems(AlignItems.Stretch)
-                            justifyContent(JustifyContent.Stretch)
-                        }
-                    }) {
+                    if (!isLoading && card == null) {
                         Div({
+                            classes(Styles.mainContent)
                             style {
                                 display(DisplayStyle.Flex)
+                                height(100.percent)
+                                width(100.percent)
                                 flexDirection(FlexDirection.Column)
-                                padding(PaddingDefault)
-                                width(240.px)
-                                minWidth(240.px)
-                                backgroundColor(Color.aliceblue)
-                                overflow("hidden")
+                                padding(PaddingDefault * 2)
+                                alignItems(AlignItems.Center)
+                                justifyContent(JustifyContent.FlexStart)
                             }
                         }) {
-                            card?.photo?.let {
-                                Div({
-                                    style {
-                                        width(100.percent)
-                                        height(240.px)
-                                        backgroundImage("url($baseUrl${it})")
-                                        backgroundPosition("center")
-                                        backgroundSize("cover")
-                                        borderRadius(CornerDefault)
-                                        marginBottom(PaddingDefault)
+                            Text("Card not found.")
+                        }
+                    } else {
+                        Div({
+                            classes(Styles.mainContent)
+                            style {
+                                display(DisplayStyle.Flex)
+                                height(100.percent)
+                                width(100.percent)
+                                alignItems(AlignItems.Stretch)
+                                justifyContent(JustifyContent.Stretch)
+                            }
+                        }) {
+                            Div({
+                                classes(Styles.navContent)
+                                style {
+                                    display(DisplayStyle.Flex)
+                                    flexDirection(FlexDirection.Column)
+                                    padding(PaddingDefault)
+                                    backgroundColor(Styles.colors.background)
+                                    overflowX("hidden")
+                                }
+                            }) {
+                                card?.let { card ->
+                                    card.photo?.let {
+                                        Div({
+                                            style {
+                                                width(100.percent)
+                                                backgroundImage("url($baseUrl${it})")
+                                                backgroundPosition("center")
+                                                backgroundSize("cover")
+                                                borderRadius(CornerDefault)
+                                                marginBottom(PaddingDefault)
+                                                property("aspect-ratio", "1.5")
+                                            }
+                                        }) {}
                                     }
-                                }) {}
+                                    Div({
+                                        style {
+                                            marginBottom(PaddingDefault)
+                                        }
+                                    }) {
+                                        CardNameAndLocation(card)
+                                    }
+                                    Div({
+                                        style {
+                                            marginBottom(PaddingDefault)
+                                        }
+                                    }) {
+                                        Text(cardConversation?.message ?: "")
+                                    }
+                                    cardConversation?.items?.takeIf { it.isNotEmpty() }?.forEach { item ->
+                                        Button({
+                                            classes(Styles.button)
+                                            style {
+                                                marginBottom(PaddingDefault)
+                                            }
+                                            onClick {
+                                                stack.add(cardConversation!!)
+                                                cardConversation = item
+                                            }
+                                        }) {
+                                            Text(item.title)
+                                        }
+                                    }
+                                    if (stack.isNotEmpty()) {
+                                        Button({
+                                            classes(Styles.outlineButton)
+                                            style {
+                                                marginBottom(PaddingDefault)
+                                            }
+                                            onClick {
+                                                cardConversation = stack.removeLast()
+                                            }
+                                        }) {
+                                            Text("Go back")
+
+                                        }
+                                    }
+                                }
                             }
                             Div({
                                 style {
-                                    fontWeight("bold")
-                                    marginBottom(PaddingDefault)
+                                    display(DisplayStyle.Flex)
+                                    flexDirection(FlexDirection.Row)
+                                    flexWrap(FlexWrap.Wrap)
+                                    flexGrow(1)
+                                    padding(PaddingDefault)
+                                    overflow("auto")
+                                    padding(PaddingDefault / 2)
+                                    justifyContent(JustifyContent.FlexStart)
+                                    alignContent(AlignContent.FlexStart)
                                 }
                             }) {
-                                Text(card?.name ?: "Loading...")
-                            }
-                            Div({
-                                style {
-                                    marginBottom(PaddingDefault)
+                                val router = Router.current
+
+                                if (cards.isEmpty() && !isLoading) {
+                                    Div({
+                                        style {
+                                            padding(PaddingDefault)
+                                        }
+                                    }) {
+                                        Text("No cards.")
+                                    }
                                 }
-                            }) {
-                                Text(cardConversation?.message ?: "")
+
+                                cards.forEach { card ->
+                                    Div({
+                                        classes(Styles.card)
+                                        style {
+                                            if (card.photo != null) {
+                                                backgroundImage("url($baseUrl${card.photo!!})")
+                                                backgroundPosition("center")
+                                                backgroundSize("cover")
+                                            }
+
+                                            position(Position.Relative)
+                                        }
+                                        onClick {
+                                            router.navigate("/card/${card.id}")
+                                        }
+                                    }) {
+                                        card.cardCount?.takeIf { it > 0 }?.let {
+                                            Div({
+                                                style {
+                                                    backgroundColor(rgba(0, 0, 0, .8))
+                                                    borderRadius(CornerDefault * 2)
+                                                    padding(PaddingDefault / 2, PaddingDefault)
+                                                    color(Color.white)
+                                                    position(Position.Absolute)
+                                                    top(PaddingDefault)
+                                                    right(PaddingDefault)
+                                                }
+                                            }) {
+                                                Text("$it ${if (it == 1) "card" else "cards"}")
+                                            }
+                                        }
+                                        Div({
+                                            style {
+                                                backgroundColor(rgba(0, 0, 0, .8))
+                                                padding(PaddingDefault)
+                                                color(Color.white)
+                                                maxHeight(50.percent)
+                                                boxSizing("border-box")
+                                                overflowY("auto")
+                                            }
+                                        }) {
+                                            Div({
+                                                style {
+                                                    marginBottom(PaddingDefault)
+                                                }
+                                            }) {
+                                                CardNameAndLocation(card)
+                                            }
+
+                                            card.getConversation().message.takeIf { it.isNotEmpty() }
+                                                ?.let { conversationMessage ->
+                                                    Div({
+                                                        style {
+                                                        }
+                                                    }) {
+                                                        Text(conversationMessage)
+                                                    }
+                                                }
+                                        }
+                                    }
+                                }
                             }
-                        }
-                        Div({
-                            style {
-                                display(DisplayStyle.Flex)
-                                flexDirection(FlexDirection.Column)
-                                flexGrow(1)
-                                padding(PaddingDefault)
-                                overflow("hidden")
-                            }
-                        }) {
-                            Text(card?.conversation ?: "")
                         }
                     }
                 }
@@ -130,14 +284,69 @@ fun main() {
 
             noMatch {
                 val router = Router.current
-                Button({
-                    onClick {
-                        router.navigate("/card/50500361")
+
+// Local server
+//                listOf(
+//                    "50502555" to "Jacob Khải Phong",
+//                    "50500361" to "Jacob",
+//                    "50565761" to "Diep",
+//                    "51424091" to "Miku 2",
+//                    "51424010" to "Miku",
+//                )
+
+                Div({
+                    style {
+                        margin(PaddingDefault)
+                        padding(1.5.cssRem)
+                        borderRadius(1.cssRem)
+                        backgroundColor(Styles.colors.background)
+                        fontSize(18.px)
                     }
+
                 }) {
-                    Text("Go to card 50500361")
+                    H2({
+                        style {
+                            marginTop(0.cssRem)
+                        }
+                    }) {
+                        Text("1. Enable Unknown Sources to install apps from your browser")
+                    }
+                    A("https://duckduckgo.com/?q=Enable+Unknown+Sources+on+Android", {
+                        style {
+                            textDecoration("none")
+                            color(Color("#006689"))
+                            fontWeight(700)
+                            fontSize(18.px)
+                        }
+                    }) {
+                        Text("Learn how to enable Unknown Sources")
+                    }
+                    H2 {
+                        Text("2. Get the app")
+                    }
+                    A("/ailaai.apk", {
+                        style {
+                            display(DisplayStyle.InlineBlock)
+                            padding(1.cssRem, 2.cssRem)
+                            fontWeight(700)
+                            fontSize(18.px)
+                            borderRadius(4.cssRem)
+                            color(Color.white)
+                            textDecoration("none")
+                            property("box-shadow", "2px 2px 8px rgba(0, 0, 0, .25)")
+                            backgroundColor(Styles.colors.primary)
+                        }
+                    }) {
+                        Text("Install Ai Là Ai")
+                    }
                 }
             }
         }
     }
 }
+
+@OptIn(InternalSerializationApi::class)
+private fun Card.getConversation() = DefaultJson.decodeFromString(
+    ConversationItem::class.serializer(),
+    conversation ?: "{}"
+)
