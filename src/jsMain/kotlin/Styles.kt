@@ -24,8 +24,8 @@ object Styles : StyleSheet() {
         }
         media(mediaMinWidth(641.px)) {
             self style {
-                width(320.px)
-                minWidth(320.px)
+                width(240.px)
+                minWidth(240.px)
                 height(100.vh)
                 position(Position.Fixed)
             }
@@ -35,7 +35,7 @@ object Styles : StyleSheet() {
     val content by style {
         media(mediaMinWidth(641.px)) {
             self style {
-                marginLeft(320.px)
+                marginLeft(240.px)
             }
         }
     }
@@ -45,7 +45,7 @@ object Styles : StyleSheet() {
         borderRadius(PaddingDefault)
         backgroundColor(colors.background)
         margin(PaddingDefault / 2)
-        width(320.px)
+        width(240.px)
         overflow("hidden")
         flexDirection(FlexDirection.ColumnReverse)
         cursor("pointer")

@@ -154,6 +154,7 @@ fun main() {
                                     Div({
                                         style {
                                             marginBottom(PaddingDefault)
+                                            whiteSpace("pre-wrap")
                                         }
                                     }) {
                                         Text(cardConversation?.message ?: "")
@@ -267,6 +268,7 @@ fun main() {
                                                 ?.let { conversationMessage ->
                                                     Div({
                                                         style {
+                                                            whiteSpace("pre-wrap")
                                                         }
                                                     }) {
                                                         Text(conversationMessage)
