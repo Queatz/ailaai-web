@@ -15,17 +15,27 @@ object Styles : StyleSheet() {
     }
 
     val navContent by style {
+        boxSizing("border-box")
+
         media(mediaMaxWidth(640.px)) {
             self style {
                 flexShrink(0)
-                maxHeight(50.vh)
             }
         }
         media(mediaMinWidth(641.px)) {
             self style {
-                width(240.px)
-                minWidth(240.px)
-                overflowY("auto")
+                width(320.px)
+                minWidth(320.px)
+                height(100.vh)
+                position(Position.Fixed)
+            }
+        }
+    }
+
+    val content by style {
+        media(mediaMinWidth(641.px)) {
+            self style {
+                marginLeft(320.px)
             }
         }
     }
@@ -35,7 +45,7 @@ object Styles : StyleSheet() {
         borderRadius(PaddingDefault)
         backgroundColor(colors.background)
         margin(PaddingDefault / 2)
-        width(240.px)
+        width(320.px)
         overflow("hidden")
         flexDirection(FlexDirection.ColumnReverse)
         cursor("pointer")

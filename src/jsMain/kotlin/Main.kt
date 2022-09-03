@@ -1,4 +1,3 @@
-import Styles.style
 import androidx.compose.runtime.*
 import app.softwork.routingcompose.BrowserRouter
 import app.softwork.routingcompose.Router
@@ -16,7 +15,6 @@ import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
 import org.jetbrains.compose.web.renderComposableInBody
 
-//const val baseUrl = "http://localhost:8080"
 const val baseUrl = "https://api.ailaai.app"
 
 val http = HttpClient(Js) {
@@ -101,7 +99,7 @@ fun main() {
                             classes(Styles.mainContent)
                             style {
                                 display(DisplayStyle.Flex)
-                                height(100.percent)
+                                minHeight(100.vh)
                                 width(100.percent)
                                 flexDirection(FlexDirection.Column)
                                 padding(PaddingDefault * 2)
@@ -116,7 +114,7 @@ fun main() {
                             classes(Styles.mainContent)
                             style {
                                 display(DisplayStyle.Flex)
-                                height(100.percent)
+                                minHeight(100.vh)
                                 width(100.percent)
                                 alignItems(AlignItems.Stretch)
                                 justifyContent(JustifyContent.Stretch)
@@ -191,6 +189,7 @@ fun main() {
                                 }
                             }
                             Div({
+                                classes(Styles.content)
                                 style {
                                     display(DisplayStyle.Flex)
                                     flexDirection(FlexDirection.Row)
@@ -284,15 +283,6 @@ fun main() {
 
             noMatch {
                 val router = Router.current
-
-// Local server
-//                listOf(
-//                    "50502555" to "Jacob Khải Phong",
-//                    "50500361" to "Jacob",
-//                    "50565761" to "Diep",
-//                    "51424091" to "Miku 2",
-//                    "51424010" to "Miku",
-//                )
 
                 Div({
                     style {
