@@ -199,7 +199,7 @@ fun main() {
                                     padding(PaddingDefault)
                                     overflow("auto")
                                     padding(PaddingDefault / 2)
-                                    justifyContent(JustifyContent.FlexStart)
+                                    justifyContent(JustifyContent.Center)
                                     alignContent(AlignContent.FlexStart)
                                 }
                             }) {
@@ -234,10 +234,10 @@ fun main() {
                                         card.cardCount?.takeIf { it > 0 }?.let {
                                             Div({
                                                 style {
-                                                    backgroundColor(rgba(0, 0, 0, .8))
+                                                    backgroundColor(rgba(255, 255, 255, .8))
                                                     borderRadius(CornerDefault * 2)
                                                     padding(PaddingDefault / 2, PaddingDefault)
-                                                    color(Color.white)
+                                                    color(Color.black)
                                                     position(Position.Absolute)
                                                     top(PaddingDefault)
                                                     right(PaddingDefault)
@@ -248,12 +248,13 @@ fun main() {
                                         }
                                         Div({
                                             style {
-                                                backgroundColor(rgba(0, 0, 0, .8))
+                                                backgroundColor(rgba(255, 255, 255, .8))
                                                 padding(PaddingDefault)
-                                                color(Color.white)
+                                                color(Color.black)
                                                 maxHeight(50.percent)
                                                 boxSizing("border-box")
                                                 overflowY("auto")
+                                                fontSize(18.px)
                                             }
                                         }) {
                                             Div({
@@ -284,8 +285,6 @@ fun main() {
             }
 
             noMatch {
-                val router = Router.current
-
                 Div({
                     style {
                         margin(PaddingDefault)

@@ -24,10 +24,11 @@ object Styles : StyleSheet() {
         }
         media(mediaMinWidth(641.px)) {
             self style {
-                width(240.px)
-                minWidth(240.px)
+                width(NavWidth)
+                minWidth(NavWidth)
                 height(100.vh)
                 position(Position.Fixed)
+                property("box-shadow", "rgba(0, 0, 0, 0.125) 2px 2px 16px")
             }
         }
     }
@@ -35,7 +36,7 @@ object Styles : StyleSheet() {
     val content by style {
         media(mediaMinWidth(641.px)) {
             self style {
-                marginLeft(240.px)
+                marginLeft(NavWidth)
             }
         }
     }
@@ -45,7 +46,7 @@ object Styles : StyleSheet() {
         borderRadius(PaddingDefault)
         backgroundColor(colors.background)
         margin(PaddingDefault / 2)
-        width(240.px)
+        width(640.px)
         overflow("hidden")
         flexDirection(FlexDirection.ColumnReverse)
         cursor("pointer")
