@@ -7,6 +7,7 @@ import io.ktor.client.engine.js.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.serialization.kotlinx.json.*
+import kotlinx.browser.window
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -79,6 +80,12 @@ fun main() {
         var cardConversation by remember { mutableStateOf<ConversationItem?>(null) }
 
         BrowserRouter("") {
+            val router = Router.current
+
+            LaunchedEffect(router.currentPath) {
+                window.scrollTo(0.0, 0.0)
+            }
+
             route("card") {
                 string { cardId ->
                     LaunchedEffect(cardId) {
@@ -139,32 +146,25 @@ fun main() {
                                                 backgroundPosition("center")
                                                 backgroundSize("cover")
                                                 borderRadius(CornerDefault)
-                                                marginBottom(PaddingDefault)
                                                 property("aspect-ratio", "1.5")
                                             }
                                         }) {}
                                     }
-                                    Div({
-                                        style {
-                                            marginBottom(PaddingDefault)
-                                        }
-                                    }) {
+                                    Div {
                                         CardNameAndLocation(card)
                                     }
-                                    Div({
-                                        style {
-                                            marginBottom(PaddingDefault)
-                                            whiteSpace("pre-wrap")
+                                    cardConversation?.message?.let { message ->
+                                        Div({
+                                            style {
+                                                whiteSpace("pre-wrap")
+                                            }
+                                        }) {
+                                            Text(message)
                                         }
-                                    }) {
-                                        Text(cardConversation?.message ?: "")
                                     }
                                     cardConversation?.items?.takeIf { it.isNotEmpty() }?.forEach { item ->
                                         Button({
                                             classes(Styles.button)
-                                            style {
-                                                marginBottom(PaddingDefault)
-                                            }
                                             onClick {
                                                 stack.add(cardConversation!!)
                                                 cardConversation = item
@@ -176,9 +176,6 @@ fun main() {
                                     if (stack.isNotEmpty()) {
                                         Button({
                                             classes(Styles.outlineButton)
-                                            style {
-                                                marginBottom(PaddingDefault)
-                                            }
                                             onClick {
                                                 cardConversation = stack.removeLast()
                                             }

@@ -7,6 +7,8 @@ object Styles : StyleSheet() {
     }
 
     val mainContent by style {
+        boxSizing("border-box")
+
         media(mediaMaxWidth(640.px)) {
             self style {
                 flexDirection(FlexDirection.Column)
@@ -30,6 +32,9 @@ object Styles : StyleSheet() {
                 position(Position.Fixed)
                 property("box-shadow", "rgba(0, 0, 0, 0.125) 2px 2px 16px")
             }
+        }
+        not(lastChild) style {
+            marginBottom(PaddingDefault)
         }
     }
 
