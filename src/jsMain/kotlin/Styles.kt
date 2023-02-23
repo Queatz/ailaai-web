@@ -31,15 +31,35 @@ object Styles : StyleSheet() {
         display(DisplayStyle.Flex)
         flexDirection(FlexDirection.Column)
         alignItems(AlignItems.FlexStart)
-        padding(PaddingDefault)
+        maxWidth(1200.px)
 
         not(lastChild) style {
             marginBottom(PaddingDefault)
         }
+
+        media(mediaMinWidth(641.px)) {
+            self style {
+                padding(PaddingDefault)
+            }
+        }
     }
 
     val content by style {
+        display(DisplayStyle.Flex)
+        flexDirection(FlexDirection.Row)
+        flexWrap(FlexWrap.Wrap)
+        flexGrow(1)
+        padding(PaddingDefault)
+        overflow("auto")
+        padding(PaddingDefault / 2)
+        justifyContent(JustifyContent.Center)
+        alignContent(AlignContent.FlexStart)
 
+        media(mediaMinWidth(641.px)) {
+            self style {
+                padding(PaddingDefault)
+            }
+        }
     }
 
     val card by style {
@@ -57,6 +77,7 @@ object Styles : StyleSheet() {
         media(mediaMaxWidth(640.px)) {
             self style {
                 width(100.percent)
+                margin(PaddingDefault / 2)
             }
         }
     }

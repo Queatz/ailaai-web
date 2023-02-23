@@ -67,10 +67,6 @@ fun CardPage(cardId: String, cardLoaded: (card: Card) -> Unit) {
             }) {
                 Div({
                     classes(Styles.navContent)
-                    style {
-                        width(100.percent)
-                        maxWidth(1200.px)
-                    }
                 }) {
                     card?.let { card ->
                         card.photo?.let {
@@ -125,17 +121,6 @@ fun CardPage(cardId: String, cardLoaded: (card: Card) -> Unit) {
             }
             Div({
                 classes(Styles.content)
-                style {
-                    display(DisplayStyle.Flex)
-                    flexDirection(FlexDirection.Row)
-                    flexWrap(FlexWrap.Wrap)
-                    flexGrow(1)
-                    padding(PaddingDefault)
-                    overflow("auto")
-                    padding(PaddingDefault / 2)
-                    justifyContent(JustifyContent.Center)
-                    alignContent(AlignContent.FlexStart)
-                }
             }) {
                 val router = Router.current
 

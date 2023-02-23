@@ -1,44 +1,43 @@
-Setup
+Build
+=====
+
+`./gradlew jsBrowserDistribution`
+
+Files are in `build/distributions`
+
+Deploy
 =====
 
 ```shell
 apt update
-apt install certbot nodejs npm
-npm install -g angular-http-server
-certbot certonly
+apt install certbot nodejs npm nginx python3-certbot-nginx
 ```
 
 ## HTTP -> HTTPS
 
-1. Install Nginx
+1. Configure Nginx
 
-```shell
-apt install nginx
-```
-
-2. Replace the contents of `/etc/nginx/sites-enabled/default` with following
+2. Replace the contents of `/etc/nginx/sites-enabled/default` with the following
 
 ```
 server {
-    listen 80 default_server;
+    server_name <enter server host>;
+    root /root/ui;
+    listen 80;
 
-    server_name _;
-
-    return 301 https://$host$request_uri;
+    location / {
+        index index.html;
+        try_files $uri $uri/ /index.html =404;
+    }
 }
 ```
 
-3. Finally, restart Nginx
+`chmod 755 /root`
+
+3. Finally
 
 ```shell
+certbot --nginx
+nginx -t
 service nginx restart
-```
-
-Run
-===
-
-```shell
-nohup angular-http-server -p 443 --https --key /etc/letsencrypt/live/ailaai.app/privkey.pem --cert /etc/letsencrypt/live/ailaai.app/fullchain.pem > log.txt 2> errors.txt < /dev/null &
-PID=$!
-echo $PID > pid.txt
 ```
