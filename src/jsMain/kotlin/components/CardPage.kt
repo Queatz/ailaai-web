@@ -11,9 +11,9 @@ import baseUrl
 import http
 import io.ktor.client.call.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import io.ktor.serialization.kotlinx.json.*
-import kotlinx.serialization.InternalSerializationApi
-import kotlinx.serialization.serializer
+import kotlinx.serialization.decodeFromString
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Button
 import org.jetbrains.compose.web.dom.Div
@@ -34,7 +34,8 @@ fun CardPage(cardId: String, cardLoaded: (card: Card) -> Unit) {
             card = http.get("$baseUrl/cards/$cardId").body()
             cardConversation = card!!.getConversation()
             cardLoaded(card!!)
-            cards = http.get("$baseUrl/cards/$cardId/cards").body()
+            val ktorHackfix = http.get("$baseUrl/cards/$cardId/cards").bodyAsText()
+            cards = DefaultJson.decodeFromString(ktorHackfix)
         } catch (e: Exception) {
             e.printStackTrace()
         } finally {
@@ -60,69 +61,64 @@ fun CardPage(cardId: String, cardLoaded: (card: Card) -> Unit) {
     } else {
         Div({
             classes(Styles.mainContent)
-            style {
-                display(DisplayStyle.Flex)
-                minHeight(100.vh)
-                width(100.percent)
-                alignItems(AlignItems.Stretch)
-                justifyContent(JustifyContent.Stretch)
-            }
         }) {
             Div({
-                classes(Styles.navContent)
-                style {
-                    display(DisplayStyle.Flex)
-                    flexDirection(FlexDirection.Column)
-                    padding(PaddingDefault)
-                    backgroundColor(Styles.colors.background)
-                    overflowX("hidden")
-                }
+                classes(Styles.navContainer)
             }) {
-                card?.let { card ->
-                    card.photo?.let {
-                        Div({
-                            style {
-                                width(100.percent)
-                                backgroundImage("url($baseUrl${it})")
-                                backgroundPosition("center")
-                                backgroundSize("cover")
-                                borderRadius(CornerDefault)
-                                property("aspect-ratio", "1.5")
-                            }
-                        }) {}
+                Div({
+                    classes(Styles.navContent)
+                    style {
+                        width(100.percent)
+                        maxWidth(1200.px)
                     }
-                    Div {
-                        CardNameAndLocation(card)
-                    }
-                    cardConversation?.message?.let { message ->
-                        Div({
-                            style {
-                                whiteSpace("pre-wrap")
-                            }
-                        }) {
-                            Text(message)
+                }) {
+                    card?.let { card ->
+                        card.photo?.let {
+                            Div({
+                                style {
+                                    width(100.percent)
+                                    backgroundColor(Styles.colors.background)
+                                    backgroundImage("url($baseUrl${it})")
+                                    backgroundPosition("center")
+                                    backgroundSize("cover")
+                                    borderRadius(CornerDefault)
+                                    property("aspect-ratio", "1.5")
+                                }
+                            }) {}
                         }
-                    }
-                    cardConversation?.items?.takeIf { it.isNotEmpty() }?.forEach { item ->
-                        Button({
-                            classes(Styles.button)
-                            onClick {
-                                stack.add(cardConversation!!)
-                                cardConversation = item
-                            }
-                        }) {
-                            Text(item.title)
+                        Div {
+                            CardNameAndLocation(card)
                         }
-                    }
-                    if (stack.isNotEmpty()) {
-                        Button({
-                            classes(Styles.outlineButton)
-                            onClick {
-                                cardConversation = stack.removeLast()
+                        cardConversation?.message?.let { message ->
+                            Div({
+                                style {
+                                    whiteSpace("pre-wrap")
+                                }
+                            }) {
+                                Text(message)
                             }
-                        }) {
-                            Text("Go back")
+                        }
+                        cardConversation?.items?.forEach { item ->
+                            Button({
+                                classes(Styles.button)
+                                onClick {
+                                    stack.add(cardConversation!!)
+                                    cardConversation = item
+                                }
+                            }) {
+                                Text(item.title)
+                            }
+                        }
+                        if (stack.isNotEmpty()) {
+                            Button({
+                                classes(Styles.outlineButton)
+                                onClick {
+                                    cardConversation = stack.removeLast()
+                                }
+                            }) {
+                                Text("Go back")
 
+                            }
                         }
                     }
                 }
@@ -149,7 +145,7 @@ fun CardPage(cardId: String, cardLoaded: (card: Card) -> Unit) {
                             padding(PaddingDefault)
                         }
                     }) {
-                        Text("No cards.")
+//                        Text("No cards.")
                     }
                 }
 
@@ -221,8 +217,4 @@ fun CardPage(cardId: String, cardLoaded: (card: Card) -> Unit) {
     }
 }
 
-@OptIn(InternalSerializationApi::class)
-fun Card.getConversation() = DefaultJson.decodeFromString(
-    ConversationItem::class.serializer(),
-    conversation ?: "{}"
-)
+fun Card.getConversation() = DefaultJson.decodeFromString<ConversationItem>(conversation ?: "{}")

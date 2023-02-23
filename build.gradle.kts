@@ -1,15 +1,15 @@
 import org.jetbrains.compose.compose
 
-val ktorVersion = "2.1.0"
+val ktorVersion = "2.2.3"
 
 plugins {
     kotlin("multiplatform")
-    kotlin("plugin.serialization") version "1.7.10"
+    kotlin("plugin.serialization") version "1.8.0"
     id("org.jetbrains.compose")
 }
 
-group "app.ailaai"
-version "1.0-SNAPSHOT"
+group = "app.ailaai"
+version = "1.0"
 
 repositories {
     google()
@@ -43,7 +43,7 @@ kotlin {
                 implementation("io.ktor:ktor-client-json-js:$ktorVersion")
                 implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
                 implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
-                implementation("app.softwork:routing-compose:0.2.7")
+                implementation("app.softwork:routing-compose:0.2.11")
             }
         }
         val jsTest by getting {

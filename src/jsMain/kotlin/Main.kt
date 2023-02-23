@@ -9,7 +9,6 @@ import io.ktor.serialization.kotlinx.json.*
 import kotlinx.browser.document
 import kotlinx.browser.window
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
 import org.jetbrains.compose.web.renderComposableInBody
@@ -17,7 +16,8 @@ import org.jetbrains.compose.web.renderComposableInBody
 const val baseUrl = "https://api.ailaai.app"
 
 val http = HttpClient(Js) {
-    install(ContentNegotiation) { json(Json) }
+    expectSuccess = true
+    install(ContentNegotiation) { json(DefaultJson) }
 }
 
 @Serializable
@@ -137,7 +137,7 @@ fun main() {
                             backgroundColor(Styles.colors.primary)
                         }
                     }) {
-                        Text("Install Ai Là Ai")
+                        Text("Download Ai Là Ai")
                     }
                 }
             }

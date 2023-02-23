@@ -8,55 +8,57 @@ object Styles : StyleSheet() {
 
     val mainContent by style {
         boxSizing("border-box")
+        display(DisplayStyle.Flex)
+        flexDirection(FlexDirection.Column)
+        minHeight(100.vh)
+        width(100.percent)
+        alignItems(AlignItems.Stretch)
+        justifyContent(JustifyContent.Stretch)
+    }
 
-        media(mediaMaxWidth(640.px)) {
-            self style {
-                flexDirection(FlexDirection.Column)
-            }
-        }
+    val navContainer by style {
+        boxSizing("border-box")
+        display(DisplayStyle.Flex)
+        flexDirection(FlexDirection.Column)
+        alignItems(AlignItems.Center)
+        padding(PaddingDefault)
+        overflowX("hidden")
+        property("box-shadow", "rgba(0, 0, 0, 0.125) 2px 2px 16px")
+        backgroundColor(Color.white)
     }
 
     val navContent by style {
-        boxSizing("border-box")
+        display(DisplayStyle.Flex)
+        flexDirection(FlexDirection.Column)
+        alignItems(AlignItems.FlexStart)
+        padding(PaddingDefault)
 
-        media(mediaMaxWidth(640.px)) {
-            self style {
-                flexShrink(0)
-            }
-        }
-        media(mediaMinWidth(641.px)) {
-            self style {
-                width(NavWidth)
-                minWidth(NavWidth)
-                height(100.vh)
-                position(Position.Fixed)
-                property("box-shadow", "rgba(0, 0, 0, 0.125) 2px 2px 16px")
-            }
-        }
         not(lastChild) style {
             marginBottom(PaddingDefault)
         }
     }
 
     val content by style {
-        media(mediaMinWidth(641.px)) {
-            self style {
-                marginLeft(NavWidth)
-            }
-        }
+
     }
 
     val card by style {
         display(DisplayStyle.Flex)
         borderRadius(PaddingDefault)
         backgroundColor(colors.background)
-        margin(PaddingDefault / 2)
+        margin(PaddingDefault)
         width(640.px)
         overflow("hidden")
         flexDirection(FlexDirection.ColumnReverse)
         cursor("pointer")
         property("aspect-ratio", ".75")
         property("box-shadow", "2px 2px 8px rgba(0, 0, 0, .25)")
+
+        media(mediaMaxWidth(640.px)) {
+            self style {
+                width(100.percent)
+            }
+        }
     }
 
     val button by style {
