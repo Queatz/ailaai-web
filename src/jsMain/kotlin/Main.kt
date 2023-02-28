@@ -17,7 +17,7 @@ const val baseUrl = "https://api.ailaai.app"
 
 val http = HttpClient(Js) {
     expectSuccess = true
-    install(ContentNegotiation) { json(DefaultJson) }
+    install(ContentNegotiation) { json() }
 }
 
 @Serializable

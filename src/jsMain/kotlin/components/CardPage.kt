@@ -13,10 +13,12 @@ import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.serialization.kotlinx.json.*
+import kotlinx.browser.window
 import kotlinx.serialization.decodeFromString
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Button
 import org.jetbrains.compose.web.dom.Div
+import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text
 
 @Composable
@@ -105,6 +107,21 @@ fun CardPage(cardId: String, cardLoaded: (card: Card) -> Unit) {
                                 Text(item.title)
                             }
                         }
+                        if (cardConversation?.items.isNullOrEmpty()) {
+                            Button({
+                                classes(Styles.button)
+                                onClick {
+                                    window.open("/", target = "_blank")
+                                }
+                            }) {
+                                Span({
+                                    classes("material-symbols-outlined")
+                                }) {
+                                    Text("mail")
+                                }
+                                Text(" Reply to this card in the app")
+                            }
+                        }
                         if (stack.isNotEmpty()) {
                             Button({
                                 classes(Styles.outlineButton)
@@ -146,8 +163,12 @@ fun CardPage(cardId: String, cardLoaded: (card: Card) -> Unit) {
 
                             position(Position.Relative)
                         }
-                        onClick {
-                            router.navigate("/card/${card.id}")
+                        onClick { event ->
+                            if (event.ctrlKey) {
+                                window.open("/card/${card.id}", target = "_blank")
+                            } else {
+                                router.navigate("/card/${card.id}")
+                            }
                         }
                     }) {
                         card.cardCount?.takeIf { it > 0 }?.let {

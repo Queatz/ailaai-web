@@ -31,7 +31,9 @@ object Styles : StyleSheet() {
         display(DisplayStyle.Flex)
         flexDirection(FlexDirection.Column)
         alignItems(AlignItems.FlexStart)
+        width(100.percent)
         maxWidth(1200.px)
+        boxSizing("border-box")
 
         not(lastChild) style {
             marginBottom(PaddingDefault)
@@ -85,15 +87,23 @@ object Styles : StyleSheet() {
     val button by style {
         borderRadius(PaddingDefault * 2)
         border(0.px)
-        padding(PaddingDefault, PaddingDefault * 2)
+        padding(0.cssRem, PaddingDefault * 2)
+        height(3.cssRem)
         backgroundColor(colors.primary)
         color(Color.white)
         cursor("pointer")
+        display(DisplayStyle.Flex)
+        alignItems(AlignItems.Center)
+
+        selector(".material-symbols-outlined") style {
+            marginRight(.5.cssRem)
+        }
     }
     val outlineButton by style {
         borderRadius(PaddingDefault * 2)
         border(1.px, LineStyle.Solid, colors.primary)
-        padding(PaddingDefault, PaddingDefault * 2)
+        padding(0.cssRem, PaddingDefault * 2)
+        height(3.cssRem)
         backgroundColor(Color.transparent)
         color(colors.primary)
         cursor("pointer")
