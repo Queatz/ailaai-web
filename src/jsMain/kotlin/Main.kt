@@ -96,7 +96,45 @@ fun main() {
             noMatch {
                 Div({
                     style {
-                        margin(PaddingDefault)
+                        property("margin", "$PaddingDefault auto")
+                        maxWidth(800.px)
+                        padding(1.5.cssRem)
+                        fontSize(22.px)
+                        lineHeight("1.5")
+                    }
+                }) {
+                    Div({
+                        style {
+                            textAlign("center")
+                            marginBottom(2.cssRem)
+                        }
+                    }) {
+                        Img("/icon.png")
+                    }
+                    B {
+                        Text("Ai Là Ai")
+                    }
+                    Text(" is a card-sharing game that makes your offline world more interactive and fun.  You will make tons of friends by getting to know the other players. You will need to be invited by another player in order to play.")
+                    H3 {
+                        Text("How to play")
+                    }
+                    Ul {
+                        Li { Text("Open the app in different locations to collect cards from other players") }
+                        Li { Text("Place cards on the ground, equip them, stack them on other cards, or put them in the real world using NFC Tags and QR Codes") }
+                        Li { Text("Wait for other players to find your cards and reply") }
+                        Li { Text("Reply to a card to start a conversation with the other player") }
+                    }
+                    H3 {
+                        Text("How to win")
+                    }
+                    Ul {
+                        Li { Text("You win when you have so many friends that you don't have time for the Internet anymore.  Congratulations, you may now delete the app!") }
+                    }
+                }
+                Div({
+                    style {
+                        property("margin", "$PaddingDefault auto")
+                        maxWidth(800.px)
                         padding(1.5.cssRem)
                         borderRadius(1.cssRem)
                         backgroundColor(Styles.colors.background)
