@@ -114,7 +114,14 @@ fun main() {
                     B {
                         Text("Ai Là Ai")
                     }
-                    Text(" is a card-sharing game that makes your offline world more interactive and fun.  You will make tons of friends by getting to know the other players. You will need to be invited by another player in order to play.")
+                    Text(" is a card-sharing game that makes your offline world more interactive and fun. You will make tons of new connections and get to know the other players.")
+                    Br()
+                    Br()
+                    Text(" To play, you'll need an invite from another player. If you're new here, ")
+                    A("mailto:jacobaferrero@gmail.com?subject=Ai Là Ai invite to play") {
+                        Text("send me an email")
+                    }
+                    Text(" and play today!")
                     H3 {
                         Text("How to play")
                     }
@@ -128,7 +135,7 @@ fun main() {
                         Text("How to win")
                     }
                     Ul {
-                        Li { Text("You win when you have so many friends that you don't have time for the Internet anymore.  Congratulations, you may now delete the app!") }
+                        Li { Text("You win when you play with your offline world more than with your phone.") }
                     }
                 }
                 Div({

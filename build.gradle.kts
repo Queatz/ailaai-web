@@ -40,7 +40,6 @@ kotlin {
                 implementation(compose.runtime)
 //                implementation("org.jetbrains.compose.material3:material3-js:1.2.0-alpha01-dev750")
                 implementation("io.ktor:ktor-client-js:$ktorVersion")
-                implementation("io.ktor:ktor-client-json-js:$ktorVersion")
                 implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
                 implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
                 implementation("app.softwork:routing-compose:0.2.11")

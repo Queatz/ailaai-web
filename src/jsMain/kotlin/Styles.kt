@@ -6,6 +6,14 @@ object Styles : StyleSheet() {
         val primary = Color("#006689")
     }
 
+    init {
+        "a" style {
+            color(colors.primary)
+            fontWeight("bold")
+            textDecoration("none")
+        }
+    }
+
     val mainContent by style {
         boxSizing("border-box")
         display(DisplayStyle.Flex)

@@ -36,8 +36,7 @@ fun CardPage(cardId: String, cardLoaded: (card: Card) -> Unit) {
             card = http.get("$baseUrl/cards/$cardId").body()
             cardConversation = card!!.getConversation()
             cardLoaded(card!!)
-            val ktorHackfix = http.get("$baseUrl/cards/$cardId/cards").bodyAsText()
-            cards = DefaultJson.decodeFromString(ktorHackfix)
+            cards = http.get("$baseUrl/cards/$cardId/cards").body()
         } catch (e: Exception) {
             e.printStackTrace()
         } finally {
