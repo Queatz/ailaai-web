@@ -137,37 +137,8 @@ fun main() {
                     Ul {
                         Li { Text("You win when you play with your offline world more than with your phone.") }
                     }
-                }
-                Div({
-                    style {
-                        property("margin", "$PaddingDefault auto")
-                        maxWidth(800.px)
-                        padding(1.5.cssRem)
-                        borderRadius(1.cssRem)
-                        backgroundColor(Styles.colors.background)
-                        fontSize(18.px)
-                    }
-
-                }) {
-                    H2({
-                        style {
-                            marginTop(0.cssRem)
-                        }
-                    }) {
-                        Text("1. Enable Unknown Sources to install apps from your browser")
-                    }
-                    A("https://duckduckgo.com/?q=Enable+Unknown+Sources+on+Android", {
-                        style {
-                            textDecoration("none")
-                            color(Color("#006689"))
-                            fontWeight(700)
-                            fontSize(18.px)
-                        }
-                    }) {
-                        Text("Learn how to enable Unknown Sources")
-                    }
-                    H2 {
-                        Text("2. Get the app")
+                    H3 {
+                        Text("Get the app")
                     }
                     A("/ailaai.apk", {
                         style {
