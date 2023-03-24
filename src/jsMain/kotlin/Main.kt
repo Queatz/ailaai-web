@@ -40,33 +40,6 @@ open class Model {
     var createdAt: String? = null
 }
 
-@Serializable
-data class ConversationItem(
-    var title: String = "",
-    var message: String = "",
-    var items: MutableList<ConversationItem> = mutableListOf()
-)
-
-@Composable
-fun CardNameAndLocation(card: Card?) {
-    Span({
-        style {
-            fontWeight("bold")
-        }
-    }) {
-        Text(card?.name ?: "")
-    }
-    Span({
-        style {
-            marginLeft(PaddingDefault / 2)
-            fontSize(14.px)
-            opacity(.75f)
-        }
-    }) {
-        Text(card?.location ?: "")
-    }
-}
-
 fun main() {
     renderComposableInBody {
         Style(Styles)

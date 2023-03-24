@@ -107,6 +107,7 @@ object Styles : StyleSheet() {
             marginRight(.5.cssRem)
         }
     }
+
     val outlineButton by style {
         borderRadius(PaddingDefault * 2)
         border(1.px, LineStyle.Solid, colors.primary)
@@ -115,5 +116,27 @@ object Styles : StyleSheet() {
         backgroundColor(Color.transparent)
         color(colors.primary)
         cursor("pointer")
+        display(DisplayStyle.Flex)
+        alignItems(AlignItems.Center)
+
+        selector(".material-symbols-outlined") style {
+            marginRight(.5.cssRem)
+        }
+    }
+
+    val textButton by style {
+        property("border", "none")
+        padding(0.cssRem)
+        height(3.cssRem)
+        backgroundColor(Color.transparent)
+        color(colors.primary)
+        cursor("pointer")
+        display(DisplayStyle.Flex)
+        alignItems(AlignItems.Center)
+        fontWeight(500)
+        property("font-size", "inherit")
+        selector(".material-symbols-outlined") style {
+            marginRight(.5.cssRem)
+        }
     }
 }
