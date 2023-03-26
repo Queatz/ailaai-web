@@ -58,7 +58,6 @@ fun CardNameAndLocation(card: Card?) {
 @Composable
 fun CardPage(cardId: String, cardLoaded: (card: Card) -> Unit) {
     var isLoading by remember { mutableStateOf(false) }
-
     var card by remember { mutableStateOf<Card?>(null) }
     var cards by remember { mutableStateOf<List<Card>>(emptyList()) }
     val stack = remember { mutableListOf<ConversationItem>() }
@@ -67,9 +66,10 @@ fun CardPage(cardId: String, cardLoaded: (card: Card) -> Unit) {
     var replyMessage by remember { mutableStateOf("") }
     var isSendingReply by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
+    val router = Router.current
 
     LaunchedEffect(cardId) {
-        isSendingReply = false
+        isReplying = false
         replyMessage = ""
         isLoading = true
         cards = emptyList()
@@ -135,7 +135,6 @@ fun CardPage(cardId: String, cardLoaded: (card: Card) -> Unit) {
                 Div({
                     classes(Styles.navContent)
                 }) {
-                    val router = Router.current
                     card?.parent?.let { cardParentId ->
                         Button({
                             classes(Styles.textButton)
@@ -291,8 +290,6 @@ fun CardPage(cardId: String, cardLoaded: (card: Card) -> Unit) {
             Div({
                 classes(Styles.content)
             }) {
-                val router = Router.current
-
                 if (cards.isEmpty() && !isLoading) {
                     Div({
                         style {
