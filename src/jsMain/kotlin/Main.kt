@@ -92,7 +92,15 @@ fun main() {
                     Text(" is a card-sharing game that makes your offline world more interactive and fun. You will make tons of new connections and get to know the other players.")
                     Br()
                     Br()
-                    Text(" To play, you'll need an invite from another player. If you're new here, ")
+                    Text(" To play, you ")
+                    Span(
+                        {
+                            style {
+                                textDecoration("underline")
+                            }
+                        }
+                    ) { Text("need an invite") }
+                    Text(" from another player. If you're new here, ")
                     A("mailto:jacobaferrero@gmail.com?subject=Ai Là Ai invite to play") {
                         Text("send me an email")
                     }
@@ -105,12 +113,6 @@ fun main() {
                         Li { Text("Place cards on the ground, equip them, stack them on other cards, or put them in the real world using NFC Tags and QR Codes") }
                         Li { Text("Wait for other players to find your cards and reply") }
                         Li { Text("Reply to a card to start a conversation with the other player") }
-                    }
-                    H3 {
-                        Text("How to win")
-                    }
-                    Ul {
-                        Li { Text("You win when you play with your offline world more than with your phone.") }
                     }
                     H3 {
                         Text("Get the app")

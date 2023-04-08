@@ -86,7 +86,7 @@ fun CardPage(cardId: String, cardLoaded: (card: Card) -> Unit) {
         }
     }
 
-    suspend fun sendReply() {
+    suspend fun sendMessage() {
         isSendingReply = true
         try {
             val body = WildReplyBody(
@@ -101,7 +101,7 @@ fun CardPage(cardId: String, cardLoaded: (card: Card) -> Unit) {
             }
             replyMessage = ""
             isReplying = false
-            window.alert("Your reply was sent!")
+            window.alert("Your message was sent!")
         } catch (e: Exception) {
             window.alert("That didn't work")
             e.printStackTrace()
@@ -190,7 +190,7 @@ fun CardPage(cardId: String, cardLoaded: (card: Card) -> Unit) {
                                     boxSizing("border-box")
                                 }
 
-                                placeholder("Message")
+                                placeholder("Be sure you include a way to contact you!")
 
                                 if (isSendingReply) {
                                     disabled()
@@ -217,14 +217,14 @@ fun CardPage(cardId: String, cardLoaded: (card: Card) -> Unit) {
                                     }
                                     onClick {
                                         scope.launch {
-                                            sendReply()
+                                            sendMessage()
                                         }
                                     }
                                     if (isSendingReply || replyMessage.isBlank()) {
                                         disabled()
                                     }
                                 }) {
-                                    Text("Send reply")
+                                    Text("Send message")
                                 }
                                 Button({
                                     classes(Styles.outlineButton)
@@ -237,13 +237,6 @@ fun CardPage(cardId: String, cardLoaded: (card: Card) -> Unit) {
                                 }) {
                                     Text("Cancel")
                                 }
-                            }
-                            Div({
-                                style {
-                                    opacity(.5f)
-                                }
-                            }) {
-                                Text("Be sure you include a way to contact you!")
                             }
                         } else {
                             cardConversation?.items?.forEach { item ->
@@ -268,9 +261,9 @@ fun CardPage(cardId: String, cardLoaded: (card: Card) -> Unit) {
                                     Span({
                                         classes("material-symbols-outlined")
                                     }) {
-                                        Text("mail")
+                                        Text("message")
                                     }
-                                    Text(" Reply")
+                                    Text(" Message")
                                 }
                             }
                             if (stack.isNotEmpty()) {
@@ -320,7 +313,7 @@ fun CardPage(cardId: String, cardLoaded: (card: Card) -> Unit) {
                             }
                         }
                     }) {
-                        card.cardCount?.takeIf { it > 0 }?.let {
+                        (card.cardCount?.takeIf { it > 0 } ?: 0).let { numberOfCards ->
                             Div({
                                 style {
                                     backgroundColor(rgba(255, 255, 255, .8))
@@ -332,7 +325,7 @@ fun CardPage(cardId: String, cardLoaded: (card: Card) -> Unit) {
                                     right(PaddingDefault)
                                 }
                             }) {
-                                Text("$it ${if (it == 1) "card" else "cards"}")
+                                Text("Tap to open${if (numberOfCards > 0) " • $numberOfCards ${if (numberOfCards == 1) "card" else "cards"}" else ""}")
                             }
                         }
                         Div({
