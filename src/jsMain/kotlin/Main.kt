@@ -2,6 +2,7 @@ import androidx.compose.runtime.*
 import app.softwork.routingcompose.BrowserRouter
 import app.softwork.routingcompose.Router
 import components.CardPage
+import components.StoryPage
 import io.ktor.client.*
 import io.ktor.client.engine.js.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -9,15 +10,26 @@ import io.ktor.serialization.kotlinx.json.*
 import kotlinx.browser.document
 import kotlinx.browser.window
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
 import org.jetbrains.compose.web.renderComposableInBody
 
 const val baseUrl = "https://api.ailaai.app"
 
+val json = Json {
+    encodeDefaults = true
+    isLenient = true
+    allowSpecialFloatingPointValues = true
+    ignoreUnknownKeys = true
+}
+
+
 val http = HttpClient(Js) {
     expectSuccess = true
-    install(ContentNegotiation) { json() }
+    install(ContentNegotiation) {
+        json(json)
+    }
 }
 
 @Serializable
@@ -28,12 +40,32 @@ class Card(
     var photo: String? = null,
     var location: String? = null,
     var collaborators: List<String>? = null,
+    var categories: List<String>? = null,
     var equipped: Boolean? = null,
     var geo: List<Double>? = null,
     var conversation: String? = null,
     var active: Boolean? = null,
     var offline: Boolean? = null,
     var cardCount: Int? = null
+) : Model()
+
+@Serializable
+class Story(
+    var person: String? = null,
+    var title: String? = null,
+    var url: String? = null,
+    var geo: List<Double>? = null,
+    var publishDate: String? = null,
+    var published: Boolean? = null,
+    var content: String? = null,
+    var authors: List<Person>? = null
+) : Model()
+
+@Serializable
+class Person(
+    var name: String? = null,
+    var photo: String? = null,
+    var seen: String? = null
 ) : Model()
 
 @Serializable
@@ -46,10 +78,10 @@ fun main() {
     renderComposableInBody {
         Style(Styles)
 
-        var card by remember { mutableStateOf<Card?>(null) }
+        var title by remember { mutableStateOf<String?>(null) }
 
-        LaunchedEffect(card?.id) {
-            document.title = card?.name ?: "Ai Là Ai"
+        LaunchedEffect(title) {
+            document.title = title ?: "Ai là ai"
         }
 
         BrowserRouter("") {
@@ -57,13 +89,21 @@ fun main() {
 
             LaunchedEffect(router.currentPath) {
                 window.scrollTo(0.0, 0.0)
-                document.title = "Ai Là Ai"
+                document.title = "Ai là ai"
             }
 
             route("card") {
                 string { cardId ->
                     CardPage(cardId) {
-                        card = it
+                        title = it.name
+                    }
+                }
+            }
+
+            route("story") {
+                string { storyUrl ->
+                    StoryPage(storyUrl) {
+                        title = it.title
                     }
                 }
             }
@@ -87,7 +127,7 @@ fun main() {
                         Img("/icon.png")
                     }
                     B {
-                        Text("Ai Là Ai")
+                        Text("Ai là ai")
                     }
                     Text(" is a card-sharing game that makes your offline world more interactive and fun. You will make tons of new connections and get to know the other players.")
                     Br()
@@ -101,7 +141,7 @@ fun main() {
                         }
                     ) { Text("need an invite") }
                     Text(" from another player. If you're new here, ")
-                    A("mailto:jacobaferrero@gmail.com?subject=Ai Là Ai invite to play") {
+                    A("mailto:jacobaferrero@gmail.com?subject=Ai là ai invite to play") {
                         Text("send me an email")
                     }
                     Text(" and play today!")
@@ -130,7 +170,7 @@ fun main() {
                             backgroundColor(Styles.colors.primary)
                         }
                     }) {
-                        Text("Download Ai Là Ai")
+                        Text("Download Ai là ai")
                     }
                 }
             }

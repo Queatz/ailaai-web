@@ -1,7 +1,12 @@
+Run
+=====
+
+`./gradlew jsBrowserRun`
+
 Build
 =====
 
-`./gradlew jsBrowserDistribution`
+`./gradlew jsBrowserProductionWebpack`
 
 Files are in `build/distributions`
 

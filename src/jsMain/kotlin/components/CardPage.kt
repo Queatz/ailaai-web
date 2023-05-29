@@ -54,7 +54,6 @@ fun CardNameAndLocation(card: Card?) {
     }
 }
 
-
 @Composable
 fun CardPage(cardId: String, cardLoaded: (card: Card) -> Unit) {
     var isLoading by remember { mutableStateOf(false) }
@@ -160,7 +159,7 @@ fun CardPage(cardId: String, cardLoaded: (card: Card) -> Unit) {
                                     backgroundPosition("center")
                                     backgroundSize("cover")
                                     borderRadius(CornerDefault)
-                                    property("aspect-ratio", "1.5")
+                                    property("aspect-ratio", "2")
                                 }
                             }) {}
                         }
@@ -316,7 +315,7 @@ fun CardPage(cardId: String, cardLoaded: (card: Card) -> Unit) {
                         (card.cardCount?.takeIf { it > 0 } ?: 0).let { numberOfCards ->
                             Div({
                                 style {
-                                    backgroundColor(rgba(255, 255, 255, .8))
+                                    backgroundColor(rgba(255, 255, 255, .95))
                                     borderRadius(CornerDefault * 2)
                                     padding(PaddingDefault / 2, PaddingDefault)
                                     color(Color.black)
@@ -330,7 +329,7 @@ fun CardPage(cardId: String, cardLoaded: (card: Card) -> Unit) {
                         }
                         Div({
                             style {
-                                backgroundColor(rgba(255, 255, 255, .8))
+                                backgroundColor(rgba(255, 255, 255, .95))
                                 padding(PaddingDefault)
                                 color(Color.black)
                                 maxHeight(50.percent)

@@ -1,10 +1,10 @@
 import org.jetbrains.compose.compose
 
-val ktorVersion = "2.2.3"
+val ktorVersion = "2.2.4"
 
 plugins {
     kotlin("multiplatform")
-    kotlin("plugin.serialization") version "1.8.0"
+    kotlin("plugin.serialization") version "1.8.10"
     id("org.jetbrains.compose")
 }
 
