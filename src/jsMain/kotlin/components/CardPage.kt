@@ -71,6 +71,7 @@ fun CardPage(cardId: String, cardLoaded: (card: Card) -> Unit) {
         isReplying = false
         replyMessage = ""
         isLoading = true
+        card = null
         cards = emptyList()
         try {
             card = http.get("$baseUrl/cards/$cardId").body()

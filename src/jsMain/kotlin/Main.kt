@@ -1,6 +1,7 @@
 import androidx.compose.runtime.*
 import app.softwork.routingcompose.BrowserRouter
 import app.softwork.routingcompose.Router
+import components.AppHeader
 import components.CardPage
 import components.StoryPage
 import io.ktor.client.*
@@ -94,6 +95,7 @@ fun main() {
 
             route("card") {
                 string { cardId ->
+                    AppHeader("Explore")
                     CardPage(cardId) {
                         title = it.name
                     }
@@ -102,6 +104,7 @@ fun main() {
 
             route("story") {
                 string { storyUrl ->
+                    AppHeader("Stories")
                     StoryPage(storyUrl) {
                         title = it.title
                     }
@@ -109,6 +112,7 @@ fun main() {
             }
 
             noMatch {
+                var defineCity by remember { mutableStateOf(false) }
                 Div({
                     style {
                         property("margin", "$PaddingDefault auto")
@@ -125,42 +129,109 @@ fun main() {
                         }
                     }) {
                         Img("/icon.png")
-                    }
-                    B {
-                        Text("Ai là ai")
-                    }
-                    Text(" is a card-sharing game that makes your offline world more interactive and fun. You will make tons of new connections and get to know the other players.")
-                    Br()
-                    Br()
-                    Text(" To play, you ")
-                    Span(
-                        {
+                        H3({
                             style {
-                                textDecoration("underline")
+                                marginBottom(0.px)
+                            }
+                        }) {
+                            Text("Ai là ai")
+                        }
+                        Span({
+                            style {
+                                opacity(0.5f)
+                            }
+                        }) {
+                            Text("A collaborative ")
+                            Span ({
+                                style {
+                                    textDecoration("underline")
+                                    cursor("pointer")
+                                }
+                                onClick {
+                                    defineCity = !defineCity
+                                }
+                            }) {
+                                Text("IRL city")
+                            }
+                            Text(" building game")
+                        }
+                    }
+                    if (defineCity) {
+                        Div({
+                            style {
+                                marginTop(PaddingDefault)
+                                marginBottom(PaddingDefault)
+                                padding(PaddingDefault)
+                                borderRadius(CornerDefault)
+                                border(1.px, LineStyle.Solid, Styles.colors.primary)
+                            }
+                        }) {
+                            Text("A city is all the people, animals, nature, places, things, knowledge, activities, services, doings, etc. existing in close proximity with each other.")
+                            Br()
+                            Br()
+                            Text("Whether you choose to build a city in the wilderness, grow a town into a city, or build a city inside another city — it's totally up to you!")
+                            Br()
+                            Br()
+                            A("https://www.wordnik.com/words/city") {
+                                Text("More at Wordnik")
                             }
                         }
-                    ) { Text("need an invite") }
-                    Text(" from another player. If you're new here, ")
-                    A("mailto:jacobaferrero@gmail.com?subject=Ai là ai invite to play") {
-                        Text("send me an email")
                     }
-                    Text(" and play today!")
                     H3 {
                         Text("How to play")
                     }
-                    Ul {
-                        Li { Text("Open the app in different locations to collect cards from other players") }
-                        Li { Text("Place cards on the ground, equip them, stack them on other cards, or put them in the real world using NFC Tags and QR Codes") }
-                        Li { Text("Wait for other players to find your cards and reply") }
-                        Li { Text("Reply to a card to start a conversation with the other player") }
+                    Span {
+                        Text(" To play, you ")
+                        Span(
+                            {
+                                style {
+                                    textDecoration("underline")
+                                }
+                            }
+                        ) { Text("need an invite") }
+                        Text(" from another player. If you're new here, ")
+                        A("mailto:jacobaferrero@gmail.com?subject=Ai là ai invite to play") {
+                            Text("send me an email")
+                        }
+                        Text(" and play today!")
                     }
-                    H3 {
-                        Text("Get the app")
+                    Ol({
+                        attr("type", "I")
+                    }) {
+                        Li {
+                            Text("Build your city using ")
+                            B {
+                                Text("Ai là ai cards")
+                            }
+                        }
+                        Li {
+                            Text("Invite people into your city by ")
+                            B {
+                                Text("publishing stories")
+                            }
+                        }
+                        Li {
+                            Text("Engage with people in your city using ")
+                            B {
+                                Text("groups and messages")
+                            }
+                        }
+                        Li {
+                            Text("Play in your city, ")
+                            B {
+                                Text("offline!")
+                            }
+                            Text(" You get it, yet?")
+                        }
+                    }
+                    Span {
+                        Text("And much more! Why wait? Start building your city today!")
                     }
                     A("/ailaai.apk", {
                         style {
                             display(DisplayStyle.InlineBlock)
                             padding(1.cssRem, 2.cssRem)
+                            marginTop(PaddingDefault)
                             fontWeight(700)
                             fontSize(18.px)
                             borderRadius(4.cssRem)
@@ -170,7 +241,7 @@ fun main() {
                             backgroundColor(Styles.colors.primary)
                         }
                     }) {
-                        Text("Download Ai là ai")
+                        Text(" Download Ai là ai for Android")
                     }
                 }
             }

@@ -14,13 +14,27 @@ object Styles : StyleSheet() {
         }
     }
 
+    val appHeader by style {
+        boxSizing("border-box")
+        display(DisplayStyle.Flex)
+        alignItems(AlignItems.Center)
+        padding(PaddingDefault)
+        marginTop(PaddingDefault)
+        marginLeft(PaddingDefault)
+        marginRight(PaddingDefault)
+        marginBottom(PaddingDefault * 2)
+        property("box-shadow", "rgba(0, 0, 0, 0.125) 1px 1px 4px")
+        backgroundColor(Color.white)
+        borderRadius(CornerDefault)
+
+    }
+
     val mainContent by style {
         boxSizing("border-box")
         display(DisplayStyle.Flex)
         flexDirection(FlexDirection.Column)
         minHeight(100.vh)
-        width(100.percent)
-        alignItems(AlignItems.Stretch)
+        alignItems(AlignItems.Center)
         justifyContent(JustifyContent.Stretch)
     }
 
@@ -33,6 +47,11 @@ object Styles : StyleSheet() {
         overflowX("hidden")
         property("box-shadow", "rgba(0, 0, 0, 0.125) 2px 2px 16px")
         backgroundColor(Color.white)
+        borderRadius(CornerDefault)
+        width(1200.px)
+        marginLeft(PaddingDefault)
+        marginRight(PaddingDefault)
+        property("max-width", "calc(100vw - ${PaddingDefault * 2})")
     }
 
     val navContent by style {

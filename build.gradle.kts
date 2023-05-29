@@ -3,9 +3,9 @@ import org.jetbrains.compose.compose
 val ktorVersion = "2.2.4"
 
 plugins {
-    kotlin("multiplatform")
-    kotlin("plugin.serialization") version "1.8.10"
-    id("org.jetbrains.compose")
+    kotlin("multiplatform") version "1.8.20"
+    kotlin("plugin.serialization") version "1.8.20"
+    id("org.jetbrains.compose") version "1.4.0"
 }
 
 group = "app.ailaai"
@@ -36,13 +36,12 @@ kotlin {
     sourceSets {
         val jsMain by getting {
             dependencies {
-                implementation(compose.web.core)
                 implementation(compose.runtime)
-//                implementation("org.jetbrains.compose.material3:material3-js:1.2.0-alpha01-dev750")
+                implementation(compose.html.core)
                 implementation("io.ktor:ktor-client-js:$ktorVersion")
                 implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
                 implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
-                implementation("app.softwork:routing-compose:0.2.11")
+                implementation("app.softwork:routing-compose:0.2.12")
             }
         }
         val jsTest by getting {

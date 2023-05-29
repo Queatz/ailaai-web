@@ -14,7 +14,7 @@ object StoryStyles : StyleSheet() {
         display(DisplayStyle.Flex)
         alignItems(AlignItems.Stretch)
         justifyContent(JustifyContent.Stretch)
-        fontSize(32.px)
+        fontSize(48.px)
     }
 
     val contentAuthors by style {
@@ -58,7 +58,15 @@ object StoryStyles : StyleSheet() {
         backgroundSize("cover")
         borderRadius(CornerDefault)
         height(480.px)
+        maxHeight(100.vh)
         marginRight(PaddingDefault)
         marginBottom(PaddingDefault)
+
+        media(mediaMaxWidth(640.px)) {
+            self style {
+                width(100.percent)
+                property("max-width", "calc(100vw - ${PaddingDefault * 2})")
+            }
+        }
     }
 }
