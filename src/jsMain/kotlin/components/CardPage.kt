@@ -3,6 +3,7 @@ package components
 import Card
 import CornerDefault
 import PaddingDefault
+import Styles
 import androidx.compose.runtime.*
 import api
 import app.softwork.routingcompose.Router
@@ -30,7 +31,7 @@ data class WildReplyBody(val message: String, val conversation: String?, val car
 data class ConversationItem(
     var title: String = "",
     var message: String = "",
-    var items: MutableList<ConversationItem> = mutableListOf()
+    var items: MutableList<ConversationItem> = mutableListOf(),
 )
 
 @Composable
@@ -55,7 +56,7 @@ fun CardNameAndLocation(card: Card?) {
 }
 
 @Composable
-fun CardPage(cardId: String, cardLoaded: (card: Card) -> Unit) {
+fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) -> Unit) {
     var isLoading by remember { mutableStateOf(false) }
     var card by remember { mutableStateOf<Card?>(null) }
     var cards by remember { mutableStateOf<List<Card>>(emptyList()) }
@@ -81,6 +82,7 @@ fun CardPage(cardId: String, cardLoaded: (card: Card) -> Unit) {
             cards = http.get("$baseUrl/cards/$cardId/cards").body()
         } catch (e: Exception) {
             e.printStackTrace()
+            onError()
         } finally {
             isLoading = false
         }
@@ -91,7 +93,8 @@ fun CardPage(cardId: String, cardLoaded: (card: Card) -> Unit) {
         try {
             val body = WildReplyBody(
                 message = replyMessage,
-                conversation = (stack.map { it.title } + cardConversation?.title).filter { it.isNullOrBlank().not() }.takeIf { it.isNotEmpty() }?.joinToString(" → "),
+                conversation = (stack.map { it.title } + cardConversation?.title).filter { it.isNullOrBlank().not() }
+                    .takeIf { it.isNotEmpty() }?.joinToString(" → "),
                 card = cardId,
                 device = api.token
             )
@@ -135,21 +138,6 @@ fun CardPage(cardId: String, cardLoaded: (card: Card) -> Unit) {
                 Div({
                     classes(Styles.navContent)
                 }) {
-                    card?.parent?.let { cardParentId ->
-                        Button({
-                            classes(Styles.textButton)
-                            onClick {
-                                router.navigate("/card/$cardParentId")
-                            }
-                        }) {
-                            Span({
-                                classes("material-symbols-outlined")
-                            }) {
-                                Text("arrow_back")
-                            }
-                            Text(" Go back")
-                        }
-                    }
                     card?.let { card ->
                         card.photo?.let {
                             Div({
@@ -159,121 +147,127 @@ fun CardPage(cardId: String, cardLoaded: (card: Card) -> Unit) {
                                     backgroundImage("url($baseUrl${it})")
                                     backgroundPosition("center")
                                     backgroundSize("cover")
-                                    borderRadius(CornerDefault)
+//                                    borderRadius(CornerDefault)
                                     property("aspect-ratio", "2")
                                 }
                             }) {}
                         }
-                        Div {
-                            CardNameAndLocation(card)
-                        }
-                        cardConversation?.message?.let { message ->
-                            Div({
-                                style {
-                                    whiteSpace("pre-wrap")
-                                }
-                            }) {
-                                Text(message)
+                    }
+                    Div({
+                        classes(Styles.cardContent)
+                    }) {
+                        card?.let { card ->
+                            Div {
+                                CardNameAndLocation(card)
                             }
-                        }
-                        if (isReplying) {
-                            TextArea(replyMessage) {
-                                style {
-                                    width(100.percent)
-                                    height(8.cssRem)
-                                    borderRadius(1.cssRem)
-                                    border(1.px, LineStyle.Solid, Styles.colors.background)
-                                    property("resize", "none")
-                                    padding(1.cssRem)
-                                    property("font-size", "inherit")
-                                    fontFamily("inherit")
-                                    boxSizing("border-box")
-                                }
-
-                                placeholder("Be sure you include a way to contact you!")
-
-                                if (isSendingReply) {
-                                    disabled()
-                                }
-
-                                onInput {
-                                    replyMessage = it.value
-                                }
-
-                                autoFocus()
-                            }
-                        }
-                        if (isReplying) {
-                            Div({
-                                style {
-                                    display(DisplayStyle.Flex)
-                                    marginBottom(0.cssRem)
-                                }
-                            }) {
-                                Button({
-                                    classes(Styles.button)
+                            cardConversation?.message?.let { message ->
+                                Div({
                                     style {
-                                        marginRight(1.cssRem)
-                                    }
-                                    onClick {
-                                        scope.launch {
-                                            sendMessage()
-                                        }
-                                    }
-                                    if (isSendingReply || replyMessage.isBlank()) {
-                                        disabled()
+                                        whiteSpace("pre-wrap")
                                     }
                                 }) {
-                                    Text("Send message")
+                                    Text(message)
                                 }
-                                Button({
-                                    classes(Styles.outlineButton)
-                                    onClick {
-                                        isReplying = false
+                            }
+                            if (isReplying) {
+                                TextArea(replyMessage) {
+                                    style {
+                                        width(100.percent)
+                                        height(8.cssRem)
+                                        borderRadius(1.cssRem)
+                                        border(1.px, LineStyle.Solid, Styles.colors.background)
+                                        property("resize", "none")
+                                        padding(1.cssRem)
+                                        property("font-size", "inherit")
+                                        fontFamily("inherit")
+                                        boxSizing("border-box")
                                     }
+
+                                    placeholder("Be sure you include a way to contact you!")
+
                                     if (isSendingReply) {
                                         disabled()
                                     }
-                                }) {
-                                    Text("Cancel")
+
+                                    onInput {
+                                        replyMessage = it.value
+                                    }
+
+                                    autoFocus()
                                 }
                             }
-                        } else {
-                            cardConversation?.items?.forEach { item ->
-                                Button({
-                                    classes(Styles.button)
-                                    onClick {
-                                        stack.add(cardConversation!!)
-                                        cardConversation = item
+                            if (isReplying) {
+                                Div({
+                                    style {
+                                        display(DisplayStyle.Flex)
+                                        marginBottom(0.cssRem)
                                     }
                                 }) {
-                                    Text(item.title)
-                                }
-                            }
-                            if (cardConversation?.items.isNullOrEmpty()) {
-                                Button({
-                                    classes(Styles.button)
-                                    onClick {
-//                                    window.open("/", target = "_blank")
-                                        isReplying = true
-                                    }
-                                }) {
-                                    Span({
-                                        classes("material-symbols-outlined")
+                                    Button({
+                                        classes(Styles.button)
+                                        style {
+                                            marginRight(1.cssRem)
+                                        }
+                                        onClick {
+                                            scope.launch {
+                                                sendMessage()
+                                            }
+                                        }
+                                        if (isSendingReply || replyMessage.isBlank()) {
+                                            disabled()
+                                        }
                                     }) {
-                                        Text("message")
+                                        Text("Send message")
                                     }
-                                    Text(" Message")
+                                    Button({
+                                        classes(Styles.outlineButton)
+                                        onClick {
+                                            isReplying = false
+                                        }
+                                        if (isSendingReply) {
+                                            disabled()
+                                        }
+                                    }) {
+                                        Text("Cancel")
+                                    }
                                 }
-                            }
-                            if (stack.isNotEmpty()) {
-                                Button({
-                                    classes(Styles.outlineButton)
-                                    onClick {
-                                        cardConversation = stack.removeLast()
+                            } else {
+                                cardConversation?.items?.forEach { item ->
+                                    Button({
+                                        classes(Styles.button)
+                                        onClick {
+                                            stack.add(cardConversation!!)
+                                            cardConversation = item
+                                        }
+                                    }) {
+                                        Text(item.title)
                                     }
-                                }) {
-                                    Text("Go back")
+                                }
+                                if (cardConversation?.items.isNullOrEmpty()) {
+                                    Button({
+                                        classes(Styles.button)
+                                        onClick {
+                                            //                                    window.open("/", target = "_blank")
+                                            isReplying = true
+                                        }
+                                    }) {
+                                        Span({
+                                            classes("material-symbols-outlined")
+                                        }) {
+                                            Text("message")
+                                        }
+                                        Text(" Message")
+                                    }
+                                }
+                                if (stack.isNotEmpty()) {
+                                    Button({
+                                        classes(Styles.outlineButton)
+                                        onClick {
+                                            cardConversation = stack.removeLast()
+                                        }
+                                    }) {
+                                        Text("Go back")
+                                    }
                                 }
                             }
                         }
@@ -329,15 +323,7 @@ fun CardPage(cardId: String, cardLoaded: (card: Card) -> Unit) {
                             }
                         }
                         Div({
-                            style {
-                                backgroundColor(rgba(255, 255, 255, .95))
-                                padding(PaddingDefault)
-                                color(Color.black)
-                                maxHeight(50.percent)
-                                boxSizing("border-box")
-                                overflowY("auto")
-                                fontSize(18.px)
-                            }
+                            classes(Styles.cardPost)
                         }) {
                             Div({
                                 style {

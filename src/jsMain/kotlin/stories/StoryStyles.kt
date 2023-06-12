@@ -14,7 +14,7 @@ object StoryStyles : StyleSheet() {
         display(DisplayStyle.Flex)
         alignItems(AlignItems.Stretch)
         justifyContent(JustifyContent.Stretch)
-        fontSize(48.px)
+        fontSize(36.px)
     }
 
     val contentAuthors by style {
@@ -65,7 +65,7 @@ object StoryStyles : StyleSheet() {
         media(mediaMaxWidth(640.px)) {
             self style {
                 width(100.percent)
-                property("max-width", "calc(100vw - ${PaddingDefault * 2})")
+                property("max-width", "calc(100vw - ${PaddingDefault * 4})")
             }
         }
     }

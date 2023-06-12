@@ -1,6 +1,6 @@
 package components
 
-import CornerDefault
+import PaddingDefault
 import Person
 import Story
 import androidx.compose.runtime.*
@@ -53,18 +53,44 @@ fun StoryPage(storyUrl: String, onStoryLoaded: (Story) -> Unit) {
         }
     }
 
-    story?.let { story ->
+    if (!isLoading && story == null) {
         Div({
             classes(Styles.mainContent)
+            style {
+                display(DisplayStyle.Flex)
+                minHeight(100.vh)
+                width(100.percent)
+                flexDirection(FlexDirection.Column)
+                padding(PaddingDefault * 2)
+                alignItems(AlignItems.Center)
+                justifyContent(JustifyContent.FlexStart)
+            }
         }) {
+            Text("Story not found.")
+        }
+    } else {
+        story?.let { story ->
             Div({
-                classes(Styles.navContainer)
+                classes(Styles.mainContent)
             }) {
                 Div({
-                    classes(Styles.navContent)
+                    classes(Styles.navContainer)
+                    style {
+                        maxWidth(1200.px)
+                        alignSelf(AlignSelf.Center)
+                        marginBottom(1.cssRem)
+                    }
                 }) {
-                    if (storyContent != null) {
-                        StoryContents(storyContent!!)
+                    Div({
+                        classes(Styles.navContent) // todo max-width 1200px
+                    }) {
+                        Div({
+                            classes(Styles.cardContent)
+                        }) {
+                            if (storyContent != null) {
+                                StoryContents(storyContent!!)
+                            }
+                        }
                     }
                 }
             }

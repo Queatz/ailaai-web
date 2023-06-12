@@ -19,14 +19,10 @@ object Styles : StyleSheet() {
         display(DisplayStyle.Flex)
         alignItems(AlignItems.Center)
         padding(PaddingDefault)
-        marginTop(PaddingDefault)
-        marginLeft(PaddingDefault)
-        marginRight(PaddingDefault)
-        marginBottom(PaddingDefault * 2)
+        margin(PaddingDefault)
         property("box-shadow", "rgba(0, 0, 0, 0.125) 1px 1px 4px")
         backgroundColor(Color.white)
         borderRadius(CornerDefault)
-
     }
 
     val mainContent by style {
@@ -34,7 +30,7 @@ object Styles : StyleSheet() {
         display(DisplayStyle.Flex)
         flexDirection(FlexDirection.Column)
         minHeight(100.vh)
-        alignItems(AlignItems.Center)
+        alignItems(AlignItems.Stretch)
         justifyContent(JustifyContent.Stretch)
     }
 
@@ -42,13 +38,12 @@ object Styles : StyleSheet() {
         boxSizing("border-box")
         display(DisplayStyle.Flex)
         flexDirection(FlexDirection.Column)
-        alignItems(AlignItems.Center)
-        padding(PaddingDefault)
+        alignItems(AlignItems.Stretch)
+//        padding(PaddingDefault)
         overflowX("hidden")
         property("box-shadow", "rgba(0, 0, 0, 0.125) 2px 2px 16px")
         backgroundColor(Color.white)
         borderRadius(CornerDefault)
-        width(1200.px)
         marginLeft(PaddingDefault)
         marginRight(PaddingDefault)
         property("max-width", "calc(100vw - ${PaddingDefault * 2})")
@@ -57,10 +52,15 @@ object Styles : StyleSheet() {
     val navContent by style {
         display(DisplayStyle.Flex)
         flexDirection(FlexDirection.Column)
-        alignItems(AlignItems.FlexStart)
-        width(100.percent)
-        maxWidth(1200.px)
+        alignItems(AlignItems.Stretch)
         boxSizing("border-box")
+    }
+
+    val cardContent by style {
+        display(DisplayStyle.Flex)
+        flexDirection(FlexDirection.Column)
+        alignItems(AlignItems.FlexStart)
+        padding(PaddingDefault)
 
         not(lastChild) style {
             marginBottom(PaddingDefault)
@@ -68,9 +68,10 @@ object Styles : StyleSheet() {
 
         media(mediaMinWidth(641.px)) {
             self style {
-                padding(PaddingDefault)
+                padding(PaddingDefault * 1.5f)
             }
         }
+
     }
 
     val content by style {
@@ -93,7 +94,7 @@ object Styles : StyleSheet() {
 
     val card by style {
         display(DisplayStyle.Flex)
-        borderRadius(PaddingDefault)
+        borderRadius(PaddingDefault * 2)
         backgroundColor(colors.background)
         margin(PaddingDefault)
         width(640.px)
@@ -109,6 +110,18 @@ object Styles : StyleSheet() {
                 margin(PaddingDefault / 2)
             }
         }
+    }
+
+    val cardPost by style {
+        backgroundColor(rgba(255, 255, 255, .96))
+        padding(PaddingDefault)
+        margin(PaddingDefault)
+        color(Color.black)
+        borderRadius(PaddingDefault)
+        maxHeight(50.percent)
+        boxSizing("border-box")
+        overflowY("auto")
+        fontSize(18.px)
     }
 
     val button by style {

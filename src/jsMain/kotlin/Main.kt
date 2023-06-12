@@ -80,6 +80,7 @@ fun main() {
         Style(Styles)
 
         var title by remember { mutableStateOf<String?>(null) }
+        var parentCardId by remember { mutableStateOf<String?>(null) }
 
         LaunchedEffect(title) {
             document.title = title ?: "Ai là ai"
@@ -95,9 +96,12 @@ fun main() {
 
             route("card") {
                 string { cardId ->
-                    AppHeader("Explore")
-                    CardPage(cardId) {
+                    AppHeader("Explore", showBack = parentCardId != null, onBack = {
+                        router.navigate("/card/$parentCardId")
+                    })
+                    CardPage(cardId, onError = { parentCardId = null }) {
                         title = it.name
+                        parentCardId = it.parent
                     }
                 }
             }
@@ -112,7 +116,6 @@ fun main() {
             }
 
             noMatch {
-                var defineCity by remember { mutableStateOf(false) }
                 Div({
                     style {
                         property("margin", "$PaddingDefault auto")
@@ -141,47 +144,19 @@ fun main() {
                                 opacity(0.5f)
                             }
                         }) {
-                            Text("A collaborative ")
-                            Span ({
-                                style {
-                                    textDecoration("underline")
-                                    cursor("pointer")
-                                }
-                                onClick {
-                                    defineCity = !defineCity
-                                }
-                            }) {
-                                Text("IRL city")
-                            }
-                            Text(" building game")
-                        }
-                    }
-                    if (defineCity) {
-                        Div({
-                            style {
-                                marginTop(PaddingDefault)
-                                marginBottom(PaddingDefault)
-                                padding(PaddingDefault)
-                                borderRadius(CornerDefault)
-                                border(1.px, LineStyle.Solid, Styles.colors.primary)
-                            }
-                        }) {
-                            Text("A city is all the people, animals, nature, places, things, knowledge, activities, services, doings, etc. existing in close proximity with each other.")
-                            Br()
-                            Br()
-                            Text("Whether you choose to build a city in the wilderness, grow a town into a city, or build a city inside another city — it's totally up to you!")
-                            Br()
-                            Br()
-                            A("https://www.wordnik.com/words/city") {
-                                Text("More at Wordnik")
-                            }
+                            Text("Caffeine for your city's social scene.")
                         }
                     }
                     H3 {
-                        Text("How to play")
+                        Text("What is Ai là ai?")
                     }
-                    Span {
-                        Text(" To play, you ")
+                    Div {
+                        Text("Ai là ai is a platform that lets you discover and integrate into your city's social scene in meaningful and useful ways to you.")
+                        Br()
+                        Br()
+                    }
+                    Div {
+                        Text(" To join the Beta, you ")
                         Span(
                             {
                                 style {
@@ -189,43 +164,11 @@ fun main() {
                                 }
                             }
                         ) { Text("need an invite") }
-                        Text(" from another player. If you're new here, ")
-                        A("mailto:jacobaferrero@gmail.com?subject=Ai là ai invite to play") {
+                        Text(" from another member. If you're new here, ")
+                        A("mailto:jacobaferrero@gmail.com?subject=Ai là ai invite to join") {
                             Text("send me an email")
                         }
-                        Text(" and play today!")
-                    }
-                    Ol({
-                        attr("type", "I")
-                    }) {
-                        Li {
-                            Text("Build your city using ")
-                            B {
-                                Text("Ai là ai cards")
-                            }
-                        }
-                        Li {
-                            Text("Invite people into your city by ")
-                            B {
-                                Text("publishing stories")
-                            }
-                        }
-                        Li {
-                            Text("Engage with people in your city using ")
-                            B {
-                                Text("groups and messages")
-                            }
-                        }
-                        Li {
-                            Text("Play in your city, ")
-                            B {
-                                Text("offline!")
-                            }
-                            Text(" You get it, yet?")
-                        }
-                    }
-                    Span {
-                        Text("And much more! Why wait? Start building your city today!")
+                        Text(" and start engaging your city today!")
                     }
                     A("/ailaai.apk", {
                         style {
@@ -241,7 +184,7 @@ fun main() {
                             backgroundColor(Styles.colors.primary)
                         }
                     }) {
-                        Text(" Download Ai là ai for Android")
+                        Text(" Download Ai là ai Beta for Android")
                     }
                 }
             }

@@ -5,35 +5,55 @@ import Styles
 import androidx.compose.runtime.Composable
 import app.softwork.routingcompose.Router
 import org.jetbrains.compose.web.css.*
-import org.jetbrains.compose.web.dom.Div
-import org.jetbrains.compose.web.dom.Img
-import org.jetbrains.compose.web.dom.Span
-import org.jetbrains.compose.web.dom.Text
+import org.jetbrains.compose.web.dom.*
 
 @Composable
-fun AppHeader(title: String) {
+fun AppHeader(
+    title: String,
+    showBack: Boolean = false,
+    onBack: () -> Unit = {}
+) {
     val router = Router.current
 
     Div({
         classes(Styles.appHeader)
     }) {
-        Img("/icon.png") {
-            style {
-                width(54.px)
-                height(54.px)
-                cursor("pointer")
+        if (showBack) {
+            Button({
+                classes(Styles.textButton)
+                style {
+                    marginLeft(.5.cssRem)
+                }
+                onClick {
+                    onBack()
+                }
+            }) {
+                Span({
+                    classes("material-symbols-outlined")
+                }) {
+                    Text("arrow_back")
+                }
+                Text(" Go back")
             }
-            onClick {
-                router.navigate("/")
+        } else {
+            Img("/icon.png") {
+                style {
+                    width(54.px)
+                    height(54.px)
+                    cursor("pointer")
+                }
+                onClick {
+                    router.navigate("/")
+                }
             }
-        }
-        Span({
-            style {
-                paddingLeft(PaddingDefault)
-                fontSize(24.px)
+            Span({
+                style {
+                    paddingLeft(PaddingDefault)
+                    fontSize(24.px)
+                }
+            }) {
+                Text(title)
             }
-        }) {
-            Text(title)
         }
         Span({
             style {
