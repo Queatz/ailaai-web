@@ -2,13 +2,10 @@ package stories
 
 import CornerDefault
 import PaddingDefault
+import Styles
 import org.jetbrains.compose.web.css.*
 
 object StoryStyles : StyleSheet() {
-    object colors {
-//        val primary = Color("#006689")
-    }
-
     val contentTitle by style {
         boxSizing("border-box")
         display(DisplayStyle.Flex)
@@ -22,8 +19,13 @@ object StoryStyles : StyleSheet() {
         display(DisplayStyle.Flex)
         alignItems(AlignItems.Stretch)
         justifyContent(JustifyContent.Stretch)
-        opacity(0.5f)
+        color(Styles.colors.secondary)
         fontSize(14.px)
+        whiteSpace("pre-wrap")
+
+        "a" style {
+//            property("color", "inherit")
+        }
     }
 
 

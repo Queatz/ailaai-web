@@ -3,6 +3,7 @@ import app.softwork.routingcompose.BrowserRouter
 import app.softwork.routingcompose.Router
 import components.AppHeader
 import components.CardPage
+import components.ProfilePage
 import components.StoryPage
 import io.ktor.client.*
 import io.ktor.client.engine.js.*
@@ -31,48 +32,6 @@ val http = HttpClient(Js) {
     install(ContentNegotiation) {
         json(json)
     }
-}
-
-@Serializable
-class Card(
-    var person: String? = null,
-    var parent: String? = null,
-    var name: String? = null,
-    var photo: String? = null,
-    var location: String? = null,
-    var collaborators: List<String>? = null,
-    var categories: List<String>? = null,
-    var equipped: Boolean? = null,
-    var geo: List<Double>? = null,
-    var conversation: String? = null,
-    var active: Boolean? = null,
-    var offline: Boolean? = null,
-    var cardCount: Int? = null
-) : Model()
-
-@Serializable
-class Story(
-    var person: String? = null,
-    var title: String? = null,
-    var url: String? = null,
-    var geo: List<Double>? = null,
-    var publishDate: String? = null,
-    var published: Boolean? = null,
-    var content: String? = null,
-    var authors: List<Person>? = null
-) : Model()
-
-@Serializable
-class Person(
-    var name: String? = null,
-    var photo: String? = null,
-    var seen: String? = null
-) : Model()
-
-@Serializable
-open class Model {
-    var id: String? = null
-    var createdAt: String? = null
 }
 
 fun main() {
@@ -111,6 +70,15 @@ fun main() {
                     AppHeader("Stories")
                     StoryPage(storyUrl) {
                         title = it.title
+                    }
+                }
+            }
+
+            route("profile") {
+                string { profileUrl ->
+                    AppHeader(title ?: "Ai là ai")
+                    ProfilePage(profileUrl) {
+                        title = it.person.name ?: "Someone"
                     }
                 }
             }

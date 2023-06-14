@@ -4,6 +4,7 @@ object Styles : StyleSheet() {
     object colors {
         val background = Color("#E0F3FF")
         val primary = Color("#006689")
+        val secondary = Color("#767676")
     }
 
     init {
@@ -62,7 +63,7 @@ object Styles : StyleSheet() {
         alignItems(AlignItems.FlexStart)
         padding(PaddingDefault)
 
-        not(lastChild) style {
+        child(self, selector("div")) + not(lastChild) style {
             marginBottom(PaddingDefault)
         }
 
@@ -71,7 +72,6 @@ object Styles : StyleSheet() {
                 padding(PaddingDefault * 1.5f)
             }
         }
-
     }
 
     val content by style {

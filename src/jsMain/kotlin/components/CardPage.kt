@@ -1,7 +1,6 @@
 package components
 
 import Card
-import CornerDefault
 import PaddingDefault
 import Styles
 import androidx.compose.runtime.*
@@ -33,27 +32,6 @@ data class ConversationItem(
     var message: String = "",
     var items: MutableList<ConversationItem> = mutableListOf(),
 )
-
-@Composable
-fun CardNameAndLocation(card: Card?) {
-    Span({
-        style {
-            fontWeight("bold")
-            fontSize(24.px)
-        }
-    }) {
-        Text(card?.name ?: "")
-    }
-    Span({
-        style {
-            marginLeft(PaddingDefault / 2)
-            fontSize(18.px)
-            opacity(.75f)
-        }
-    }) {
-        Text(card?.location ?: "")
-    }
-}
 
 @Composable
 fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) -> Unit) {
@@ -144,10 +122,9 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
                                 style {
                                     width(100.percent)
                                     backgroundColor(Styles.colors.background)
-                                    backgroundImage("url($baseUrl${it})")
+                                    backgroundImage("url($baseUrl$it)")
                                     backgroundPosition("center")
                                     backgroundSize("cover")
-//                                    borderRadius(CornerDefault)
                                     property("aspect-ratio", "2")
                                 }
                             }) {}
@@ -158,7 +135,7 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
                     }) {
                         card?.let { card ->
                             Div {
-                                CardNameAndLocation(card)
+                                NameAndLocation(card.name, card.location)
                             }
                             cardConversation?.message?.let { message ->
                                 Div({
@@ -277,74 +254,8 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
             Div({
                 classes(Styles.content)
             }) {
-                if (cards.isEmpty() && !isLoading) {
-                    Div({
-                        style {
-                            padding(PaddingDefault)
-                        }
-                    }) {
-//                        Text("No cards.")
-                    }
-                }
-
                 cards.forEach { card ->
-                    Div({
-                        classes(Styles.card)
-                        style {
-                            if (card.photo != null) {
-                                backgroundImage("url($baseUrl${card.photo!!})")
-                                backgroundPosition("center")
-                                backgroundSize("cover")
-                            }
-
-                            position(Position.Relative)
-                        }
-                        onClick { event ->
-                            if (event.ctrlKey) {
-                                window.open("/card/${card.id}", target = "_blank")
-                            } else {
-                                router.navigate("/card/${card.id}")
-                            }
-                        }
-                    }) {
-                        (card.cardCount?.takeIf { it > 0 } ?: 0).let { numberOfCards ->
-                            Div({
-                                style {
-                                    backgroundColor(rgba(255, 255, 255, .95))
-                                    borderRadius(CornerDefault * 2)
-                                    padding(PaddingDefault / 2, PaddingDefault)
-                                    color(Color.black)
-                                    position(Position.Absolute)
-                                    top(PaddingDefault)
-                                    right(PaddingDefault)
-                                }
-                            }) {
-                                Text("Tap to open${if (numberOfCards > 0) " • $numberOfCards ${if (numberOfCards == 1) "card" else "cards"}" else ""}")
-                            }
-                        }
-                        Div({
-                            classes(Styles.cardPost)
-                        }) {
-                            Div({
-                                style {
-                                    marginBottom(PaddingDefault)
-                                }
-                            }) {
-                                CardNameAndLocation(card)
-                            }
-
-                            card.getConversation().message.takeIf { it.isNotEmpty() }
-                                ?.let { conversationMessage ->
-                                    Div({
-                                        style {
-                                            whiteSpace("pre-wrap")
-                                        }
-                                    }) {
-                                        Text(conversationMessage)
-                                    }
-                                }
-                        }
-                    }
+                    CardItem(card, router)
                 }
             }
         }
