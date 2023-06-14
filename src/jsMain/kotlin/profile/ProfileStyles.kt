@@ -3,7 +3,6 @@ package profile
 import PaddingDefault
 import Styles
 import org.jetbrains.compose.web.css.*
-import org.jetbrains.compose.web.css.Color.white
 
 object ProfileStyles : StyleSheet() {
     val mainContent by style {
@@ -16,7 +15,6 @@ object ProfileStyles : StyleSheet() {
         }
     }
     val photo by style {
-        margin(PaddingDefault, 0.cssRem, PaddingDefault, PaddingDefault)
         width(256.px)
         height(256.px)
         maxWidth(33.333.vw)
@@ -27,22 +25,41 @@ object ProfileStyles : StyleSheet() {
         borderRadius(100.percent)
         border(6.px, LineStyle.Solid, Color.white)
         media(mediaMaxWidth(640.px)) {
-            property("margin-top", "-22.5vw")
+            self style {
+                property("margin-top", "-22.5vw")
+                border(4.px, LineStyle.Solid, Color.white)
+            }
         }
         media(mediaMinWidth(641.px)) {
             self style {
                 property("transform", "translateY(calc(-128px - -1rem))")
                 margin(PaddingDefault * 1.5f, 0.cssRem, PaddingDefault * 1.5f, PaddingDefault * 1.5f)
+                property("margin-bottom", "calc(-128px + 2.5rem)")
             }
         }
     }
 
     val profileContent by style {
+        media(mediaMaxWidth(640.px)) {
+            self style {
+                alignSelf(AlignSelf.Stretch)
+                alignItems(AlignItems.Center)
+            }
+        }
         media(mediaMinWidth(641.px)) {
             self style {
                 flexGrow(1)
                 flexShrink(1)
                 width(0.px)
+            }
+        }
+    }
+
+    val name by style {
+        media(mediaMaxWidth(640.px)) {
+            self style {
+                width(100.percent)
+                textAlign("center")
             }
         }
     }
@@ -83,5 +100,10 @@ object ProfileStyles : StyleSheet() {
 
     val infoCardName by style {
         color(Styles.colors.secondary)
+    }
+
+    val infoCardValue by style {
+        fontSize(18.px)
+        fontWeight("bold")
     }
 }

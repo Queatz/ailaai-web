@@ -14,6 +14,7 @@ import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.utils.io.charsets.*
 import kotlinx.browser.window
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
@@ -22,6 +23,8 @@ import org.jetbrains.compose.web.attributes.disabled
 import org.jetbrains.compose.web.attributes.placeholder
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
+import org.w3c.dom.HTMLVideoElement
+import profile.ProfileStyles
 
 @Serializable
 data class WildReplyBody(val message: String, val conversation: String?, val card: String, val device: String)
@@ -30,8 +33,13 @@ data class WildReplyBody(val message: String, val conversation: String?, val car
 data class ConversationItem(
     var title: String = "",
     var message: String = "",
+    var action: ConversationAction? = null,
     var items: MutableList<ConversationItem> = mutableListOf(),
 )
+
+enum class ConversationAction {
+    Message
+}
 
 @Composable
 fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) -> Unit) {
@@ -40,14 +48,14 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
     var cards by remember { mutableStateOf<List<Card>>(emptyList()) }
     val stack = remember { mutableListOf<ConversationItem>() }
     var cardConversation by remember { mutableStateOf<ConversationItem?>(null) }
-    var isReplying by remember { mutableStateOf(false) }
+    var isReplying by remember { mutableStateOf<List<ConversationItem>?>(null) }
     var replyMessage by remember { mutableStateOf("") }
     var isSendingReply by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val router = Router.current
 
     LaunchedEffect(cardId) {
-        isReplying = false
+        isReplying = null
         replyMessage = ""
         isLoading = true
         card = null
@@ -71,7 +79,7 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
         try {
             val body = WildReplyBody(
                 message = replyMessage,
-                conversation = (stack.map { it.title } + cardConversation?.title).filter { it.isNullOrBlank().not() }
+                conversation = isReplying!!.map { it.title }.filter { it.isBlank().not() }
                     .takeIf { it.isNotEmpty() }?.joinToString(" → "),
                 card = cardId,
                 device = api.token
@@ -81,7 +89,7 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
                 setBody(body)
             }
             replyMessage = ""
-            isReplying = false
+            isReplying = null
             window.alert("Your message was sent!")
         } catch (e: Exception) {
             window.alert("That didn't work")
@@ -128,6 +136,50 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
                                     property("aspect-ratio", "2")
                                 }
                             }) {}
+                        } ?: card.video?.let {
+                            Video({
+                                attr("muted", "muted")
+                                attr("autoplay", "")
+                                attr("loop", "")
+                                attr("playsinline", "")
+                                style {
+                                    property("object-fit", "cover")
+                                    width(100.percent)
+                                    backgroundColor(Styles.colors.background)
+                                    property("aspect-ratio", "2")
+                                }
+                                onClick {
+                                    (it.target as? HTMLVideoElement)?.apply {
+                                        play()
+                                        muted = false
+                                    }
+                                }
+                                // Do this so that auto-play works on page load, but unmute on page navigation
+                                ref { videoEl ->
+                                    var unmute by remember { mutableStateOf(false) }
+                                    videoEl.onloadedmetadata = {
+                                        videoEl.muted = true
+                                        unmute = true
+                                        it
+                                    }
+                                    LaunchedEffect(unmute) {
+                                        if (unmute) {
+                                            delay(250)
+                                            try {
+                                                videoEl.muted = false
+                                            } catch (e: Exception) {
+                                                // ignore
+                                            }
+                                        }
+                                    }
+                                    onDispose {  }
+                                }
+                            }) {
+                                Source({
+                                    attr("src", "$baseUrl$it")
+                                    attr("type", "video/webm")
+                                })
+                            }
                         }
                     }
                     Div({
@@ -146,7 +198,7 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
                                     Text(message)
                                 }
                             }
-                            if (isReplying) {
+                            if (isReplying != null) {
                                 TextArea(replyMessage) {
                                     style {
                                         width(100.percent)
@@ -158,6 +210,7 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
                                         property("font-size", "inherit")
                                         fontFamily("inherit")
                                         boxSizing("border-box")
+                                        marginBottom(1.cssRem)
                                     }
 
                                     placeholder("Be sure you include a way to contact you!")
@@ -173,7 +226,7 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
                                     autoFocus()
                                 }
                             }
-                            if (isReplying) {
+                            if (isReplying != null) {
                                 Div({
                                     style {
                                         display(DisplayStyle.Flex)
@@ -199,7 +252,7 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
                                     Button({
                                         classes(Styles.outlineButton)
                                         onClick {
-                                            isReplying = false
+                                            isReplying = null
                                         }
                                         if (isSendingReply) {
                                             disabled()
@@ -210,22 +263,40 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
                                 }
                             } else {
                                 cardConversation?.items?.forEach { item ->
-                                    Button({
-                                        classes(Styles.button)
-                                        onClick {
-                                            stack.add(cardConversation!!)
-                                            cardConversation = item
+                                    when (item.action) {
+                                        ConversationAction.Message -> {
+                                            Button({
+                                                classes(Styles.button)
+                                                onClick {
+                                                    isReplying = stack + (cardConversation?.let(::listOf) ?: emptyList()) + item.let(::listOf)
+                                                }
+                                            }) {
+                                                Span({
+                                                    classes("material-symbols-outlined")
+                                                }) {
+                                                    Text("message")
+                                                }
+                                                Text(" ${item.title}")
+                                            }
                                         }
-                                    }) {
-                                        Text(item.title)
+                                        else -> {
+                                            Button({
+                                                classes(Styles.button)
+                                                onClick {
+                                                    stack.add(cardConversation!!)
+                                                    cardConversation = item
+                                                }
+                                            }) {
+                                                Text(item.title)
+                                            }
+                                        }
                                     }
                                 }
                                 if (cardConversation?.items.isNullOrEmpty()) {
                                     Button({
                                         classes(Styles.button)
                                         onClick {
-                                            //                                    window.open("/", target = "_blank")
-                                            isReplying = true
+                                            isReplying = stack + (cardConversation?.let(::listOf) ?: emptyList())
                                         }
                                     }) {
                                         Span({

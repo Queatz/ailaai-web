@@ -10,11 +10,15 @@ import baseUrl
 import http
 import io.ktor.client.call.*
 import io.ktor.client.request.*
+import kotlinx.browser.window
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Source
 import org.jetbrains.compose.web.dom.Text
 import org.jetbrains.compose.web.dom.Video
+import org.w3c.dom.HTMLVideoElement
 import profile.ProfileStyles
 import kotlin.js.Date
 
@@ -85,18 +89,48 @@ fun ProfilePage(personId: String, onProfile: (PersonProfile) -> Unit) {
                                     property("aspect-ratio", "2")
                                 }
                             }) {}
-                        } ?: profile.profile.video?.let { // photo or video
+                        } ?: profile.profile.video?.let {
                             Video({
-                                attr("autoplay", "true")
+                                attr("autoplay", "")
+                                attr("loop", "")
+                                attr("playsinline", "")
+                                attr("muted", "")
                                 style {
+                                    property("object-fit", "cover")
                                     width(100.percent)
                                     backgroundColor(Styles.colors.background)
                                     property("aspect-ratio", "2")
                                 }
+                                onClick {
+                                    (it.target as? HTMLVideoElement)?.apply {
+                                        play()
+                                        muted = false
+                                    }
+                                }
+                                // Do this so that auto-play works on page load, but unmute on page navigation
+                                ref { videoEl ->
+                                    var unmute by remember { mutableStateOf(false) }
+                                    videoEl.onloadedmetadata = {
+                                        videoEl.muted = true
+                                        unmute = true
+                                        it
+                                    }
+                                    LaunchedEffect(unmute) {
+                                        if (unmute) {
+                                            delay(250)
+                                            try {
+                                                videoEl.muted = false
+                                            } catch (e: Exception) {
+                                                // ignore
+                                            }
+                                        }
+                                    }
+                                    onDispose {  }
+                                }
                             }) {
                                 Source({
                                     attr("src", "$baseUrl$it")
-                                    attr("type", "video/mkv")
+                                    attr("type", "video/webm")
                                 })
                             }
                         }
@@ -115,7 +149,9 @@ fun ProfilePage(personId: String, onProfile: (PersonProfile) -> Unit) {
                                 classes(Styles.cardContent, ProfileStyles.profileContent)
                             }) {
 
-                                Div {
+                                Div({
+                                    classes(ProfileStyles.name)
+                                }) {
                                     NameAndLocation(profile.person.name, "")
                                 }
                                 Div({
@@ -128,13 +164,13 @@ fun ProfilePage(personId: String, onProfile: (PersonProfile) -> Unit) {
                                     Div({
                                         classes(ProfileStyles.infoCard)
                                     }) {
-                                        Div { Text("${profile.stats.friendsCount}") }
+                                        Div({ classes(ProfileStyles.infoCardValue) }) { Text("${profile.stats.friendsCount}") }
                                         Div({ classes(ProfileStyles.infoCardName) }) { Text("Friends") }
                                     }
                                     Div({
                                         classes(ProfileStyles.infoCard)
                                     }) {
-                                        Div { Text("${profile.stats.cardCount}") }
+                                        Div({ classes(ProfileStyles.infoCardValue) }) { Text("${profile.stats.cardCount}") }
                                         Div({ classes(ProfileStyles.infoCardName) }) { Text("Cards") }
                                     }
                                     Div({
@@ -142,6 +178,7 @@ fun ProfilePage(personId: String, onProfile: (PersonProfile) -> Unit) {
                                     }) {
                                         Div(
                                             {
+                                                classes(ProfileStyles.infoCardValue)
                                                 title("${Date(profile.person.createdAt!!)}")
                                             }
                                         ) { Text("${Date(profile.person.createdAt!!).getFullYear()}") }

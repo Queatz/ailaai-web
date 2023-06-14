@@ -17,15 +17,12 @@ object StoryStyles : StyleSheet() {
     val contentAuthors by style {
         boxSizing("border-box")
         display(DisplayStyle.Flex)
+        flexWrap(FlexWrap.Wrap)
         alignItems(AlignItems.Stretch)
         justifyContent(JustifyContent.Stretch)
         color(Styles.colors.secondary)
         fontSize(14.px)
         whiteSpace("pre-wrap")
-
-        "a" style {
-//            property("color", "inherit")
-        }
     }
 
 
