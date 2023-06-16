@@ -1,3 +1,4 @@
+import org.jetbrains.compose.web.ExperimentalComposeWebApi
 import org.jetbrains.compose.web.css.*
 
 object Styles : StyleSheet() {
@@ -63,7 +64,7 @@ object Styles : StyleSheet() {
         alignItems(AlignItems.FlexStart)
         padding(PaddingDefault)
 
-        child(self, selector("div")) + not(lastChild) style {
+        child(self, not(lastChild)) style {
             marginBottom(PaddingDefault)
         }
 
@@ -92,7 +93,9 @@ object Styles : StyleSheet() {
         }
     }
 
+    @OptIn(ExperimentalComposeWebApi::class)
     val card by style {
+        position(Position.Relative)
         display(DisplayStyle.Flex)
         borderRadius(PaddingDefault * 2)
         backgroundColor(colors.background)
@@ -103,6 +106,28 @@ object Styles : StyleSheet() {
         cursor("pointer")
         property("aspect-ratio", ".75")
         property("box-shadow", "2px 2px 8px rgba(0, 0, 0, .25)")
+        property("will-change", "transform")
+        property("transform-style", "preserve-3d")
+
+        transitions {
+            "transform" {
+                duration = 500.ms
+            }
+        }
+
+        transform {
+            perspective(100.vw)
+        }
+
+//        self + hover style {
+//            self style {
+//                transform {
+//                    perspective(100.vw)
+//                    rotate3d(1f, 0, .5f, 6.deg)
+//                    translate3d(0.cssRem, -1.cssRem, 0.cssRem)
+//                }
+//            }
+//        }
 
         media(mediaMaxWidth(640.px)) {
             self style {

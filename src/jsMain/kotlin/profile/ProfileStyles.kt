@@ -14,6 +14,11 @@ object ProfileStyles : StyleSheet() {
             }
         }
     }
+
+    val nophoto by style {
+        backgroundColor(Color.rebeccapurple)
+    }
+
     val photo by style {
         width(256.px)
         height(256.px)
@@ -35,6 +40,22 @@ object ProfileStyles : StyleSheet() {
                 property("transform", "translateY(calc(-128px - -1rem))")
                 margin(PaddingDefault * 1.5f, 0.cssRem, PaddingDefault * 1.5f, PaddingDefault * 1.5f)
                 property("margin-bottom", "calc(-128px + 2.5rem)")
+            }
+        }
+
+        self + className(nophoto) style {
+            property("transform", "none")
+
+            media(mediaMinWidth(641.px)) {
+                self style {
+                    margin(1.5.cssRem, 0.cssRem, 1.5.cssRem, 1.5.cssRem)
+                }
+            }
+
+            media(mediaMaxWidth(640.px)) {
+                self style {
+                    margin(1.5.cssRem, 0.cssRem, 0.cssRem, 0.cssRem)
+                }
             }
         }
     }
@@ -105,5 +126,17 @@ object ProfileStyles : StyleSheet() {
     val infoCardValue by style {
         fontSize(18.px)
         fontWeight("bold")
+    }
+
+    val infoAbout by style {
+        whiteSpace("pre-wrap")
+        lineHeight("1.25")
+
+
+        media(mediaMaxWidth(640.px)) {
+            self style {
+                textAlign("center")
+            }
+        }
     }
 }

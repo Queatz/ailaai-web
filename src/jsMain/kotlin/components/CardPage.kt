@@ -24,7 +24,6 @@ import org.jetbrains.compose.web.attributes.placeholder
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
 import org.w3c.dom.HTMLVideoElement
-import profile.ProfileStyles
 
 @Serializable
 data class WildReplyBody(val message: String, val conversation: String?, val card: String, val device: String)
@@ -137,6 +136,18 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
                                 }
                             }) {}
                         } ?: card.video?.let {
+                            var videoElement by remember { mutableStateOf<HTMLVideoElement?>(null) }
+//                            LaunchedEffect(videoElement) {
+//                                if (videoElement != null) {
+//                                    delay(250)
+//                                    try {
+////                                        if (window.navigator.getAutoplayPolicy)
+//                                        videoElement!!.muted = false
+//                                    } catch (e: Exception) {
+//                                        // ignore
+//                                    }
+//                                }
+//                            }
                             Video({
                                 attr("muted", "muted")
                                 attr("autoplay", "")
@@ -156,21 +167,10 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
                                 }
                                 // Do this so that auto-play works on page load, but unmute on page navigation
                                 ref { videoEl ->
-                                    var unmute by remember { mutableStateOf(false) }
                                     videoEl.onloadedmetadata = {
                                         videoEl.muted = true
-                                        unmute = true
+                                        videoElement = videoEl
                                         it
-                                    }
-                                    LaunchedEffect(unmute) {
-                                        if (unmute) {
-                                            delay(250)
-                                            try {
-                                                videoEl.muted = false
-                                            } catch (e: Exception) {
-                                                // ignore
-                                            }
-                                        }
                                     }
                                     onDispose {  }
                                 }

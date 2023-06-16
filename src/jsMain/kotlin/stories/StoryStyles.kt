@@ -52,6 +52,19 @@ object StoryStyles : StyleSheet() {
         justifyContent(JustifyContent.Stretch)
     }
 
+    val contentCards by style {
+        boxSizing("border-box")
+        display(DisplayStyle.Flex)
+        flexWrap(FlexWrap.Wrap)
+        position(Position.Relative)
+
+        child(self, className(Styles.card)) style {
+            self style {
+                width(320.px)
+            }
+        }
+    }
+
     val contentPhotosPhoto by style {
         backgroundPosition("center")
         backgroundSize("cover")

@@ -3,18 +3,35 @@ package components
 import Card
 import CornerDefault
 import PaddingDefault
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import app.softwork.routingcompose.Router
 import baseUrl
+import http
+import io.ktor.client.call.*
+import io.ktor.client.request.*
 import kotlinx.browser.window
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Source
 import org.jetbrains.compose.web.dom.Text
 import org.jetbrains.compose.web.dom.Video
+import org.w3c.dom.HTMLDivElement
+import kotlin.math.roundToInt
+
+@Composable
+fun CardItem(cardId: String, router: Router) {
+    var card by remember { mutableStateOf<Card?>(null) }
+    LaunchedEffect(Unit) {
+        try {
+            card = http.get("$baseUrl/cards/$cardId").body()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+    if (card != null) {
+        CardItem(card!!, router)
+    }
+}
 
 @Composable
 fun CardItem(card: Card, router: Router) {
@@ -36,6 +53,20 @@ fun CardItem(card: Card, router: Router) {
             } else {
                 router.navigate("/card/${card.id}")
             }
+        }
+        onMouseMove { event ->
+            val amount = 16
+            val cardEl = event.currentTarget as HTMLDivElement
+            val clientRect = cardEl.getBoundingClientRect()
+            val xFactor = (event.clientX - clientRect.x) / clientRect.width.toFloat()
+            val yFactor = (event.clientY - clientRect.y) / clientRect.height.toFloat()
+            val rotateX = ((xFactor - 0.5f) * amount * 100f).roundToInt().toFloat() / 100f
+            val rotateY = ((0.5f - yFactor) * amount * 100f).roundToInt().toFloat() / 100f
+            cardEl.style.transform = "perspective(100vw) rotateX(${rotateY}deg) rotateY(${rotateX}deg)"
+        }
+        onMouseOut { event ->
+            val cardEl = event.currentTarget as HTMLDivElement
+            cardEl.style.transform = "perspective(100vw) rotateX(0deg) rotateY(0deg)"
         }
     }) {
         card.video?.let {

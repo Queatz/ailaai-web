@@ -90,6 +90,18 @@ fun ProfilePage(personId: String, onProfile: (PersonProfile) -> Unit) {
                                 }
                             }) {}
                         } ?: profile.profile.video?.let {
+                            var videoElement by remember { mutableStateOf<HTMLVideoElement?>(null) }
+//                            LaunchedEffect(videoElement) {
+//                                if (videoElement != null) {
+//                                    delay(250)
+//                                    try {
+////                                        if (window.navigator.getAutoplayPolicy)
+//                                        videoElement!!.muted = false
+//                                    } catch (e: Exception) {
+//                                        // ignore
+//                                    }
+//                                }
+//                            }
                             Video({
                                 attr("autoplay", "")
                                 attr("loop", "")
@@ -109,21 +121,10 @@ fun ProfilePage(personId: String, onProfile: (PersonProfile) -> Unit) {
                                 }
                                 // Do this so that auto-play works on page load, but unmute on page navigation
                                 ref { videoEl ->
-                                    var unmute by remember { mutableStateOf(false) }
                                     videoEl.onloadedmetadata = {
                                         videoEl.muted = true
-                                        unmute = true
+                                        videoElement = videoEl
                                         it
-                                    }
-                                    LaunchedEffect(unmute) {
-                                        if (unmute) {
-                                            delay(250)
-                                            try {
-                                                videoEl.muted = false
-                                            } catch (e: Exception) {
-                                                // ignore
-                                            }
-                                        }
                                     }
                                     onDispose {  }
                                 }
@@ -139,7 +140,11 @@ fun ProfilePage(personId: String, onProfile: (PersonProfile) -> Unit) {
                         }) {
                             profile.person.photo?.let {
                                 Div({
-                                    classes(ProfileStyles.photo)
+                                    if (profile.profile.photo == null && profile.profile.video == null) {
+                                        classes(ProfileStyles.photo, ProfileStyles.nophoto)
+                                    } else {
+                                        classes(ProfileStyles.photo)
+                                    }
                                     style {
                                         backgroundImage("url($baseUrl$it)")
                                     }
@@ -185,12 +190,12 @@ fun ProfilePage(personId: String, onProfile: (PersonProfile) -> Unit) {
                                         Div({ classes(ProfileStyles.infoCardName) }) { Text("Joined") }
                                     }
                                 }
-                                Div({
-                                    style {
-                                        lineHeight("1.5")
+                                if (profile.profile.about != null) {
+                                    Div({
+                                        classes(ProfileStyles.infoAbout)
+                                    }) {
+                                        Text(profile.profile.about!!)
                                     }
-                                }) {
-                                    Text(profile.profile.about ?: "")
                                 }
                             }
                         }

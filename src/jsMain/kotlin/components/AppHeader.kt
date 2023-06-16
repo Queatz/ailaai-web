@@ -5,6 +5,7 @@ import Styles
 import androidx.compose.runtime.Composable
 import app.softwork.routingcompose.Router
 import org.jetbrains.compose.web.css.*
+import org.jetbrains.compose.web.css.Color.white
 import org.jetbrains.compose.web.dom.*
 
 @Composable
@@ -50,6 +51,10 @@ fun AppHeader(
                 style {
                     paddingLeft(PaddingDefault)
                     fontSize(24.px)
+                    overflow("hidden")
+                    whiteSpace("nowrap")
+                    property("text-overflow", "ellipsis")
+                    marginRight(.5.cssRem)
                 }
             }) {
                 Text(title)

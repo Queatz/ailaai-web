@@ -76,7 +76,7 @@ fun main() {
 
             route("profile") {
                 string { profileUrl ->
-                    AppHeader(title ?: "Ai là ai")
+                    AppHeader("Ai là ai")
                     ProfilePage(profileUrl) {
                         title = it.person.name ?: "Someone"
                     }
@@ -112,7 +112,7 @@ fun main() {
                                 opacity(0.5f)
                             }
                         }) {
-                            Text("Caffeine for your city's social scene.")
+                            Text("Coalesce your city's social scene.")
                         }
                     }
                     H3 {

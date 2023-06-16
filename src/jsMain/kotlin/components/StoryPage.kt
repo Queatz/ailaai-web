@@ -1,5 +1,6 @@
 package components
 
+import Card
 import PaddingDefault
 import Person
 import Story
@@ -12,11 +13,10 @@ import io.ktor.client.request.*
 import json
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.*
-import org.jetbrains.compose.web.attributes.ATarget
-import org.jetbrains.compose.web.attributes.target
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.A
 import org.jetbrains.compose.web.dom.Div
+import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text
 import stories.StoryStyles
 import kotlin.js.Date
@@ -103,6 +103,7 @@ fun StoryPage(storyUrl: String, onStoryLoaded: (Story) -> Unit) {
 
 @Composable
 fun StoryContents(storyContent: List<StoryContent>) {
+    val router = Router.current
     storyContent.forEach { part ->
         when (part) {
             is StoryContent.Title -> {
@@ -116,13 +117,15 @@ fun StoryContents(storyContent: List<StoryContent>) {
                 Div({
                     classes(StoryStyles.contentAuthors)
                 }) {
-                    Text("${part.publishDate?.let { Date(it) }?.let { "Published on $it" } ?: "Draft"} by ")
-                    part.authors.forEachIndexed { index, person ->
-                        if (index > 0) {
-                            Text(", ")
-                        }
-                        A(href = "/profile/${person.id}") {
-                            Text(person.name ?: "Someone")
+                    Span {
+                        Text("${part.publishDate?.let { Date(it) }?.let { "Published on $it" } ?: "Draft"} by ")
+                        part.authors.forEachIndexed { index, person ->
+                            if (index > 0) {
+                                Text(", ")
+                            }
+                            A(href = "/profile/${person.id}") {
+                                Text(person.name ?: "Someone")
+                            }
                         }
                     }
                 }
@@ -142,7 +145,13 @@ fun StoryContents(storyContent: List<StoryContent>) {
                 }
             }
             is StoryContent.Cards -> {
-                // todo
+                Div({
+                    classes(StoryStyles.contentCards)
+                }) {
+                    part.cards.forEach { card ->
+                        CardItem(card, router)
+                    }
+                }
             }
             is StoryContent.Photos -> {
                 Div({
