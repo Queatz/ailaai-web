@@ -5,6 +5,7 @@ import CornerDefault
 import PaddingDefault
 import androidx.compose.runtime.*
 import app.softwork.routingcompose.Router
+import appString
 import baseUrl
 import http
 import io.ktor.client.call.*
@@ -107,7 +108,7 @@ fun CardItem(card: Card, router: Router) {
                     property("z-index", "1")
                 }
             }) {
-                Text("Tap to open${if (numberOfCards > 0) " • $numberOfCards ${if (numberOfCards == 1) "card" else "cards"}" else ""}")
+                Text("${appString { tapToOpen }}${if (numberOfCards > 0) " • $numberOfCards ${if (numberOfCards == 1) appString { inlineCard } else appString { inlineCards }}" else ""}")
             }
         }
         Div({

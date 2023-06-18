@@ -6,13 +6,11 @@ import PersonProfile
 import Styles
 import androidx.compose.runtime.*
 import app.softwork.routingcompose.Router
+import appString
 import baseUrl
 import http
 import io.ktor.client.call.*
 import io.ktor.client.request.*
-import kotlinx.browser.window
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Source
@@ -65,7 +63,7 @@ fun ProfilePage(personId: String, onProfile: (PersonProfile) -> Unit) {
                 justifyContent(JustifyContent.FlexStart)
             }
         }) {
-            Text("Profile not found.")
+            Text(appString { profileNotFound })
         }
     } else {
         profile?.let { profile ->
@@ -170,13 +168,13 @@ fun ProfilePage(personId: String, onProfile: (PersonProfile) -> Unit) {
                                         classes(ProfileStyles.infoCard)
                                     }) {
                                         Div({ classes(ProfileStyles.infoCardValue) }) { Text("${profile.stats.friendsCount}") }
-                                        Div({ classes(ProfileStyles.infoCardName) }) { Text("Friends") }
+                                        Div({ classes(ProfileStyles.infoCardName) }) { Text(appString { friends }) }
                                     }
                                     Div({
                                         classes(ProfileStyles.infoCard)
                                     }) {
                                         Div({ classes(ProfileStyles.infoCardValue) }) { Text("${profile.stats.cardCount}") }
-                                        Div({ classes(ProfileStyles.infoCardName) }) { Text("Cards") }
+                                        Div({ classes(ProfileStyles.infoCardName) }) { Text(appString { this.cards }) }
                                     }
                                     Div({
                                         classes(ProfileStyles.infoCard)
@@ -187,7 +185,7 @@ fun ProfilePage(personId: String, onProfile: (PersonProfile) -> Unit) {
                                                 title("${Date(profile.person.createdAt!!)}")
                                             }
                                         ) { Text("${Date(profile.person.createdAt!!).getFullYear()}") }
-                                        Div({ classes(ProfileStyles.infoCardName) }) { Text("Joined") }
+                                        Div({ classes(ProfileStyles.infoCardName) }) { Text(appString { joined }) }
                                     }
                                 }
                                 if (profile.profile.about != null) {

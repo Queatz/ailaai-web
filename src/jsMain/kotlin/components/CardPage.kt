@@ -6,6 +6,7 @@ import Styles
 import androidx.compose.runtime.*
 import api
 import app.softwork.routingcompose.Router
+import appString
 import baseUrl
 import http
 import io.ktor.client.call.*
@@ -14,7 +15,6 @@ import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.utils.io.charsets.*
 import kotlinx.browser.window
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
@@ -26,7 +26,12 @@ import org.jetbrains.compose.web.dom.*
 import org.w3c.dom.HTMLVideoElement
 
 @Serializable
-data class WildReplyBody(val message: String, val conversation: String?, val card: String, val device: String)
+data class WildReplyBody(
+    val message: String,
+    val conversation: String?,
+    val card: String,
+    val device: String,
+)
 
 @Serializable
 data class ConversationItem(
@@ -73,6 +78,9 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
         }
     }
 
+    val sentString = appString { messageWasSent }
+    val didntWorkString = appString { didntWork }
+
     suspend fun sendMessage() {
         isSendingReply = true
         try {
@@ -89,9 +97,9 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
             }
             replyMessage = ""
             isReplying = null
-            window.alert("Your message was sent!")
+            window.alert(sentString)
         } catch (e: Exception) {
-            window.alert("That didn't work")
+            window.alert(didntWorkString)
             e.printStackTrace()
         } finally {
             isSendingReply = false
@@ -111,7 +119,7 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
                 justifyContent(JustifyContent.FlexStart)
             }
         }) {
-            Text("Card not found.")
+            Text(appString { cardNotFound })
         }
     } else {
         Div({
@@ -186,8 +194,33 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
                         classes(Styles.cardContent)
                     }) {
                         card?.let { card ->
-                            Div {
+                            Div({
+                                style {
+                                    display(DisplayStyle.Flex)
+                                    flexWrap(FlexWrap.Wrap)
+                                    alignItems(AlignItems.Center)
+                                }
+                            }) {
                                 NameAndLocation(card.name, card.location)
+                                val viewProfileString = appString { viewProfile }
+                                Span({
+                                    classes("material-symbols-outlined")
+                                    title(viewProfileString)
+                                    style {
+                                        cursor("pointer")
+                                        opacity(.5f)
+                                        marginLeft(.25.cssRem)
+                                    }
+                                    onClick { event ->
+                                        if (event.ctrlKey) {
+                                            window.open("/profile/${card.person}", target = "_blank")
+                                        } else {
+                                            router.navigate("/profile/${card.person}")
+                                        }
+                                    }
+                                }) {
+                                    Text("person")
+                                }
                             }
                             cardConversation?.message?.let { message ->
                                 Div({
@@ -199,6 +232,7 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
                                 }
                             }
                             if (isReplying != null) {
+                                val includeContactString = appString { includeContact }
                                 TextArea(replyMessage) {
                                     style {
                                         width(100.percent)
@@ -213,7 +247,7 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
                                         marginBottom(1.cssRem)
                                     }
 
-                                    placeholder("Be sure you include a way to contact you!")
+                                    placeholder(includeContactString)
 
                                     if (isSendingReply) {
                                         disabled()
@@ -247,7 +281,7 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
                                             disabled()
                                         }
                                     }) {
-                                        Text("Send message")
+                                        Text(appString { sendMessage })
                                     }
                                     Button({
                                         classes(Styles.outlineButton)
@@ -258,7 +292,7 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
                                             disabled()
                                         }
                                     }) {
-                                        Text("Cancel")
+                                        Text(appString { cancel })
                                     }
                                 }
                             } else {
@@ -304,7 +338,7 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
                                         }) {
                                             Text("message")
                                         }
-                                        Text(" Message")
+                                        Text(" ${appString { message }}")
                                     }
                                 }
                                 if (stack.isNotEmpty()) {
@@ -314,7 +348,7 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
                                             cardConversation = stack.removeLast()
                                         }
                                     }) {
-                                        Text("Go back")
+                                        Text(appString { goBack })
                                     }
                                 }
                             }

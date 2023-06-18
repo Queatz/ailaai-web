@@ -45,114 +45,124 @@ fun main() {
             document.title = title ?: "Ai là ai"
         }
 
-        BrowserRouter("") {
-            val router = Router.current
-
-            LaunchedEffect(router.currentPath) {
-                window.scrollTo(0.0, 0.0)
-                document.title = "Ai là ai"
+        var language by remember { mutableStateOf(
+            when (window.navigator.language.startsWith("vi")) {
+                true -> "vi"
+                false -> "en"
             }
+        ) }
 
-            route("card") {
-                string { cardId ->
-                    AppHeader("Explore", showBack = parentCardId != null, onBack = {
-                        router.navigate("/card/$parentCardId")
-                    })
-                    CardPage(cardId, onError = { parentCardId = null }) {
-                        title = it.name
-                        parentCardId = it.parent
+        CompositionLocalProvider(LocalConfiguration provides Configuration(language) { language = it }) {
+            BrowserRouter("") {
+                val router = Router.current
+
+                LaunchedEffect(router.currentPath) {
+                    window.scrollTo(0.0, 0.0)
+                    document.title = "Ai là ai"
+                }
+
+                route("card") {
+                    string { cardId ->
+                        AppHeader(appString { explore }, showBack = parentCardId != null, onBack = {
+                            router.navigate("/card/$parentCardId")
+                        })
+                        CardPage(cardId, onError = { parentCardId = null }) {
+                            title = it.name
+                            parentCardId = it.parent
+                        }
                     }
                 }
-            }
 
-            route("story") {
-                string { storyUrl ->
-                    AppHeader("Stories")
-                    StoryPage(storyUrl) {
-                        title = it.title
+                route("story") {
+                    string { storyUrl ->
+                        AppHeader(appString { stories })
+                        StoryPage(storyUrl) {
+                            title = it.title
+                        }
                     }
                 }
-            }
 
-            route("profile") {
-                string { profileUrl ->
-                    AppHeader("Ai là ai")
-                    ProfilePage(profileUrl) {
-                        title = it.person.name ?: "Someone"
+                route("profile") {
+                    string { profileUrl ->
+                        AppHeader("Ai là ai")
+                        val someoneString = appString { someone }
+                        ProfilePage(profileUrl) {
+                            title = it.person.name ?: someoneString
+                        }
                     }
                 }
-            }
 
-            noMatch {
-                Div({
-                    style {
-                        property("margin", "$PaddingDefault auto")
-                        maxWidth(800.px)
-                        padding(1.5.cssRem)
-                        fontSize(22.px)
-                        lineHeight("1.5")
-                    }
-                }) {
+                noMatch {
                     Div({
                         style {
-                            textAlign("center")
-                            marginBottom(2.cssRem)
+                            property("margin", "$PaddingDefault auto")
+                            maxWidth(800.px)
+                            padding(1.5.cssRem)
+                            fontSize(22.px)
+                            lineHeight("1.5")
                         }
                     }) {
-                        Img("/icon.png")
-                        H3({
+                        Div({
                             style {
-                                marginBottom(0.px)
+                                textAlign("center")
+                                marginBottom(2.cssRem)
                             }
                         }) {
-                            Text("Ai là ai")
-                        }
-                        Span({
-                            style {
-                                opacity(0.5f)
-                            }
-                        }) {
-                            Text("Coalesce your city's social scene.")
-                        }
-                    }
-                    H3 {
-                        Text("What is Ai là ai?")
-                    }
-                    Div {
-                        Text("Ai là ai is a platform that lets you discover and integrate into your city's social scene in meaningful and useful ways to you.")
-                        Br()
-                        Br()
-                    }
-                    Div {
-                        Text(" To join the Beta, you ")
-                        Span(
-                            {
+                            Img("/icon.png")
+                            H3({
                                 style {
-                                    textDecoration("underline")
+                                    marginBottom(0.px)
                                 }
+                            }) {
+                                Text("Ai là ai")
                             }
-                        ) { Text("need an invite") }
-                        Text(" from another member. If you're new here, ")
-                        A("mailto:jacobaferrero@gmail.com?subject=Ai là ai invite to join") {
-                            Text("send me an email")
+                            Span({
+                                style {
+                                    opacity(0.5f)
+                                }
+                            }) {
+                                Text("Coalesce your city's social scene.")
+                            }
                         }
-                        Text(" and start engaging your city today!")
-                    }
-                    A("/ailaai.apk", {
-                        style {
-                            display(DisplayStyle.InlineBlock)
-                            padding(1.cssRem, 2.cssRem)
-                            marginTop(PaddingDefault)
-                            fontWeight(700)
-                            fontSize(18.px)
-                            borderRadius(4.cssRem)
-                            color(Color.white)
-                            textDecoration("none")
-                            property("box-shadow", "2px 2px 8px rgba(0, 0, 0, .25)")
-                            backgroundColor(Styles.colors.primary)
+                        H3 {
+                            Text("What is Ai là ai?")
                         }
-                    }) {
-                        Text(" Download Ai là ai Beta for Android")
+                        Div {
+                            Text("Ai là ai is a platform that lets you discover and integrate into your city's social scene in meaningful and useful ways to you.")
+                            Br()
+                            Br()
+                        }
+                        Div {
+                            Text(" To join the Beta, you ")
+                            Span(
+                                {
+                                    style {
+                                        textDecoration("underline")
+                                    }
+                                }
+                            ) { Text("need an invite") }
+                            Text(" from another member. If you're new here, ")
+                            A("mailto:jacobaferrero@gmail.com?subject=Ai là ai invite to join") {
+                                Text("send me an email")
+                            }
+                            Text(" and start engaging your city today!")
+                        }
+                        A("/ailaai.apk", {
+                            style {
+                                display(DisplayStyle.InlineBlock)
+                                padding(1.cssRem, 2.cssRem)
+                                marginTop(PaddingDefault)
+                                fontWeight(700)
+                                fontSize(18.px)
+                                borderRadius(4.cssRem)
+                                color(Color.white)
+                                textDecoration("none")
+                                property("box-shadow", "2px 2px 8px rgba(0, 0, 0, .25)")
+                                backgroundColor(Styles.colors.primary)
+                            }
+                        }) {
+                            Text(" Download Ai là ai Beta for Android")
+                        }
                     }
                 }
             }

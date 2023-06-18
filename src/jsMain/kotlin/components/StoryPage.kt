@@ -1,11 +1,12 @@
 package components
 
-import Card
 import PaddingDefault
 import Person
 import Story
+import Styles
 import androidx.compose.runtime.*
 import app.softwork.routingcompose.Router
+import appString
 import baseUrl
 import http
 import io.ktor.client.call.*
@@ -69,7 +70,7 @@ fun StoryPage(storyUrl: String, onStoryLoaded: (Story) -> Unit) {
                 justifyContent(JustifyContent.FlexStart)
             }
         }) {
-            Text("Story not found.")
+            Text(appString { storyNotFound })
         }
     } else {
         story?.let { story ->
@@ -118,13 +119,13 @@ fun StoryContents(storyContent: List<StoryContent>) {
                     classes(StoryStyles.contentAuthors)
                 }) {
                     Span {
-                        Text("${part.publishDate?.let { Date(it) }?.let { "Published on $it" } ?: "Draft"} by ")
+                        Text("${part.publishDate?.let { Date(it) } ?: appString { draft }} ${appString { inlineBy }} ")
                         part.authors.forEachIndexed { index, person ->
                             if (index > 0) {
                                 Text(", ")
                             }
                             A(href = "/profile/${person.id}") {
-                                Text(person.name ?: "Someone")
+                                Text(person.name ?: appString { someone })
                             }
                         }
                     }

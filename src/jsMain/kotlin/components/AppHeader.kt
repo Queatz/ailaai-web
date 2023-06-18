@@ -1,12 +1,14 @@
 package components
 
+import LocalConfiguration
 import PaddingDefault
+import Strings
 import Styles
 import androidx.compose.runtime.Composable
 import app.softwork.routingcompose.Router
 import org.jetbrains.compose.web.css.*
-import org.jetbrains.compose.web.css.Color.white
 import org.jetbrains.compose.web.dom.*
+import appString
 
 @Composable
 fun AppHeader(
@@ -34,7 +36,7 @@ fun AppHeader(
                 }) {
                     Text("arrow_back")
                 }
-                Text(" Go back")
+                Text(" ${appString { goBack }}")
             }
         } else {
             Img("/icon.png") {
@@ -67,11 +69,41 @@ fun AppHeader(
         }) {
             Text("")
         }
+        val configuration = LocalConfiguration.current
+        Span({
+            style {
+                padding(.5.cssRem, 1.cssRem)
+                fontSize(32.px)
+                marginRight(.5.cssRem)
+                property("user-select", "none")
+                cursor("pointer")
+            }
+            onClick {
+                configuration.set(
+                    when (configuration.language) {
+                        "vi" -> "en"
+                        else -> "vi"
+                    }
+                )
+            }
+            title(
+                when (configuration.language) {
+                    "vi" -> "Language"
+                    else -> "Ngôn ngữ"
+                }
+            )
+        }) {
+            when (configuration.language) {
+                "vi" -> Text("\uD83C\uDDFB\uD83C\uDDF3")
+                else -> Text("\uD83C\uDDEC\uD83C\uDDE7")
+            }
+        }
         Span({
             classes("material-symbols-outlined")
             style {
                 fontSize(32.px)
                 paddingRight(PaddingDefault / 2)
+                property("user-select", "none")
                 cursor("pointer")
             }
             onClick {
