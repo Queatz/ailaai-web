@@ -27,6 +27,32 @@ object Styles : StyleSheet() {
         borderRadius(CornerDefault)
     }
 
+    val mainHeader by style {
+        display(DisplayStyle.Flex)
+        alignItems(AlignItems.Center)
+        justifyContent(JustifyContent.Center)
+        padding(4.cssRem, 2.cssRem)
+        backgroundColor(Color("#2f0729"))
+        backgroundImage("url(/saigonnight.jpg)")
+        backgroundPosition("center")
+        backgroundSize("cover")
+        margin(1.cssRem)
+        fontSize(32.px)
+        color(Color.white)
+        borderRadius(PaddingDefault * 2)
+        whiteSpace("pre-wrap")
+        fontFamily("Rowdies")
+        lineHeight("1.5")
+        property("aspect-ratio", "6/1")
+        property("text-shadow", "#d500c8 0px .5rem 2rem, #db5b0f 0px -.5rem 2rem, #fff 0px 0px 2rem")
+
+        media(mediaMinWidth(641.px)) {
+            self style {
+                fontSize(64.px)
+            }
+        }
+    }
+
     val mainContent by style {
         boxSizing("border-box")
         display(DisplayStyle.Flex)
@@ -137,6 +163,15 @@ object Styles : StyleSheet() {
         }
     }
 
+    val category by style {
+        borderRadius(.5.cssRem)
+        border(1.px, LineStyle.Solid, colors.primary)
+        color(colors.primary)
+        property("width", "fit-content")
+        marginTop(.5.cssRem)
+        padding(.5.cssRem, 1.cssRem)
+    }
+
     val cardPost by style {
         backgroundColor(rgba(255, 255, 255, .96))
         padding(PaddingDefault)
@@ -194,6 +229,21 @@ object Styles : StyleSheet() {
         property("font-size", "inherit")
         selector(".material-symbols-outlined") style {
             marginRight(.5.cssRem)
+        }
+    }
+
+    val mainContentCards by style {
+        boxSizing("border-box")
+        display(DisplayStyle.Flex)
+        flexWrap(FlexWrap.Wrap)
+        position(Position.Relative)
+
+        child(self, className(card)) style {
+            self style {
+                width(320.px)
+                marginTop(0.cssRem)
+                marginLeft(0.cssRem)
+            }
         }
     }
 }

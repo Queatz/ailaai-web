@@ -14,6 +14,7 @@ import appString
 fun AppHeader(
     title: String,
     showBack: Boolean = false,
+    showDownload: Boolean = true,
     onBack: () -> Unit = {}
 ) {
     val router = Router.current
@@ -74,7 +75,9 @@ fun AppHeader(
             style {
                 padding(.5.cssRem, 1.cssRem)
                 fontSize(32.px)
-                marginRight(.5.cssRem)
+                if (showDownload) {
+                    marginRight(.5.cssRem)
+                }
                 property("user-select", "none")
                 cursor("pointer")
             }
@@ -98,19 +101,21 @@ fun AppHeader(
                 else -> Text("\uD83C\uDDEC\uD83C\uDDE7")
             }
         }
-        Span({
-            classes("material-symbols-outlined")
-            style {
-                fontSize(32.px)
-                paddingRight(PaddingDefault / 2)
-                property("user-select", "none")
-                cursor("pointer")
+        if (showDownload) {
+            Span({
+                classes("material-symbols-outlined")
+                style {
+                    fontSize(32.px)
+                    paddingRight(PaddingDefault / 2)
+                    property("user-select", "none")
+                    cursor("pointer")
+                }
+                onClick {
+                    router.navigate("/")
+                }
+            }) {
+                Text("download")
             }
-            onClick {
-                router.navigate("/")
-            }
-        }) {
-            Text("download")
         }
     }
 }

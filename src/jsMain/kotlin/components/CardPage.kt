@@ -194,32 +194,44 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
                         classes(Styles.cardContent)
                     }) {
                         card?.let { card ->
-                            Div({
-                                style {
-                                    display(DisplayStyle.Flex)
-                                    flexWrap(FlexWrap.Wrap)
-                                    alignItems(AlignItems.Center)
-                                }
-                            }) {
-                                NameAndLocation(card.name, card.location)
-                                val viewProfileString = appString { viewProfile }
-                                Span({
-                                    classes("material-symbols-outlined")
-                                    title(viewProfileString)
+                            Div {
+                                Div({
                                     style {
-                                        cursor("pointer")
-                                        opacity(.5f)
-                                        marginLeft(.25.cssRem)
-                                    }
-                                    onClick { event ->
-                                        if (event.ctrlKey) {
-                                            window.open("/profile/${card.person}", target = "_blank")
-                                        } else {
-                                            router.navigate("/profile/${card.person}")
-                                        }
+                                        display(DisplayStyle.Flex)
+                                        flexWrap(FlexWrap.Wrap)
+                                        alignItems(AlignItems.Center)
                                     }
                                 }) {
-                                    Text("person")
+                                    NameAndLocation(card.name, card.location)
+                                    val viewProfileString = appString { viewProfile }
+                                    Span({
+                                        classes("material-symbols-outlined")
+                                        title(viewProfileString)
+                                        style {
+                                            cursor("pointer")
+                                            opacity(.5f)
+                                            marginLeft(.25.cssRem)
+                                        }
+                                        onClick { event ->
+                                            if (event.ctrlKey) {
+                                                window.open("/profile/${card.person}", target = "_blank")
+                                            } else {
+                                                router.navigate("/profile/${card.person}")
+                                            }
+                                        }
+                                    }) {
+                                        Text("person")
+                                    }
+                                }
+                                card.categories?.firstOrNull()?.let { category ->
+                                    Div({
+                                        classes(Styles.category)
+                                        style {
+                                            property("clear", "both")
+                                        }
+                                    }) {
+                                        Text(category)
+                                    }
                                 }
                             }
                             cardConversation?.message?.let { message ->
@@ -360,7 +372,7 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
                 classes(Styles.content)
             }) {
                 cards.forEach { card ->
-                    CardItem(card, router)
+                    CardItem(card)
                 }
             }
         }

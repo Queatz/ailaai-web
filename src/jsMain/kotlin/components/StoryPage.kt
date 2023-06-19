@@ -104,7 +104,6 @@ fun StoryPage(storyUrl: String, onStoryLoaded: (Story) -> Unit) {
 
 @Composable
 fun StoryContents(storyContent: List<StoryContent>) {
-    val router = Router.current
     storyContent.forEach { part ->
         when (part) {
             is StoryContent.Title -> {
@@ -150,7 +149,7 @@ fun StoryContents(storyContent: List<StoryContent>) {
                     classes(StoryStyles.contentCards)
                 }) {
                     part.cards.forEach { card ->
-                        CardItem(card, router)
+                        CardItem(card)
                     }
                 }
             }

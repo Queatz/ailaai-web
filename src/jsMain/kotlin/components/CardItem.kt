@@ -12,15 +12,12 @@ import io.ktor.client.call.*
 import io.ktor.client.request.*
 import kotlinx.browser.window
 import org.jetbrains.compose.web.css.*
-import org.jetbrains.compose.web.dom.Div
-import org.jetbrains.compose.web.dom.Source
-import org.jetbrains.compose.web.dom.Text
-import org.jetbrains.compose.web.dom.Video
+import org.jetbrains.compose.web.dom.*
 import org.w3c.dom.HTMLDivElement
 import kotlin.math.roundToInt
 
 @Composable
-fun CardItem(cardId: String, router: Router) {
+fun CardItem(cardId: String) {
     var card by remember { mutableStateOf<Card?>(null) }
     LaunchedEffect(Unit) {
         try {
@@ -29,14 +26,14 @@ fun CardItem(cardId: String, router: Router) {
             e.printStackTrace()
         }
     }
-    if (card != null) {
-        CardItem(card!!, router)
+    card?.let { card ->
+        CardItem(card)
     }
 }
 
 @Composable
-fun CardItem(card: Card, router: Router) {
-    val scope = rememberCoroutineScope()
+fun CardItem(card: Card) {
+    val router = Router.current
     Div({
         classes(Styles.card)
         style {
@@ -64,37 +61,39 @@ fun CardItem(card: Card, router: Router) {
             val rotateX = ((xFactor - 0.5f) * amount * 100f).roundToInt().toFloat() / 100f
             val rotateY = ((0.5f - yFactor) * amount * 100f).roundToInt().toFloat() / 100f
             cardEl.style.transform = "perspective(100vw) rotateX(${rotateY}deg) rotateY(${rotateX}deg)"
+            cardEl.style.zIndex = "5"
         }
         onMouseOut { event ->
             val cardEl = event.currentTarget as HTMLDivElement
             cardEl.style.transform = "perspective(100vw) rotateX(0deg) rotateY(0deg)"
+            cardEl.style.zIndex = ""
         }
     }) {
         card.video?.let {
-        Video({
+            Video({
 //            attr("autoplay", "")
-            attr("loop", "")
+                attr("loop", "")
 //            attr("muted", "")
-            attr("playsinline", "")
+                attr("playsinline", "")
 //            attr("onloadedmetadata", "this.muted=true")
-            style {
-                property("object-fit", "cover")
-                position(Position.Absolute)
-                top(0.px)
-                bottom(0.px)
-                left(0.px)
-                right(0.px)
-                property("z-index", "0")
-                backgroundColor(Styles.colors.background)
-                property("aspect-ratio", "2")
+                style {
+                    property("object-fit", "cover")
+                    position(Position.Absolute)
+                    top(0.px)
+                    bottom(0.px)
+                    left(0.px)
+                    right(0.px)
+                    property("z-index", "0")
+                    backgroundColor(Styles.colors.background)
+                    property("aspect-ratio", "2")
+                }
+            }) {
+                Source({
+                    attr("src", "$baseUrl$it")
+                    attr("type", "video/webm")
+                })
             }
-        }) {
-            Source({
-                attr("src", "$baseUrl$it")
-                attr("type", "video/webm")
-            })
         }
-    }
         (card.cardCount?.takeIf { it > 0 } ?: 0).let { numberOfCards ->
             Div({
                 style {
@@ -123,6 +122,16 @@ fun CardItem(card: Card, router: Router) {
                 }
             }) {
                 NameAndLocation(card.name, card.location)
+                card.categories?.firstOrNull()?.let { category ->
+                    Div({
+                        classes(Styles.category)
+                        style {
+                            marginBottom(PaddingDefault)
+                        }
+                    }) {
+                        Text(category)
+                    }
+                }
             }
 
             card.getConversation().message.takeIf { it.isNotEmpty() }

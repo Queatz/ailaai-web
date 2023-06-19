@@ -203,7 +203,7 @@ fun ProfilePage(personId: String, onProfile: (PersonProfile) -> Unit) {
                     classes(Styles.content)
                 }) {
                     cards.forEach { card ->
-                        CardItem(card, router)
+                        CardItem(card)
                     }
                 }
             }
