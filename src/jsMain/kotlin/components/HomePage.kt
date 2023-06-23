@@ -13,11 +13,7 @@ fun HomePage() {
     Div({
         classes(Styles.mainHeader)
     }) {
-        Div({
-            style {
-                textAlign("center")
-            }
-        }) {
+        Div {
             Text(appString { homeTagline })
         }
     }

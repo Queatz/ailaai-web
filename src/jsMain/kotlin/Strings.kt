@@ -42,7 +42,7 @@ object Strings {
     )
     val homeTagline = Translation(
         "Expand and vivify your city",
-        "Mở rộng và làm sinh động\nthành phố của bạn"
+        "Mở rộng và làm đẹp\nthành phố của bạn"
     )
     val downloadApp = Translation(
         "Download Ai Là Ai Beta for Android",
@@ -53,8 +53,8 @@ object Strings {
         "Ứng dụng Ai là ai là gì?"
     )
     val homeAboutDescription = Translation(
-        "Ai là ai is a platform that expands your city's social scene in meaningful ways.",
-        "Ai là ai là một nền tảng giúp mở rộng bối cảnh xã hội thành phố của bạn theo những cách có tâm."
+        "Ai là ai is a platform that expands your city in meaningful ways.",
+        "Ai là ai là một nền tảng giúp mở rộng thành phố của bạn theo những cách có tâm và đẹp."
     )
     val toJoinThePlatform = Translation(
         "To join the platform, ",
@@ -84,8 +84,15 @@ object Strings {
         "Things to know",
         "Những điều cần biết"
     )
+    val madeWith = Translation(
+        "Made with",
+        "Tạo với"
+    )
+    val inHCMC = Translation(
+        "in HCMC",
+        "ở TP.HCM"
+    )
 }
-
 
 @Composable
 private fun appString(string: Translation) = when (LocalConfiguration.current.language) {

@@ -61,5 +61,6 @@ class Profile(
     var person: String? = null,
     var photo: String? = null,
     var video: String? = null,
-    var about: String? = null
+    var about: String? = null,
+    var url: String? = null
 ) : Model()

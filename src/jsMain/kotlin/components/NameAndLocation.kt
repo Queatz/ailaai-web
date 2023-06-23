@@ -16,13 +16,15 @@ fun NameAndLocation(name: String?, location: String?) {
     }) {
         Text(name ?: "")
     }
-    Span({
-        style {
-            marginLeft(PaddingDefault / 2)
-            fontSize(18.px)
-            opacity(.75f)
+    location?.let { location ->
+        Span({
+            style {
+                marginLeft(PaddingDefault / 2)
+                fontSize(18.px)
+                opacity(.75f)
+            }
+        }) {
+            Text(location)
         }
-    }) {
-        Text(location ?: "")
     }
 }

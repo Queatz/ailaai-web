@@ -27,14 +27,25 @@ object Styles : StyleSheet() {
         borderRadius(CornerDefault)
     }
 
+    val appFooter by style {
+        boxSizing("border-box")
+        display(DisplayStyle.Flex)
+        alignItems(AlignItems.Center)
+        justifyContent(JustifyContent.Center)
+        padding(PaddingDefault)
+        marginTop(PaddingDefault)
+        backgroundColor(Color("#f7f7f7"))
+    }
+
     val mainHeader by style {
         display(DisplayStyle.Flex)
         alignItems(AlignItems.Center)
         justifyContent(JustifyContent.Center)
-        padding(4.cssRem, 2.cssRem)
+        padding(4.cssRem)
         backgroundColor(Color("#2f0729"))
-        backgroundImage("url(/saigonnight.jpg)")
+        backgroundImage("url(/saigonnight-mobile.jpg)")
         backgroundPosition("center")
+        textAlign("center")
         backgroundSize("cover")
         margin(1.cssRem)
         fontSize(32.px)
@@ -42,13 +53,16 @@ object Styles : StyleSheet() {
         borderRadius(PaddingDefault * 2)
         whiteSpace("pre-wrap")
         fontFamily("Rowdies")
-        lineHeight("1.5")
+        lineHeight("1.25")
         property("aspect-ratio", "6/1")
-        property("text-shadow", "#d500c8 0px .5rem 2rem, #db5b0f 0px -.5rem 2rem, #fff 0px 0px 2rem")
+        property("text-shadow", "#fff 0px 0px 2rem")
 
         media(mediaMinWidth(641.px)) {
             self style {
-                fontSize(64.px)
+                fontSize(48.px)
+                textAlign("end")
+                justifyContent(JustifyContent.FlexEnd)
+                backgroundImage("url(/saigonnight.jpg)")
             }
         }
     }

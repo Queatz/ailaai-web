@@ -21,32 +21,48 @@ import profile.ProfileStyles
 import kotlin.js.Date
 
 @Composable
-fun ProfilePage(personId: String, onProfile: (PersonProfile) -> Unit) {
+fun ProfilePage(personId: String? = null, url: String? = null, onProfile: (PersonProfile) -> Unit) {
     Style(ProfileStyles)
 
+    var personId by remember { mutableStateOf(personId) }
     val scope = rememberCoroutineScope()
     val router = Router.current
     var profile by remember { mutableStateOf<PersonProfile?>(null) }
     var cards by remember { mutableStateOf<List<Card>>(emptyList()) }
     var isLoading by remember { mutableStateOf(false) }
 
+    if (personId == null && url == null) {
+        router.navigate("/")
+        return
+    }
+
     LaunchedEffect(Unit) {
         isLoading = true
         try {
-            profile = http.get("$baseUrl/people/$personId/profile").body()
+            profile = if (personId != null) {
+                http.get("$baseUrl/people/$personId/profile").body()
+            } else {
+                http.get("$baseUrl/profile/url/$url").body()
+            }
+            if (personId == null) {
+                personId = profile!!.person.id
+            }
             onProfile(profile!!)
         } catch (e: Exception) {
             e.printStackTrace()
+            router.navigate("/")
         } finally {
             isLoading = false
         }
     }
 
-    LaunchedEffect(Unit) {
-        try {
-            cards = http.get("$baseUrl/people/$personId/profile/cards").body()
-        } catch (e: Exception) {
-            e.printStackTrace()
+    LaunchedEffect(personId) {
+        if (personId != null) {
+            try {
+                cards = http.get("$baseUrl/people/$personId/profile/cards").body()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 

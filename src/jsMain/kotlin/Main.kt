@@ -76,6 +76,7 @@ fun main() {
                             title = it.name
                             parentCardId = it.parent
                         }
+                        AppFooter()
                     }
                 }
 
@@ -85,6 +86,7 @@ fun main() {
                         StoryPage(storyUrl) {
                             title = it.title
                         }
+                        AppFooter()
                     }
                 }
 
@@ -95,12 +97,23 @@ fun main() {
                         ProfilePage(profileUrl) {
                             title = it.person.name ?: someoneString
                         }
+                        AppFooter()
                     }
+                }
+
+                string { profileUrl ->
+                    AppHeader(appName)
+                    val someoneString = appString { someone }
+                    ProfilePage(url = profileUrl) {
+                        title = it.person.name ?: someoneString
+                    }
+                    AppFooter()
                 }
 
                 noMatch {
                     AppHeader(appName, showDownload = false)
                     HomePage()
+                    AppFooter()
                 }
             }
         }

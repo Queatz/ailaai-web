@@ -195,13 +195,7 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
                     }) {
                         card?.let { card ->
                             Div {
-                                Div({
-                                    style {
-                                        display(DisplayStyle.Flex)
-                                        flexWrap(FlexWrap.Wrap)
-                                        alignItems(AlignItems.Center)
-                                    }
-                                }) {
+                                Div {
                                     NameAndLocation(card.name, card.location)
                                     val viewProfileString = appString { viewProfile }
                                     Span({
@@ -211,6 +205,7 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
                                             cursor("pointer")
                                             opacity(.5f)
                                             marginLeft(.25.cssRem)
+                                            property("vertical-align", "text-bottom")
                                         }
                                         onClick { event ->
                                             if (event.ctrlKey) {
@@ -327,7 +322,7 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
                                         }
                                         else -> {
                                             Button({
-                                                classes(Styles.button)
+                                                classes(Styles.outlineButton)
                                                 onClick {
                                                     stack.add(cardConversation!!)
                                                     cardConversation = item
