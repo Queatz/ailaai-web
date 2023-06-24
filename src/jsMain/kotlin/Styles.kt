@@ -52,7 +52,7 @@ object Styles : StyleSheet() {
         color(Color.white)
         borderRadius(PaddingDefault * 2)
         whiteSpace("pre-wrap")
-        fontFamily("Rowdies")
+        fontFamily("Estonia")
         lineHeight("1.25")
         property("aspect-ratio", "6/1")
         property("text-shadow", "#fff 0px 0px 2rem")
