@@ -81,4 +81,8 @@ object StoryStyles : StyleSheet() {
             }
         }
     }
+
+    val contentAudio by style {
+        borderRadius(1.cssRem)
+    }
 }

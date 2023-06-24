@@ -15,10 +15,7 @@ import json
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.*
 import org.jetbrains.compose.web.css.*
-import org.jetbrains.compose.web.dom.A
-import org.jetbrains.compose.web.dom.Div
-import org.jetbrains.compose.web.dom.Span
-import org.jetbrains.compose.web.dom.Text
+import org.jetbrains.compose.web.dom.*
 import stories.StoryStyles
 import kotlin.js.Date
 
@@ -171,7 +168,18 @@ fun StoryContents(storyContent: List<StoryContent>) {
                 }
             }
             is StoryContent.Audio -> {
-                // todo
+                Audio({
+                    classes(StoryStyles.contentAudio)
+                    attr("controls", "")
+                    style {
+                        width(100.percent)
+                    }
+                }) {
+                    Source({
+                        attr("src", "$baseUrl${part.audio}")
+                        attr("type", "audio/mp4")
+                    })
+                }
             }
             else -> {}
         }

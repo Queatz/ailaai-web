@@ -55,7 +55,7 @@ object Styles : StyleSheet() {
         fontFamily("Estonia")
         lineHeight("1.25")
         property("aspect-ratio", "6/1")
-        property("text-shadow", "#fff 0px 0px 2rem")
+        property("text-shadow", "#fff 0px 0px .5rem")
 
         media(mediaMinWidth(641.px)) {
             self style {

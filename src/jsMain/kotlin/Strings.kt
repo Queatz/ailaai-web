@@ -136,7 +136,7 @@ object Strings {
     )
     val homeAboutTitle = Translation(
         "What is Ai là ai?",
-        "Ứng dụng Ai là ai là gì?"
+        "Ai là ai là gì?"
         ,"Что такое Ай Ла Ай?"
     )
     val homeAboutDescription = Translation(
