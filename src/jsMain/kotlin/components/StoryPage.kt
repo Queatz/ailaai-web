@@ -141,7 +141,7 @@ fun StoryContents(storyContent: List<StoryContent>) {
                 Div({
                     classes(StoryStyles.contentText)
                 }) {
-                    Text(part.text)
+                    LinkifyText(part.text)
                 }
             }
             is StoryContent.Cards -> {

@@ -235,7 +235,7 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
                                         whiteSpace("pre-wrap")
                                     }
                                 }) {
-                                    Text(message)
+                                    LinkifyText(message)
                                 }
                             }
                             if (isReplying != null) {

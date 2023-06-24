@@ -11,21 +11,22 @@ import org.jetbrains.compose.web.dom.*
 @Composable
 fun HomePage() {
     Div({
-        classes(Styles.mainHeader)
-    }) {
-        Div {
-            Text(appString { homeTagline })
-        }
-    }
-    Div({
         style {
             property("margin", "$PaddingDefault auto")
             maxWidth(1200.px)
             padding(0.cssRem, 1.5.cssRem, 1.5.cssRem, 1.5.cssRem)
             fontSize(22.px)
             lineHeight("1.5")
+            minHeight(100.vh)
         }
     }) {
+        Div({
+            classes(Styles.mainHeader)
+        }) {
+            Div {
+                Text(appString { homeTagline })
+            }
+        }
         H3 {
             Text(appString { homeAboutTitle })
         }

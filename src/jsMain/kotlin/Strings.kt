@@ -42,7 +42,7 @@ object Strings {
     )
     val homeTagline = Translation(
         "Expand and vivify your city",
-        "Mở rộng và làm đẹp\nthành phố của bạn"
+        "Mở rộng và làm sinh động\nthành phố của bạn"
     )
     val downloadApp = Translation(
         "Download Ai Là Ai Beta for Android",

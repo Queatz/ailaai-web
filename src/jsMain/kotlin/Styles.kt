@@ -41,13 +41,13 @@ object Styles : StyleSheet() {
         display(DisplayStyle.Flex)
         alignItems(AlignItems.Center)
         justifyContent(JustifyContent.Center)
-        padding(4.cssRem)
+        padding(4.cssRem, 2.cssRem)
         backgroundColor(Color("#2f0729"))
         backgroundImage("url(/saigonnight-mobile.jpg)")
         backgroundPosition("center")
         textAlign("center")
         backgroundSize("cover")
-        margin(1.cssRem)
+        margin(1.cssRem, 0.cssRem)
         fontSize(32.px)
         color(Color.white)
         borderRadius(PaddingDefault * 2)
@@ -59,7 +59,8 @@ object Styles : StyleSheet() {
 
         media(mediaMinWidth(641.px)) {
             self style {
-                fontSize(48.px)
+                fontSize(42.px)
+                padding(4.cssRem)
                 textAlign("end")
                 justifyContent(JustifyContent.FlexEnd)
                 backgroundImage("url(/saigonnight.jpg)")

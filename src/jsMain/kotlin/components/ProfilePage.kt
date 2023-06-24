@@ -208,7 +208,7 @@ fun ProfilePage(personId: String? = null, url: String? = null, onProfile: (Perso
                                     Div({
                                         classes(ProfileStyles.infoAbout)
                                     }) {
-                                        Text(profile.profile.about!!)
+                                        LinkifyText(profile.profile.about!!)
                                     }
                                 }
                             }
