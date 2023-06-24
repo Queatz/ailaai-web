@@ -84,20 +84,23 @@ fun AppHeader(
             onClick {
                 configuration.set(
                     when (configuration.language) {
-                        "vi" -> "en"
-                        else -> "vi"
+                        "en" -> "vi"
+                        "vi" -> "ru"
+                        else -> "en"
                     }
                 )
             }
             title(
                 when (configuration.language) {
                     "vi" -> "Language"
+                    "ru" -> "Язык"
                     else -> "Ngôn ngữ"
                 }
             )
         }) {
             when (configuration.language) {
                 "vi" -> Text("\uD83C\uDDFB\uD83C\uDDF3")
+                "ru" -> Text("\uD83C\uDDF7\uD83C\uDDFA")
                 else -> Text("\uD83C\uDDEC\uD83C\uDDE7")
             }
         }
