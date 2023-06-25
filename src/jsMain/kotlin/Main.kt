@@ -101,6 +101,16 @@ fun main() {
                     }
                 }
 
+                route("page") {
+                    string { page ->
+                        AppHeader(appName, showMenu = true, showDownload = false, showBack = true) {
+                            router.navigate("/")
+                        }
+                        InfoPage(page)
+                        AppFooter()
+                    }
+                }
+
                 string { profileUrl ->
                     AppHeader(appName)
                     val someoneString = appString { someone }
@@ -111,7 +121,7 @@ fun main() {
                 }
 
                 noMatch {
-                    AppHeader(appName, showDownload = false)
+                    AppHeader(appName, showMenu = true, showDownload = false)
                     HomePage()
                     AppFooter()
                 }

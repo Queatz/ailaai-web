@@ -1,6 +1,7 @@
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.neverEqualPolicy
+import org.jetbrains.compose.web.dom.Text
 
 data class Translation(
     val en: String,
@@ -9,6 +10,14 @@ data class Translation(
 )
 
 object Strings {
+    val introduction = Translation(
+        "About",
+        "Giới thiệu"
+    )
+    val introductionCardId = Translation(
+        "13575458",
+        "13575494"
+    )
     val appName = Translation(
         "Ai Là Ai",
         "Ai là ai",
@@ -16,7 +25,7 @@ object Strings {
     )
     val stories = Translation(
         "Stories",
-        "Bản tin",
+        "Bài viết",
         "Истории"
     )
     val someone = Translation(
@@ -66,7 +75,7 @@ object Strings {
     )
     val storyNotFound = Translation(
         "Story not found.",
-        "Không tìm được bản tin này.",
+        "Không tìm được bài viết này.",
         "История не найдена."
     )
     val cardNotFound = Translation(
@@ -125,8 +134,9 @@ object Strings {
         "Ваше сообщение отправлено!"
     )
     val homeTagline = Translation(
-        "Expand and vivify your city",
-        "Mở rộng và làm sinh động\nthành phố của bạn",
+        "Be the life of the city!",
+        "Hãy cùng làm thành phố\n" +
+            "năng động và đầy màu sắc!",
         "Расширяйте и оживляйте свой город"
     )
     val downloadApp = Translation(
@@ -134,29 +144,34 @@ object Strings {
         "Tải xuống Ai là ai beta cho Android",
         "Скачать Ай Ла Ай Бета для Андроид"
     )
+    val appTagline = Translation(
+        "Local Messaging, Exploration, and Inspiration",
+        "Nhắn tin, khám phá và đọc cảm hứng ở gần",
+        "Локальный обмен сообщениями, торговая площадка и вдохновение"
+    )
     val homeAboutTitle = Translation(
         "What is Ai là ai?",
         "Ai là ai là gì?"
         ,"Что такое Ай Ла Ай?"
     )
     val homeAboutDescription = Translation(
-        "Ai là ai is a platform that expands your city in meaningful ways.",
-        "Ai là ai là một nền tảng giúp mở rộng thành phố của bạn theo những cách có tâm và đẹp."
-        ,"Ай Ла Ай — это платформа, которая существенно расширяет ваш город."
+        "Ai Là Ai is a platform that helps you stay connected to your city in ways meaningful to you.",
+        "Nền tảng Ai là ai giúp bạn kết nối gần gũi với thành phố của bạn theo ý thích."
+        ,""
     )
     val toJoinThePlatform = Translation(
-        "To join the platform, ",
-        "Để tham gia nền tảng này, hãy "
+        "To join the Ai Là Ai platform, ",
+        "Để tham gia nền tảng Ai là ai, hãy "
         ,"Чтобы присоединиться к платформе, "
     )
     val inlineSendMeAnEmail = Translation(
         "send me an email",
-        "gửi email cho ta"
+        "gửi email cho tôi"
         ,"вышли мне электронное письмо"
     )
     val engageToday = Translation(
         "and start engaging your city today!",
-        "và bắt đầu làm quen với thành phố của bạn ngay!"
+        "và bắt đầu làm quen với thành phố của bạn nha!"
         ,"и начните вовлекать свой город уже сегодня!"
     )
     val inviteEmailSubject = Translation(
@@ -189,6 +204,27 @@ object Strings {
         "ở TP.HCM",
         "в Хошимине"
     )
+    val contact = Translation(
+        "Contact",
+        "Liên hệ"
+    )
+    val isCreatedBy = Translation(
+        "Ai Là Ai is being created by ",
+        "Ai là ai đang tạo ra bởi "
+    )
+    val sendMeAnEmail = Translation(
+        "Send me an email",
+        "gửi email cho tôi",
+        "Вышли мне электронное письмо"
+    )
+    val forAllInquiries = Translation(
+        " for all inquiries.",
+        " cho tất cả các yêu cầu nha."
+    )
+    val please = Translation(
+        "",
+        "Hãy "
+    )
 }
 
 @Composable
@@ -200,6 +236,9 @@ private fun appString(string: Translation) = when (LocalConfiguration.current.la
 
 @Composable
 fun appString(block: Strings.() -> Translation) = appString(block(Strings))
+
+@Composable
+fun appText(block: Strings.() -> Translation) = Text(appString(block))
 
 class Configuration(
     var language: String = "en",

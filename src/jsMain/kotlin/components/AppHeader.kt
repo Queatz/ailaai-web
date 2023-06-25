@@ -2,20 +2,23 @@ package components
 
 import LocalConfiguration
 import PaddingDefault
-import Strings
 import Styles
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import app.softwork.routingcompose.Router
+import appString
+import appText
+import kotlinx.browser.window
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
-import appString
+import org.w3c.dom.events.Event
 
 @Composable
 fun AppHeader(
     title: String,
     showBack: Boolean = false,
     showDownload: Boolean = true,
-    onBack: () -> Unit = {}
+    showMenu: Boolean = false,
+    onBack: () -> Unit = {},
 ) {
     val router = Router.current
 
@@ -63,12 +66,30 @@ fun AppHeader(
                 Text(title)
             }
         }
-        Span({
+        Div({
             style {
+                width(0.px)
                 flexGrow(1f)
+                display(DisplayStyle.Flex)
+                alignItems(AlignItems.Center)
+                justifyContent(JustifyContent.FlexEnd)
+                margin(0.cssRem, 1.cssRem)
+                overflow("auto")
             }
         }) {
-            Text("")
+            if (showMenu) {
+                val cardId = appString { introductionCardId }
+                Div({
+                    classes(Styles.menuButton)
+                    onClick {
+                        router.navigate("/card/$cardId")
+                    }
+                }) {
+                    appText { introduction }
+                }
+            } else {
+                Text("")
+            }
         }
         val configuration = LocalConfiguration.current
         Span({
@@ -85,7 +106,7 @@ fun AppHeader(
                 configuration.set(
                     when (configuration.language) {
                         "en" -> "vi"
-                        "vi" -> "ru"
+                        //"vi" -> "ru"
                         else -> "en"
                     }
                 )
@@ -120,5 +141,18 @@ fun AppHeader(
                 Text("download")
             }
         }
+    }
+}
+
+@Composable
+fun Bullet() {
+    Span({
+        style {
+            padding(0.cssRem, .5.cssRem)
+            color(Styles.colors.primary)
+            opacity(.75f)
+        }
+    }) {
+        Text("•")
     }
 }

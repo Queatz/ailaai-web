@@ -16,6 +16,14 @@ object Styles : StyleSheet() {
         }
     }
 
+    val menuButton by style {
+        cursor("pointer")
+
+        hover(self) style {
+            textDecoration("underline")
+        }
+    }
+
     val appHeader by style {
         boxSizing("border-box")
         display(DisplayStyle.Flex)

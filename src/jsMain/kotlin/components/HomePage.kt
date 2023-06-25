@@ -14,7 +14,7 @@ fun HomePage() {
         style {
             property("margin", "$PaddingDefault auto")
             maxWidth(1200.px)
-            padding(0.cssRem, 1.5.cssRem, 1.5.cssRem, 1.5.cssRem)
+            padding(0.cssRem, 1.cssRem, 1.cssRem, 1.cssRem)
             fontSize(22.px)
             lineHeight("1.5")
             minHeight(100.vh)
@@ -49,14 +49,23 @@ fun HomePage() {
                 marginTop(PaddingDefault * 2)
                 fontWeight(700)
                 fontSize(18.px)
-                borderRadius(4.cssRem)
+                borderRadius(2.cssRem)
                 color(Color.white)
                 textDecoration("none")
+                textAlign("center")
                 property("box-shadow", "2px 2px 8px rgba(0, 0, 0, .25)")
                 backgroundColor(Styles.colors.primary)
+                background("linear-gradient(rgb(49, 171, 213), rgb(0, 102, 137))")
             }
         }) {
-            Text(" ${appString { downloadApp }}")
+            Span { Text(" ${appString { downloadApp }}") }
+            Br()
+            Span({
+                style {
+                    opacity(.75f)
+                    fontSize(80.percent)
+                }
+            }) { Text(appString { appTagline }) }
         }
         listOf(
             appString { peopleToKnow } to listOf("11389583", "11156377", "10455696", "12319827", "9914441").shuffled().take(3),
