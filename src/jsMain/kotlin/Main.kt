@@ -10,8 +10,7 @@ import kotlinx.browser.document
 import kotlinx.browser.localStorage
 import kotlinx.browser.window
 import kotlinx.serialization.json.Json
-import org.jetbrains.compose.web.css.*
-import org.jetbrains.compose.web.dom.*
+import org.jetbrains.compose.web.css.Style
 import org.jetbrains.compose.web.renderComposableInBody
 import org.w3c.dom.get
 import org.w3c.dom.set
