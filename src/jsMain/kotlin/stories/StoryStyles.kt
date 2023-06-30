@@ -21,17 +21,16 @@ object StoryStyles : StyleSheet() {
         alignItems(AlignItems.Stretch)
         justifyContent(JustifyContent.Stretch)
         color(Styles.colors.secondary)
-        fontSize(14.px)
+        fontSize(16.px)
         whiteSpace("pre-wrap")
     }
-
 
     val contentSection by style {
         boxSizing("border-box")
         display(DisplayStyle.Flex)
         alignItems(AlignItems.Stretch)
         justifyContent(JustifyContent.Stretch)
-        fontSize(18.px)
+        fontSize(24.px)
         fontWeight("bold")
     }
 

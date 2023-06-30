@@ -269,4 +269,14 @@ object Styles : StyleSheet() {
             }
         }
     }
+
+    val textarea by style {
+        borderRadius(1.cssRem)
+        border(1.px, LineStyle.Solid, colors.background)
+        property("resize", "none")
+        padding(1.cssRem)
+        property("font-size", "inherit")
+        fontFamily("inherit")
+        boxSizing("border-box")
+    }
 }

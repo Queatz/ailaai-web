@@ -225,6 +225,22 @@ object Strings {
         "",
         "Hãy "
     )
+    val searching = Translation(
+        "Searching…",
+        "Đang tìm kiếm…"
+    )
+    val searchResults = Translation(
+        "Search results",
+        "Kết quả tìm kiếm"
+    )
+    val noCardsFound = Translation(
+        "No cards found.",
+        "Không tìm được thẻ để cho bạn xem."
+    )
+    val whomDoYouSeek = Translation(
+        "Who are you looking for today?",
+        "Hôm nay bạn đang tìm kiếm ai vậy?"
+    )
 }
 
 @Composable

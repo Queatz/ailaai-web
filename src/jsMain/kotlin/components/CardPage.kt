@@ -241,16 +241,10 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
                             if (isReplying != null) {
                                 val includeContactString = appString { includeContact }
                                 TextArea(replyMessage) {
+                                    classes(Styles.textarea)
                                     style {
                                         width(100.percent)
                                         height(8.cssRem)
-                                        borderRadius(1.cssRem)
-                                        border(1.px, LineStyle.Solid, Styles.colors.background)
-                                        property("resize", "none")
-                                        padding(1.cssRem)
-                                        property("font-size", "inherit")
-                                        fontFamily("inherit")
-                                        boxSizing("border-box")
                                         marginBottom(1.cssRem)
                                     }
 

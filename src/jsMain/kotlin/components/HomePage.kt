@@ -1,10 +1,21 @@
 package components
 
+import Card
 import PaddingDefault
 import Strings.homeTagline
 import Styles
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import appString
+import appText
+import baseUrl
+import http
+import io.ktor.client.call.*
+import io.ktor.client.request.*
+import kotlinx.coroutines.delay
+import org.jetbrains.compose.web.attributes.InputType
+import org.jetbrains.compose.web.attributes.autoFocus
+import org.jetbrains.compose.web.attributes.disabled
+import org.jetbrains.compose.web.attributes.placeholder
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
 
@@ -42,44 +53,106 @@ fun HomePage() {
             }
             Text(" ${appString { engageToday }}")
         }
-        A("/ailaai.apk", {
+        DownloadAppButton()
+        var searchText by remember { mutableStateOf("") }
+        var isLoading by remember { mutableStateOf(false) }
+        var searchResults by remember { mutableStateOf(listOf<Card>()) }
+        Div({
             style {
-                display(DisplayStyle.InlineBlock)
-                padding(1.cssRem, 2.cssRem)
-                marginTop(PaddingDefault * 2)
-                fontWeight(700)
-                fontSize(18.px)
-                borderRadius(2.cssRem)
-                color(Color.white)
-                textDecoration("none")
-                textAlign("center")
-                property("box-shadow", "2px 2px 8px rgba(0, 0, 0, .25)")
-                backgroundColor(Styles.colors.primary)
-                background("linear-gradient(rgb(49, 171, 213), rgb(0, 102, 137))")
+                position(Position.Relative)
             }
         }) {
-            Span { Text(" ${appString { downloadApp }}") }
-            Br()
-            Span({
+            val whomDoYouSeek = appString { whomDoYouSeek }
+            Input(InputType.Text) {
+                classes(Styles.textarea)
                 style {
-                    opacity(.75f)
-                    fontSize(80.percent)
+                    width(100.percent)
+                    marginTop(2.cssRem)
+                    paddingLeft(3.cssRem)
                 }
-            }) { Text(appString { appTagline }) }
+
+                placeholder(whomDoYouSeek)
+
+                onInput {
+                    searchText = it.value
+                }
+
+                autoFocus()
+            }
+            Span({
+                classes("material-symbols-outlined")
+                style {
+                    position(Position.Absolute)
+                    property("z-index", "1")
+                    property("pointer-events", "none")
+                    color(Styles.colors.primary)
+                    left(1.cssRem)
+                    top(2.cssRem)
+                    bottom(0.cssRem)
+                    display(DisplayStyle.Flex)
+                    alignItems(AlignItems.Center)
+                }
+            }) {
+                Text("search")
+            }
         }
-        listOf(
-            appString { peopleToKnow } to listOf("11389583", "11156377", "10455696", "12319827", "9914441").shuffled().take(3),
-            appString { placesToKnow } to listOf("9879608", "10102613"),
-            appString { thingsToKnow } to listOf("2181697"),
-        ).forEach { (category, cards) ->
+
+        LaunchedEffect(searchText) {
+            isLoading = true
+            delay(250)
+            searchResults = if (searchText.isNotBlank()) {
+                try {
+                    http.get("$baseUrl/cards") {
+                        parameter("geo", "10.7915858,106.7426523") // HCMC
+                        parameter("search", searchText)
+                    }.body()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    emptyList()
+                }
+            } else {
+                emptyList()
+            }
+            isLoading = false
+        }
+
+        when(searchText.isBlank()) {
+            true -> {
+                listOf(
+                    appString { peopleToKnow } to listOf("11389583", "11156377", "10455696", "12319827", "9914441").shuffled().take(3),
+                    appString { placesToKnow } to listOf("9879608", "10102613"),
+                    appString { thingsToKnow } to listOf("2181697"),
+                )
+            }
+            false -> {
+                listOf(
+                    (if (isLoading) appString { searching } else appString { this.searchResults }) to searchResults,
+                )
+            }
+        }.forEach { (category, cards) ->
             H3 {
                 Text(category)
             }
             Div({
                 classes(Styles.mainContentCards)
             }) {
-                cards.forEach { cardId ->
-                    CardItem(cardId)
+                if (cards.isEmpty()) {
+                    if (!isLoading) {
+                        Span({
+                            style {
+                                color(Styles.colors.secondary)
+                            }
+                        }) {
+                            appText { noCardsFound }
+                        }
+                    }
+                } else {
+                    cards.forEach { card ->
+                        when (card) {
+                            is String -> CardItem(card)
+                            is Card -> CardItem(card)
+                        }
+                    }
                 }
             }
         }
