@@ -4,6 +4,7 @@ import Styles
 import androidx.compose.runtime.Composable
 import app.softwork.routingcompose.Router
 import appString
+import appText
 import org.jetbrains.compose.web.css.Color
 import org.jetbrains.compose.web.css.color
 import org.jetbrains.compose.web.css.whiteSpace
@@ -24,7 +25,17 @@ fun AppFooter() {
         Span({
             style { color(Color.red) }
         }) { Text(" ♥ ") }
-        Span { Text(appString { inHCMC }) }
+        Span { appText { inHCMC } }
+        Bullet()
+        val cardId = appString { introductionCardId }
+        Div({
+            classes(Styles.menuButton)
+            onClick {
+                router.navigate("/card/$cardId")
+            }
+        }) {
+            appText { introduction }
+        }
         Bullet()
         Span({
             classes(Styles.menuButton)
@@ -32,7 +43,7 @@ fun AppFooter() {
                 router.navigate("/page/contact")
             }
         }) {
-            Text(appString { contact })
+            appText { contact }
         }
     }
 }

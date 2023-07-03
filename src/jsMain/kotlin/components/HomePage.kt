@@ -2,7 +2,6 @@ package components
 
 import Card
 import PaddingDefault
-import Strings.homeTagline
 import Styles
 import androidx.compose.runtime.*
 import appString
@@ -14,7 +13,6 @@ import io.ktor.client.request.*
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.web.attributes.InputType
 import org.jetbrains.compose.web.attributes.autoFocus
-import org.jetbrains.compose.web.attributes.disabled
 import org.jetbrains.compose.web.attributes.placeholder
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
@@ -57,44 +55,11 @@ fun HomePage() {
         var searchText by remember { mutableStateOf("") }
         var isLoading by remember { mutableStateOf(false) }
         var searchResults by remember { mutableStateOf(listOf<Card>()) }
-        Div({
-            style {
-                position(Position.Relative)
-            }
+
+        SearchField(searchText, appString { whomDoYouSeek }, modifier = {
+            marginTop(2.cssRem)
         }) {
-            val whomDoYouSeek = appString { whomDoYouSeek }
-            Input(InputType.Text) {
-                classes(Styles.textarea)
-                style {
-                    width(100.percent)
-                    marginTop(2.cssRem)
-                    paddingLeft(3.cssRem)
-                }
-
-                placeholder(whomDoYouSeek)
-
-                onInput {
-                    searchText = it.value
-                }
-
-                autoFocus()
-            }
-            Span({
-                classes("material-symbols-outlined")
-                style {
-                    position(Position.Absolute)
-                    property("z-index", "1")
-                    property("pointer-events", "none")
-                    color(Styles.colors.primary)
-                    left(1.cssRem)
-                    top(2.cssRem)
-                    bottom(0.cssRem)
-                    display(DisplayStyle.Flex)
-                    alignItems(AlignItems.Center)
-                }
-            }) {
-                Text("search")
-            }
+            searchText = it
         }
 
         LaunchedEffect(searchText) {

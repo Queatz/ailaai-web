@@ -110,6 +110,18 @@ fun main() {
                     }
                 }
 
+                route("cities") {
+                    AppHeader(appString { chooseYourCity }, showMenu = false, showDownload = false)
+                    CitiesPage()
+                    AppFooter()
+                }
+
+                route("privacy") {
+                    AppHeader(appName, showMenu = false, showDownload = false)
+                    PrivacyPage()
+                    AppFooter()
+                }
+
                 string { profileUrl ->
                     AppHeader(appName)
                     val someoneString = appString { someone }

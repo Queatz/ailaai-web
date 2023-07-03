@@ -73,19 +73,30 @@ fun AppHeader(
                 display(DisplayStyle.Flex)
                 alignItems(AlignItems.Center)
                 justifyContent(JustifyContent.FlexEnd)
-                margin(0.cssRem, 1.cssRem)
-                overflow("auto")
+                overflow("hidden")
             }
         }) {
             if (showMenu) {
-                val cardId = appString { introductionCardId }
                 Div({
-                    classes(Styles.menuButton)
+                    style {
+                        display(DisplayStyle.Flex)
+                        alignItems(AlignItems.Center)
+                        cursor("pointer")
+                    }
                     onClick {
-                        router.navigate("/card/$cardId")
+                        router.navigate("/cities")
                     }
                 }) {
-                    appText { introduction }
+                    Span {
+                        Text("Hồ Chí Minh")
+                    }
+                    Span({
+                        classes("material-symbols-outlined")
+                        style {
+                        }
+                    }) {
+                        Text("expand_more")
+                    }
                 }
             } else {
                 Text("")

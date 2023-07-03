@@ -150,7 +150,7 @@ object Strings {
         "Локальный обмен сообщениями, торговая площадка и вдохновение"
     )
     val homeAboutTitle = Translation(
-        "What is Ai là ai?",
+        "What is Ai Là Ai?",
         "Ai là ai là gì?"
         ,"Что такое Ай Ла Ай?"
     )
@@ -170,7 +170,7 @@ object Strings {
         ,"вышли мне электронное письмо"
     )
     val engageToday = Translation(
-        "and start engaging your city today!",
+        "and start engaging with your city today!",
         "và bắt đầu làm quen với thành phố của bạn nha!"
         ,"и начните вовлекать свой город уже сегодня!"
     )
@@ -240,6 +240,22 @@ object Strings {
     val whomDoYouSeek = Translation(
         "Who are you looking for today?",
         "Hôm nay bạn đang tìm kiếm ai vậy?"
+    )
+    val chooseYourCity = Translation(
+        "Choose your city",
+        "Chọn thành phố"
+    )
+    val search = Translation(
+        "Search",
+        "Tìm kiếm"
+    )
+    val privacyPolicy = Translation(
+        "Privacy Policy",
+        "Chính sách bảo mật"
+    )
+    val privacyPolicyText = Translation(
+        "Data that you have not designated as publicly available on the Platform is not accessed or provided to any other entity to the extent possible by law.",
+        "Dữ liệu mà bạn không chỉ định là có sẵn công khai trên Nền tảng sẽ không được truy cập hoặc cung cấp cho bất kỳ tổ chức nào khác trong phạm vi có thể của pháp luật."
     )
 }
 

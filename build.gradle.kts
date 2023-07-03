@@ -1,5 +1,3 @@
-import org.jetbrains.compose.compose
-
 val ktorVersion = "2.2.4"
 
 plugins {
