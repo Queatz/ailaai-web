@@ -122,6 +122,12 @@ fun main() {
                     AppFooter()
                 }
 
+                route("terms") {
+                    AppHeader(appName, showMenu = false, showDownload = false)
+                    TosPage()
+                    AppFooter()
+                }
+
                 string { profileUrl ->
                     AppHeader(appName)
                     val someoneString = appString { someone }

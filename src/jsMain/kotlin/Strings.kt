@@ -253,9 +253,9 @@ object Strings {
         "Privacy Policy",
         "Chính sách bảo mật"
     )
-    val privacyPolicyText = Translation(
-        "Data that you have not designated as publicly available on the Platform is not accessed or provided to any other entity to the extent possible by law.",
-        "Dữ liệu mà bạn không chỉ định là có sẵn công khai trên Nền tảng sẽ không được truy cập hoặc cung cấp cho bất kỳ tổ chức nào khác trong phạm vi có thể của pháp luật."
+    val tos = Translation(
+        "Terms of Use",
+        "Điều khoản sử dụng"
     )
 }
 

@@ -80,7 +80,7 @@ fun CitiesPage() {
                                 color(Styles.colors.tertiary)
                             }
                         }) {
-                            Text("Bây giờ có 2 người ở đay")
+                            Text("2 người đang ở đay")
                         }
                     }
                 }

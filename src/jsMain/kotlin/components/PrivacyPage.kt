@@ -6,6 +6,7 @@ import appText
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.H3
+import org.jetbrains.compose.web.dom.Text
 
 @Composable
 fun PrivacyPage() {
@@ -23,7 +24,7 @@ fun PrivacyPage() {
             appText { privacyPolicy }
         }
         Div {
-            appText { privacyPolicyText }
+            Text("Data created by you that is not made publicly available on the Platform is not accessed or provided to any other entity except when required by law and to resolve reported content.")
         }
     }
 }

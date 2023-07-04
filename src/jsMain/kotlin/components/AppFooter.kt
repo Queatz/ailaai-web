@@ -45,5 +45,23 @@ fun AppFooter() {
         }) {
             appText { contact }
         }
+        Bullet()
+        Span({
+            classes(Styles.menuButton)
+            onClick {
+                router.navigate("/privacy")
+            }
+        }) {
+            appText { privacyPolicy }
+        }
+        Bullet()
+        Span({
+            classes(Styles.menuButton)
+            onClick {
+                router.navigate("/terms")
+            }
+        }) {
+            appText { tos }
+        }
     }
 }
