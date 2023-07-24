@@ -42,14 +42,6 @@ fun HomePage() {
         Div {
             Text(appString { homeAboutDescription })
             Br()
-            Br()
-        }
-        Div {
-            Text(appString { toJoinThePlatform })
-            A("mailto:jacobaferrero@gmail.com?subject=${appString { inviteEmailSubject }}") {
-                Text(appString { inlineSendMeAnEmail })
-            }
-            Text(" ${appString { engageToday }}")
         }
         DownloadAppButton()
         var searchText by remember { mutableStateOf("") }

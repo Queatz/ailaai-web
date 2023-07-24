@@ -100,6 +100,7 @@ fun ProfilePage(personId: String? = null, url: String? = null, onProfile: (Perso
                                     backgroundImage("url($baseUrl$it)")
                                     backgroundPosition("center")
                                     backgroundSize("cover")
+                                    maxHeight(50.vh)
                                     property("aspect-ratio", "2")
                                 }
                             }) {}

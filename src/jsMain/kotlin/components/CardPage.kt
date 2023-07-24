@@ -140,6 +140,7 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
                                     backgroundImage("url($baseUrl$it)")
                                     backgroundPosition("center")
                                     backgroundSize("cover")
+                                    maxHeight(50.vh)
                                     property("aspect-ratio", "2")
                                 }
                             }) {}

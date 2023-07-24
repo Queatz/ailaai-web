@@ -155,24 +155,9 @@ object Strings {
         ,"Что такое Ай Ла Ай?"
     )
     val homeAboutDescription = Translation(
-        "Ai Là Ai is a platform that helps you stay connected to your city in ways meaningful to you.",
-        "Nền tảng Ai là ai giúp bạn kết nối gần gũi với thành phố của bạn theo ý thích."
+        "Ai Là Ai is a collaboration platform that helps you discover and stay connected to your city, enabling you to do more, externalize all of your visions, and go farther than you ever imagined.",
+        "Ai là ai là một nền tảng hợp tác giúp bạn khám phá và giữ liên lạc với mọi người trong thành phố của bạn, cho phép bạn làm được nhiều hơn, hiện thực hóa tất cả tầm nhìn của bạn và tiến xa hơn những gì bạn tưởng tượng."
         ,""
-    )
-    val toJoinThePlatform = Translation(
-        "To join the Ai Là Ai platform, ",
-        "Để tham gia nền tảng Ai là ai, hãy "
-        ,"Чтобы присоединиться к платформе, "
-    )
-    val inlineSendMeAnEmail = Translation(
-        "send me an email",
-        "gửi email cho tôi"
-        ,"вышли мне электронное письмо"
-    )
-    val engageToday = Translation(
-        "and start engaging with your city today!",
-        "và bắt đầu làm quen với thành phố của bạn nha!"
-        ,"и начните вовлекать свой город уже сегодня!"
     )
     val inviteEmailSubject = Translation(
         "Ai là ai invite to join",
@@ -238,8 +223,8 @@ object Strings {
         "Không tìm được thẻ để cho bạn xem."
     )
     val whomDoYouSeek = Translation(
-        "Who are you looking for today?",
-        "Hôm nay bạn đang tìm kiếm ai vậy?"
+        "Search your city",
+        "Tìm kiếm trong thành phố"
     )
     val chooseYourCity = Translation(
         "Choose your city",
