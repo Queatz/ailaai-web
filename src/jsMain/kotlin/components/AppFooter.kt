@@ -63,5 +63,14 @@ fun AppFooter() {
         }) {
             appText { tos }
         }
+        Bullet()
+        Span({
+            classes(Styles.menuButton)
+            onClick {
+                router.navigate("/page/open-source")
+            }
+        }) {
+            appText { openSource }
+        }
     }
 }

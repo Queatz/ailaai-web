@@ -11,9 +11,6 @@ import http
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import kotlinx.coroutines.delay
-import org.jetbrains.compose.web.attributes.InputType
-import org.jetbrains.compose.web.attributes.autoFocus
-import org.jetbrains.compose.web.attributes.placeholder
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
 
@@ -48,7 +45,7 @@ fun HomePage() {
         var isLoading by remember { mutableStateOf(false) }
         var searchResults by remember { mutableStateOf(listOf<Card>()) }
 
-        SearchField(searchText, appString { whomDoYouSeek }, modifier = {
+        SearchField(searchText, appString { searchCity }, modifier = {
             marginTop(2.cssRem)
         }) {
             searchText = it
@@ -77,8 +74,7 @@ fun HomePage() {
             true -> {
                 listOf(
                     appString { peopleToKnow } to listOf("11389583", "11156377", "10455696", "12319827", "9914441").shuffled().take(3),
-                    appString { placesToKnow } to listOf("9879608", "10102613"),
-                    appString { thingsToKnow } to listOf("2181697"),
+                    appString { placesToKnow } to listOf("9879608", "10102613")
                 )
             }
             false -> {

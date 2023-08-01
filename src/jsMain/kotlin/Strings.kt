@@ -174,11 +174,6 @@ object Strings {
         "Những chỗ cần biết",
         "Места, чтобы знать"
     )
-    val thingsToKnow = Translation(
-        "Things to know",
-        "Những điều cần biết",
-        "Что,чтобы знать"
-    )
     val madeWith = Translation(
         "Made with",
         "Tạo với",
@@ -222,9 +217,9 @@ object Strings {
         "No cards found.",
         "Không tìm được thẻ để cho bạn xem."
     )
-    val whomDoYouSeek = Translation(
-        "Search your city",
-        "Tìm kiếm trong thành phố"
+    val searchCity = Translation(
+        "Search Ho Chi Minh City",
+        "Tìm kiếm trong Hồ Chí Mình"
     )
     val chooseYourCity = Translation(
         "Choose your city",
@@ -241,6 +236,10 @@ object Strings {
     val tos = Translation(
         "Terms of Use",
         "Điều khoản sử dụng"
+    )
+    val openSource = Translation(
+        "Open Source",
+        "Mã nguồn mở"
     )
 }
 

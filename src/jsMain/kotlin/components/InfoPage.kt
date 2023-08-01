@@ -29,6 +29,9 @@ import org.jetbrains.compose.web.dom.Div
                     "contact" -> {
                         ContactPage()
                     }
+                    "open-source" -> {
+                        OpenSourcePage()
+                    }
                     else -> Router.current.navigate("/")
                 }
             }
