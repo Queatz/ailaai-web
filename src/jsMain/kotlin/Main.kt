@@ -16,6 +16,7 @@ import org.w3c.dom.get
 import org.w3c.dom.set
 
 const val baseUrl = "https://api.ailaai.app"
+const val webBaseUrl = "https://ailaai.app"
 
 val json = Json {
     encodeDefaults = true
@@ -67,9 +68,14 @@ fun main() {
                 }
 
                 route("signin") {
-                    AppHeader(appString { signIn }, showBack = parentCardId != null, onBack = {
-                        router.navigate("/")
-                    }, showMe = false)
+                    AppHeader(
+                        appString { signIn },
+                        showBack = true,
+                        onBack = {
+                            router.navigate("/")
+                        },
+                        showMe = false
+                    )
                     SigninPage()
                     AppFooter()
                 }

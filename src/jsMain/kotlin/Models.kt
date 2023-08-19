@@ -1,6 +1,12 @@
 import kotlinx.serialization.Serializable
 
 @Serializable
+class LinkDeviceToken(
+    var token: String? = null,
+    var person: String? = null
+) : Model()
+
+@Serializable
 class Card(
     var person: String? = null,
     var parent: String? = null,

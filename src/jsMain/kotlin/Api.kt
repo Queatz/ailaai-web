@@ -1,9 +1,27 @@
 import kotlinx.browser.localStorage
+import kotlinx.serialization.Serializable
 import org.w3c.dom.get
 import org.w3c.dom.set
 import kotlin.random.Random
 
 val api = Api()
+
+@Serializable
+data class TokenResponse (
+    val token: String
+)
+
+@Serializable
+data class SignUpRequest(
+    val code: String?
+)
+
+@Serializable
+data class SignInRequest(
+    val code: String? = null,
+    val link: String? = null
+)
+
 
 class Api {
     val token: String
