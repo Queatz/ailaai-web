@@ -13,6 +13,7 @@ class Card(
     var equipped: Boolean? = null,
     var geo: List<Double>? = null,
     var conversation: String? = null,
+    var options: String? = null,
     var active: Boolean? = null,
     var offline: Boolean? = null,
     var cardCount: Int? = null

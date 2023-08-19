@@ -41,6 +41,12 @@ data class ConversationItem(
     var items: MutableList<ConversationItem> = mutableListOf(),
 )
 
+@Serializable
+data class CardOptions(
+    var enableReplies: Boolean? = null,
+    var enableAnonymousReplies: Boolean? = null
+)
+
 enum class ConversationAction {
     Message
 }
@@ -52,6 +58,7 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
     var cards by remember { mutableStateOf<List<Card>>(emptyList()) }
     val stack = remember { mutableListOf<ConversationItem>() }
     var cardConversation by remember { mutableStateOf<ConversationItem?>(null) }
+    var cardOptions by remember { mutableStateOf<CardOptions?>(null) }
     var isReplying by remember { mutableStateOf<List<ConversationItem>?>(null) }
     var replyMessage by remember { mutableStateOf("") }
     var isSendingReply by remember { mutableStateOf(false) }
@@ -67,6 +74,7 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
         try {
             card = http.get("$baseUrl/cards/$cardId").body()
             cardConversation = card!!.getConversation()
+            cardOptions = card!!.getOptions()
             stack.clear()
             cardLoaded(card!!)
             cards = http.get("$baseUrl/cards/$cardId/cards").body()
@@ -328,7 +336,7 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
                                         }
                                     }
                                 }
-                                if (cardConversation?.items.isNullOrEmpty()) {
+                                if (cardConversation?.items.isNullOrEmpty() && cardOptions?.enableAnonymousReplies != false) {
                                     Button({
                                         classes(Styles.button)
                                         onClick {
@@ -370,3 +378,5 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
 }
 
 fun Card.getConversation() = DefaultJson.decodeFromString<ConversationItem>(conversation ?: "{}")
+
+fun Card.getOptions() = DefaultJson.decodeFromString<CardOptions>(options ?: "{}")

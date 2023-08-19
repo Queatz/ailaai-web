@@ -66,6 +66,14 @@ fun main() {
                     document.title = appName
                 }
 
+                route("signin") {
+                    AppHeader(appString { signIn }, showBack = parentCardId != null, onBack = {
+                        router.navigate("/")
+                    }, showMe = false)
+                    SigninPage()
+                    AppFooter()
+                }
+
                 route("card") {
                     string { cardId ->
                         AppHeader(appString { explore }, showBack = parentCardId != null, onBack = {
@@ -102,7 +110,7 @@ fun main() {
 
                 route("page") {
                     string { page ->
-                        AppHeader(appName, showMenu = true, showDownload = false, showBack = true) {
+                        AppHeader(appName, showMenu = true, showBack = true) {
                             router.navigate("/")
                         }
                         InfoPage(page)
@@ -111,19 +119,19 @@ fun main() {
                 }
 
                 route("cities") {
-                    AppHeader(appString { chooseYourCity }, showMenu = false, showDownload = false)
+                    AppHeader(appString { chooseYourCity }, showMenu = false)
                     CitiesPage()
                     AppFooter()
                 }
 
                 route("privacy") {
-                    AppHeader(appName, showMenu = false, showDownload = false)
+                    AppHeader(appName, showMenu = false)
                     PrivacyPage()
                     AppFooter()
                 }
 
                 route("terms") {
-                    AppHeader(appName, showMenu = false, showDownload = false)
+                    AppHeader(appName, showMenu = false)
                     TosPage()
                     AppFooter()
                 }
@@ -138,7 +146,7 @@ fun main() {
                 }
 
                 noMatch {
-                    AppHeader(appName, showMenu = true, showDownload = false)
+                    AppHeader(appName, showMenu = true)
                     HomePage()
                     AppFooter()
                 }

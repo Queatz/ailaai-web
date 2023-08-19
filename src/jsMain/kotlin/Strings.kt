@@ -241,6 +241,10 @@ object Strings {
         "Open Source",
         "Mã nguồn mở"
     )
+    val signIn = Translation(
+        "Sign in",
+        "Đăng nhập"
+    )
 }
 
 @Composable

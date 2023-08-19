@@ -7,17 +7,15 @@ import androidx.compose.runtime.*
 import app.softwork.routingcompose.Router
 import appString
 import appText
-import kotlinx.browser.window
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
-import org.w3c.dom.events.Event
 
 @Composable
 fun AppHeader(
     title: String,
     showBack: Boolean = false,
-    showDownload: Boolean = true,
     showMenu: Boolean = false,
+    showMe: Boolean = true,
     onBack: () -> Unit = {},
 ) {
     val router = Router.current
@@ -107,9 +105,6 @@ fun AppHeader(
             style {
                 padding(.5.cssRem, 1.cssRem)
                 fontSize(32.px)
-                if (showDownload) {
-                    marginRight(.5.cssRem)
-                }
                 property("user-select", "none")
                 cursor("pointer")
             }
@@ -136,20 +131,18 @@ fun AppHeader(
                 else -> Text("\uD83C\uDDEC\uD83C\uDDE7")
             }
         }
-        if (showDownload) {
-            Span({
-                classes("material-symbols-outlined")
+        if (showMe) {
+            // todo check if me object exists in local storage
+            Button({
+                classes(Styles.textButton)
                 style {
-                    fontSize(32.px)
-                    paddingRight(PaddingDefault / 2)
-                    property("user-select", "none")
-                    cursor("pointer")
+                    marginRight(.5.cssRem)
                 }
                 onClick {
-                    router.navigate("/")
+                    router.navigate("/signin")
                 }
             }) {
-                Text("download")
+                appText { signIn }
             }
         }
     }

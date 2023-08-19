@@ -1,9 +1,9 @@
 val ktorVersion = "2.2.4"
 
 plugins {
-    kotlin("multiplatform") version "1.8.20"
-    kotlin("plugin.serialization") version "1.8.20"
-    id("org.jetbrains.compose") version "1.4.1"
+    kotlin("multiplatform") version "1.9.0"
+    kotlin("plugin.serialization") version "1.9.0"
+    id("org.jetbrains.compose") version "1.5.0-rc01"
 }
 
 group = "app.ailaai"
@@ -40,6 +40,7 @@ kotlin {
                 implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
                 implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
                 implementation("app.softwork:routing-compose:0.2.12")
+                implementation(npm("@paulmillr/qr", "0.1.1"))
             }
         }
         val jsTest by getting {
