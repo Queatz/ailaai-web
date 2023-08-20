@@ -1,5 +1,7 @@
 package app
 
+import CornerDefault
+import PaddingDefault
 import Styles
 import Styles.elevated
 import org.jetbrains.compose.web.ExperimentalComposeWebApi
@@ -120,6 +122,7 @@ object AppStyles : StyleSheet() {
 
     val messageItem by style {
         padding(1.cssRem)
+        backgroundColor(Color.white)
         borderRadius(1.cssRem)
         border(1.px, LineStyle.Solid, Styles.colors.background)
         whiteSpace("pre-wrap")
@@ -127,6 +130,37 @@ object AppStyles : StyleSheet() {
         self + className(myMessage) style {
             backgroundColor(Styles.colors.background)
             property("border", "none")
+        }
+    }
+
+    val myMessageReply by style {
+
+    }
+
+    val messageReply by style {
+        display(DisplayStyle.Flex)
+        padding(PaddingDefault)
+        position(Position.Relative)
+        marginBottom(PaddingDefault / 2)
+        borderRadius(
+            CornerDefault / 2,
+            CornerDefault,
+            CornerDefault,
+            CornerDefault / 2,
+        )
+        backgroundColor(Color("#fafafa"))
+        property("border-left", "4px solid ${Styles.colors.background}")
+
+        self + className(myMessageReply) style {
+            flexDirection(FlexDirection.RowReverse)
+            borderRadius(
+                CornerDefault,
+                CornerDefault / 2,
+                CornerDefault / 2,
+                CornerDefault,
+            )
+            property("border-left", "none")
+            property("border-right", "4px solid ${Styles.colors.background}")
         }
     }
 }
