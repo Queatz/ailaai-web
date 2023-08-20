@@ -43,9 +43,7 @@ fun StoryPage(storyUrl: String, onStoryLoaded: (Story) -> Unit) {
 
     LaunchedEffect(story) {
         story?.let { story ->
-            storyContent = json.parseToJsonElement(story.content ?: "[]").jsonArray.toList().mapNotNull { part ->
-                part.jsonObject.toStoryContent()
-            }.let { parts ->
+            storyContent = story.contents().let { parts ->
                 listOf(
                     StoryContent.Title(story.title ?: "", story.id!!),
                     StoryContent.Authors(story.publishDate, story.authors ?: emptyList()),
@@ -208,3 +206,16 @@ fun JsonObject.toStoryContent(): StoryContent? = get("content")?.jsonObject?.let
         else -> null
     }
 }
+
+fun Story.contents() = json.parseToJsonElement(content ?: "[]").jsonArray.toList().mapNotNull { part ->
+    part.jsonObject.toStoryContent()
+}
+
+fun Story.textContent(): String = contents().mapNotNull {
+    when (it) {
+        is StoryContent.Title -> it.title.takeIf { it.isNotBlank() }
+        is StoryContent.Section -> it.section.takeIf { it.isNotBlank() }
+        is StoryContent.Text -> it.text.takeIf { it.isNotBlank() }
+        else -> null
+    }
+}.joinToString("\n")

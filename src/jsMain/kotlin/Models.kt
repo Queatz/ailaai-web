@@ -7,6 +7,49 @@ class LinkDeviceToken(
 ) : Model()
 
 @Serializable
+class Group(
+    var name: String? = null,
+    var seen: String? = null,
+    var description: String? = null,
+) : Model()
+
+
+@Serializable
+class MemberAndPerson(
+    var person: Person? = null,
+    var member: Member? = null,
+)
+
+@Serializable
+class Message(
+    var group: String? = null,
+    var member: String? = null,
+    var text: String? = null,
+    var attachment: String? = null,
+    var attachments: List<String>? = null
+) : Model()
+
+@Serializable
+class Member(
+    var seen: String? = null,
+    var hide: Boolean? = null,
+    var gone: Boolean? = null,
+    var host: Boolean? = null
+) : Edge()
+
+@Serializable
+open class Edge : Model() {
+    var from: String? = null
+    var to: String? = null
+}
+@Serializable
+class GroupExtended(
+    var group: Group? = null,
+    var members: List<MemberAndPerson>? = null,
+    var latestMessage: Message? = null,
+)
+
+@Serializable
 class Card(
     var person: String? = null,
     var parent: String? = null,

@@ -370,7 +370,9 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
                 classes(Styles.content)
             }) {
                 cards.forEach { card ->
-                    CardItem(card)
+                    CardItem(card) {
+                        margin(PaddingDefault)
+                    }
                 }
             }
         }

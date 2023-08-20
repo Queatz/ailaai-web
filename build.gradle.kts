@@ -1,3 +1,6 @@
+import org.jetbrains.kotlin.gradle.dsl.KotlinJsOptions
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinJsCompilation
+
 val ktorVersion = "2.2.4"
 
 plugins {
@@ -41,6 +44,7 @@ kotlin {
                 implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
                 implementation("app.softwork:routing-compose:0.2.12")
                 implementation(npm("@paulmillr/qr", "0.1.1"))
+                implementation(npm("date-fns", "2.30.0"))
             }
         }
         val jsTest by getting {

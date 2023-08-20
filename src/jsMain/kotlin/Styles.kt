@@ -9,6 +9,18 @@ object Styles : StyleSheet() {
         val tertiary = Color("#2e8900")
     }
 
+    fun CSSBuilder.cardStyle() {
+        borderRadius(PaddingDefault * 2)
+        backgroundColor(colors.background)
+        property("box-shadow", "2px 2px 8px rgba(0, 0, 0, .25)")
+    }
+
+    fun CSSBuilder.elevated() {
+        property("box-shadow", "rgba(0, 0, 0, 0.125) 1px 1px 4px")
+        backgroundColor(Color.white)
+        borderRadius(CornerDefault)
+    }
+
     init {
         "a" style {
             color(colors.primary)
@@ -31,9 +43,7 @@ object Styles : StyleSheet() {
         alignItems(AlignItems.Center)
         padding(PaddingDefault)
         margin(PaddingDefault)
-        property("box-shadow", "rgba(0, 0, 0, 0.125) 1px 1px 4px")
-        backgroundColor(Color.white)
-        borderRadius(CornerDefault)
+        elevated()
     }
 
     val appFooter by style {
@@ -145,17 +155,14 @@ object Styles : StyleSheet() {
 
     @OptIn(ExperimentalComposeWebApi::class)
     val card by style {
+        cardStyle()
         position(Position.Relative)
         display(DisplayStyle.Flex)
-        borderRadius(PaddingDefault * 2)
-        backgroundColor(colors.background)
-        margin(PaddingDefault)
         width(640.px)
         overflow("hidden")
         flexDirection(FlexDirection.ColumnReverse)
         cursor("pointer")
         property("aspect-ratio", ".75")
-        property("box-shadow", "2px 2px 8px rgba(0, 0, 0, .25)")
         property("will-change", "transform")
         property("transform-style", "preserve-3d")
 
@@ -279,5 +286,13 @@ object Styles : StyleSheet() {
         property("font-size", "inherit")
         fontFamily("inherit")
         boxSizing("border-box")
+    }
+
+    val profilePhotoText by style {
+        borderRadius(100.percent)
+        backgroundColor(colors.background)
+        display(DisplayStyle.Flex)
+        alignItems(AlignItems.Center)
+        justifyContent(JustifyContent.Center)
     }
 }

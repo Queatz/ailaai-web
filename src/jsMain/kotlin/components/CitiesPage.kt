@@ -9,7 +9,6 @@ import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text
-import kotlin.random.Random
 
 @Composable
 fun CitiesPage() {

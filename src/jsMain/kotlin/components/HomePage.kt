@@ -70,13 +70,20 @@ fun HomePage() {
             isLoading = false
         }
 
-        when(searchText.isBlank()) {
+        when (searchText.isBlank()) {
             true -> {
                 listOf(
-                    appString { peopleToKnow } to listOf("11389583", "11156377", "10455696", "12319827", "9914441").shuffled().take(3),
+                    appString { peopleToKnow } to listOf(
+                        "11389583",
+                        "11156377",
+                        "10455696",
+                        "12319827",
+                        "9914441"
+                    ).shuffled().take(3),
                     appString { placesToKnow } to listOf("9879608", "10102613")
                 )
             }
+
             false -> {
                 listOf(
                     (if (isLoading) appString { searching } else appString { this.searchResults }) to searchResults,
@@ -102,8 +109,13 @@ fun HomePage() {
                 } else {
                     cards.forEach { card ->
                         when (card) {
-                            is String -> CardItem(card)
-                            is Card -> CardItem(card)
+                            is String -> CardItem(card) {
+                                margin(PaddingDefault)
+                            }
+
+                            is Card -> CardItem(card) {
+                                margin(PaddingDefault)
+                            }
                         }
                     }
                 }

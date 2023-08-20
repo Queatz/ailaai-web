@@ -220,7 +220,9 @@ fun ProfilePage(personId: String? = null, url: String? = null, onProfile: (Perso
                     classes(Styles.content)
                 }) {
                     cards.forEach { card ->
-                        CardItem(card)
+                        CardItem(card) {
+                            margin(PaddingDefault)
+                        }
                     }
                 }
             }

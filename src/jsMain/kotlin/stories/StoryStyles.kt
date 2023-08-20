@@ -49,6 +49,7 @@ object StoryStyles : StyleSheet() {
         flexWrap(FlexWrap.Wrap)
         alignItems(AlignItems.Stretch)
         justifyContent(JustifyContent.Stretch)
+        lineHeight("0")
     }
 
     val contentCards by style {

@@ -17,7 +17,7 @@ import org.w3c.dom.HTMLDivElement
 import kotlin.math.roundToInt
 
 @Composable
-fun CardItem(cardId: String) {
+fun CardItem(cardId: String, openInNewWindow: Boolean = false, styles: (StyleScope.() -> Unit)? = null) {
     var card by remember { mutableStateOf<Card?>(null) }
     LaunchedEffect(Unit) {
         try {
@@ -27,12 +27,12 @@ fun CardItem(cardId: String) {
         }
     }
     card?.let { card ->
-        CardItem(card)
+        CardItem(card, openInNewWindow, styles)
     }
 }
 
 @Composable
-fun CardItem(card: Card) {
+fun CardItem(card: Card, openInNewWindow: Boolean = false, styles: (StyleScope.() -> Unit)? = null) {
     val router = Router.current
     Div({
         classes(Styles.card)
@@ -44,9 +44,11 @@ fun CardItem(card: Card) {
             }
 
             position(Position.Relative)
+
+            styles?.invoke(this)
         }
         onClick { event ->
-            if (event.ctrlKey) {
+            if (event.ctrlKey || openInNewWindow) {
                 window.open("/card/${card.id}", target = "_blank")
             } else {
                 router.navigate("/card/${card.id}")

@@ -7,6 +7,7 @@ import androidx.compose.runtime.*
 import app.softwork.routingcompose.Router
 import appString
 import appText
+import application
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
 
@@ -132,17 +133,22 @@ fun AppHeader(
             }
         }
         if (showMe) {
-            // todo check if me object exists in local storage
-            Button({
-                classes(Styles.textButton)
-                style {
-                    marginRight(.5.cssRem)
+            val me by application.me.collectAsState()
+
+            if (me == null) {
+                Button({
+                    classes(Styles.textButton)
+                    style {
+                        marginRight(.5.cssRem)
+                    }
+                    onClick {
+                        router.navigate("/signin")
+                    }
+                }) {
+                    appText { signIn }
                 }
-                onClick {
-                    router.navigate("/signin")
-                }
-            }) {
-                appText { signIn }
+            } else {
+                // todo show profile icon
             }
         }
     }

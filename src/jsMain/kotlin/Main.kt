@@ -9,6 +9,7 @@ import io.ktor.serialization.kotlinx.json.*
 import kotlinx.browser.document
 import kotlinx.browser.localStorage
 import kotlinx.browser.window
+import kotlinx.coroutines.delay
 import kotlinx.serialization.json.Json
 import org.jetbrains.compose.web.css.Style
 import org.jetbrains.compose.web.renderComposableInBody
@@ -57,6 +58,11 @@ fun main() {
 
             LaunchedEffect(language) {
                 localStorage["language"] = language
+            }
+
+            LaunchedEffect(Unit) {
+                delay(500)
+                application.sync()
             }
 
             BrowserRouter("") {
@@ -152,9 +158,7 @@ fun main() {
                 }
 
                 noMatch {
-                    AppHeader(appName, showMenu = true)
-                    HomePage()
-                    AppFooter()
+                    MainPage()
                 }
             }
         }
