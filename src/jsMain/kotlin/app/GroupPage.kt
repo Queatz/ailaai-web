@@ -1,10 +1,13 @@
 package app
 
+import CornerDefault
 import GroupExtended
 import Message
+import Sticker
 import Styles
 import androidx.compose.runtime.*
 import app.messaages.MessageItem
+import app.messaages.StickerAttachment
 import appString
 import application
 import baseUrl
@@ -15,8 +18,10 @@ import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.utils.io.charsets.*
+import json
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.serialization.encodeToString
 import org.jetbrains.compose.web.attributes.autoFocus
 import org.jetbrains.compose.web.attributes.placeholder
 import org.jetbrains.compose.web.css.*
@@ -46,6 +51,10 @@ fun GroupPage(group: GroupExtended?) {
 
     var isLoading by remember(group) {
         mutableStateOf(true)
+    }
+
+    var showStickers by remember(group) {
+        mutableStateOf(false)
     }
 
     var messagesDiv by remember {
@@ -100,6 +109,29 @@ fun GroupPage(group: GroupExtended?) {
         }
     }
 
+    fun sendSticker(sticker: Sticker) {
+        scope.launch {
+            try {
+                http.post("$baseUrl/groups/${group!!.group!!.id!!}/messages") {
+                    contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
+                    bearerAuth(application.bearer!!)
+                    setBody(Message(
+                        attachment = json.encodeToString(
+                            StickerAttachment(
+                                sticker.photo,
+                                sticker.id,
+                                sticker.message
+                            )
+                        )
+                    ))
+                }
+                reload()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
     if (group == null) {
         Div({
             style {
@@ -118,6 +150,30 @@ fun GroupPage(group: GroupExtended?) {
     } else {
         val myMember = group.members?.find { it.person?.id == me!!.id }
 
+        if (showStickers) {
+            Div({
+                style {
+                    display(DisplayStyle.Flex)
+                    height(18.cssRem)
+                    maxHeight(50.vh)
+                    overflowX("hidden")
+                    overflowY("auto")
+                    flexDirection(FlexDirection.Column)
+                    backgroundColor(Color("#fafafa"))
+                    border(1.px, LineStyle.Solid, Color("#e4e4e4"))
+                    marginLeft(1.cssRem)
+                    marginRight(1.cssRem)
+                    marginBottom(1.cssRem)
+                    borderRadius(CornerDefault)
+                }
+            }) {
+                StickersTray {
+                    sendSticker(it)
+                    showStickers = false
+                }
+            }
+        }
+
         Div({
             classes(AppStyles.messageBar)
         }) {
@@ -133,8 +189,8 @@ fun GroupPage(group: GroupExtended?) {
                     IconButton("image", "Send photo", styles = { marginLeft(1.cssRem) }) {
                         // todo
                     }
-                    IconButton("expand_more", "More", styles = { marginLeft(1.cssRem) }) {
-                        // todo
+                    IconButton(if (showStickers) "expand_less" else "expand_more", "More", styles = { marginLeft(1.cssRem) }) {
+                        showStickers = !showStickers
                     }
                 } else {
                     IconButton("send", "Send message", styles = { marginLeft(1.cssRem) }) {

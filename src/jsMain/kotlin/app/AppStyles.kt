@@ -12,7 +12,6 @@ object AppStyles : StyleSheet() {
         height(100.vh)
         overflow("hidden")
         display(DisplayStyle.Flex)
-        backgroundColor(Color("#fafafa"))
     }
     val sideLayout by style {
         width(24.cssRem)
@@ -23,6 +22,7 @@ object AppStyles : StyleSheet() {
         marginTop(1.cssRem)
         marginLeft(1.cssRem)
         marginBottom(1.cssRem)
+        property("z-index", "1")
         elevated()
     }
     val mainLayout by style {

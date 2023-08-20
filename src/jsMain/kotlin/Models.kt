@@ -88,6 +88,23 @@ class Person(
 ) : Model()
 
 @Serializable
+class Sticker(
+    var photo: String? = null,
+    var pack: String? = null,
+    var name: String? = null,
+    var message: String? = null,
+) : Model()
+
+@Serializable
+class StickerPack(
+    var name: String? = null,
+    var description: String? = null,
+    var person: String? = null,
+    var active: Boolean? = null,
+    var stickers: List<Sticker>? = null
+) : Model()
+
+@Serializable
 open class Model {
     var id: String? = null
     var createdAt: String? = null

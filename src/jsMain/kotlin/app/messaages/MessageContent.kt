@@ -7,6 +7,7 @@ import PaddingDefault
 import Story
 import androidx.compose.runtime.*
 import app.AppStyles
+import app.StickerItem
 import app.softwork.routingcompose.Router
 import baseUrl
 import components.CardItem
@@ -137,12 +138,7 @@ fun MessageContent(message: Message, myMember: MemberAndPerson?) {
             }
         }
         is StickerAttachment -> {
-            Img("$baseUrl${attachment.photo}") {
-                style {
-                    width(96.px)
-                    height(96.px)
-                }
-            }
+            StickerItem(attachment.photo!!, 96.px) {}
         }
     }
 
