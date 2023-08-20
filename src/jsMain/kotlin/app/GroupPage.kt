@@ -16,9 +16,13 @@ import components.Loading
 import http
 import io.ktor.client.call.*
 import io.ktor.client.request.*
+import io.ktor.client.request.forms.*
 import io.ktor.http.*
+import io.ktor.util.*
 import io.ktor.utils.io.charsets.*
 import json
+import kotlinx.browser.document
+import kotlinx.coroutines.await
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
@@ -28,11 +32,13 @@ import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Text
 import org.jetbrains.compose.web.dom.TextArea
-import org.w3c.dom.HTMLDivElement
-import org.w3c.dom.SMOOTH
-import org.w3c.dom.ScrollBehavior
-import org.w3c.dom.ScrollToOptions
+import org.khronos.webgl.Uint8Array
+import org.khronos.webgl.get
+import org.w3c.dom.*
+import org.w3c.files.File
+import kotlin.js.Promise
 
+@OptIn(InternalAPI::class)
 @Composable
 fun GroupPage(group: GroupExtended?) {
     val me by application.me.collectAsState()
@@ -84,6 +90,65 @@ fun GroupPage(group: GroupExtended?) {
 
     LaunchedEffect(group) {
         reload()
+    }
+
+    fun sendPhotos(files: List<File>, message: Message? = null) {
+        scope.launch {
+            val photos = files.map {
+                val reader = it.asDynamic().stream().getReader()
+                var bytes = ByteArray(0)
+                while (true) {
+                    val chunk = (reader.read() as Promise<*>).await().asDynamic()
+                    val value = chunk.value as? Uint8Array
+                    if (value != null) {
+                        bytes += ByteArray(value.length) { value[it] }
+                    }
+                    if (chunk.done == true) {
+                        break
+                    }
+                }
+                bytes
+            }
+            try {
+                http.post("$baseUrl/groups/${group!!.group!!.id!!}/photos") {
+                    //contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
+                    bearerAuth(application.bearer!!)
+                    setBody(
+                        MultiPartFormDataContent(formData {
+                            if (message != null) {
+                                append("message", json.encodeToString(message))
+                            }
+                            photos.forEachIndexed { index, photo ->
+                                append(
+                                    "photo[$index]",
+                                    photo,
+                                    Headers.build {
+                                        append(HttpHeaders.ContentType, "image/jpeg")
+                                        append(HttpHeaders.ContentDisposition, "filename=photo.jpg")
+                                    }
+                                )
+                            }
+                        })
+                    )
+                }
+                reload()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    fun pickPhoto() {
+        val element = (document.createElement("input") as HTMLInputElement)
+        element.type = "file"
+        element.multiple = true
+        element.accept = "image/*"
+        element.addEventListener("change", {
+            if (element.files != null) {
+                sendPhotos(element.files!!.asList())
+            }
+        })
+        element.click()
     }
 
     fun sendMessage() {
@@ -183,11 +248,11 @@ fun GroupPage(group: GroupExtended?) {
                 }
             }) {
                 if (messageText.isBlank()) {
-                    IconButton("mic", "Record audio", styles = { marginLeft(1.cssRem) }) {
-                        // todo
-                    }
+//                    IconButton("mic", "Record audio", styles = { marginLeft(1.cssRem) }) {
+//                        // todo
+//                    }
                     IconButton("image", "Send photo", styles = { marginLeft(1.cssRem) }) {
-                        // todo
+                        pickPhoto()
                     }
                     IconButton(if (showStickers) "expand_less" else "expand_more", "More", styles = { marginLeft(1.cssRem) }) {
                         showStickers = !showStickers
@@ -236,9 +301,10 @@ fun GroupPage(group: GroupExtended?) {
                 }
             }
         }) {
-            messages.forEach {
+            messages.forEachIndexed { index, it ->
                 MessageItem(
                     it,
+                    if (index < messages.lastIndex - 1) messages[index + 1] else null,
                     group.members?.find { member -> member.member?.id == it.member },
                     myMember
                 )
