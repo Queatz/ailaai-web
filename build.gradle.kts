@@ -1,5 +1,5 @@
 
-val ktorVersion = "3.0.0-eap-772"
+val ktorVersion = "2.3.3"
 
 plugins {
     kotlin("multiplatform") version "1.9.0"
@@ -38,7 +38,6 @@ kotlin {
             dependencies {
                 implementation(compose.runtime)
                 implementation(compose.html.core)
-                implementation("io.ktor:ktor-sse:$ktorVersion")
                 implementation("io.ktor:ktor-client-js:$ktorVersion")
                 implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
                 implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")

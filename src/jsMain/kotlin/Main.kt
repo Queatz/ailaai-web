@@ -5,9 +5,7 @@ import components.*
 import io.ktor.client.*
 import io.ktor.client.engine.js.*
 import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.client.plugins.sse.*
 import io.ktor.serialization.kotlinx.json.*
-import io.ktor.sse.*
 import kotlinx.browser.document
 import kotlinx.browser.localStorage
 import kotlinx.browser.window
@@ -17,7 +15,6 @@ import org.jetbrains.compose.web.css.Style
 import org.jetbrains.compose.web.renderComposableInBody
 import org.w3c.dom.get
 import org.w3c.dom.set
-import kotlin.time.Duration.Companion.seconds
 
 const val baseUrl = "https://api.ailaai.app"
 const val webBaseUrl = "https://ailaai.app"
@@ -35,7 +32,6 @@ val http = HttpClient(Js) {
     install(ContentNegotiation) {
         json(json)
     }
-//    install(SSE)
 }
 
 fun main() {
