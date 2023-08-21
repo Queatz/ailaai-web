@@ -1,10 +1,22 @@
 import kotlinx.serialization.Serializable
 
+enum class DeviceType {
+    Hms,
+    Gms,
+    Web
+}
+
 @Serializable
 class LinkDeviceToken(
     var token: String? = null,
     var person: String? = null
 ) : Model()
+
+@Serializable
+class Device(
+    val type: DeviceType,
+    val token: String,
+)
 
 @Serializable
 class Group(

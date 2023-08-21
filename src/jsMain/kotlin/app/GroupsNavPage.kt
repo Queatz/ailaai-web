@@ -18,11 +18,13 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.utils.io.charsets.*
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 import lib.formatDistanceToNow
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text
+import push
 import kotlin.js.Date
 
 @Composable
@@ -50,7 +52,11 @@ fun GroupsNavPage(selectedGroup: GroupExtended?, onGroupSelected: (GroupExtended
         }
     }
 
-    // todo reload() on any new messages
+    LaunchedEffect(Unit) {
+        push.events.collectLatest {
+            reload()
+        }
+    }
 
     LaunchedEffect(Unit) {
         reload()

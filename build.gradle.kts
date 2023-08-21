@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.dsl.KotlinJsOptions
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinJsCompilation
 
-val ktorVersion = "2.2.4"
+val ktorVersion = "3.0.0-eap-772"
 
 plugins {
     kotlin("multiplatform") version "1.9.0"
@@ -16,6 +16,7 @@ repositories {
     google()
     mavenCentral()
     maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+    maven("https://maven.pkg.jetbrains.space/public/p/ktor/eap")
 }
 
 kotlin {
@@ -39,6 +40,7 @@ kotlin {
             dependencies {
                 implementation(compose.runtime)
                 implementation(compose.html.core)
+                implementation("io.ktor:ktor-sse:$ktorVersion")
                 implementation("io.ktor:ktor-client-js:$ktorVersion")
                 implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
                 implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")

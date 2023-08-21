@@ -22,6 +22,7 @@ import kotlinx.browser.window
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
 import stories.StoryStyles
+import kotlin.js.Date
 
 @Composable
 fun MessageContent(message: Message, myMember: MemberAndPerson?, isReply: Boolean = false) {
@@ -36,7 +37,6 @@ fun MessageContent(message: Message, myMember: MemberAndPerson?, isReply: Boolea
     }
 
     LaunchedEffect(attachment) {
-        console.log("Attachmenty: ${attachment?.type}")
         reply = null
 
         val replyAttachment = message.getAllAttachments().firstNotNullOfOrNull { it as? ReplyAttachment }
@@ -65,6 +65,7 @@ fun MessageContent(message: Message, myMember: MemberAndPerson?, isReply: Boolea
                 alignItems(AlignItems.FlexStart)
             }
         }
+        title(message.createdAt?.let { Date(it) }.toString())
     }) {
         reply?.let { reply ->
             Div({
@@ -103,21 +104,21 @@ fun MessageContent(message: Message, myMember: MemberAndPerson?, isReply: Boolea
                     classes(StoryStyles.contentPhotos)
                 }) {
                     attachment.photos?.forEach { photo ->
-                        Div({
+                        Img(src = "$baseUrl$photo") {
                             classes(StoryStyles.contentPhotosPhoto)
                             style {
-                                display(DisplayStyle.InlineBlock)
                                 backgroundColor(Styles.colors.background)
-                                backgroundImage("url($baseUrl$photo)")
-                                backgroundSize("cover")
-                                backgroundPosition("center")
                                 height(320.px)
-                                width(320.px)
+//                                width(320.px)
                                 maxHeight(100.vw)
                                 borderRadius(CornerDefault)
                                 border(3.px, LineStyle.Solid, Color.white)
+                                cursor("pointer")
                             }
-                        })
+                            onClick {
+                                window.open("$baseUrl$photo", target = "_blank")
+                            }
+                        }
                     }
                 }
             }

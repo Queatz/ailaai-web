@@ -24,6 +24,8 @@ import json
 import kotlinx.browser.document
 import kotlinx.coroutines.await
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import org.jetbrains.compose.web.attributes.autoFocus
@@ -36,9 +38,9 @@ import org.khronos.webgl.Uint8Array
 import org.khronos.webgl.get
 import org.w3c.dom.*
 import org.w3c.files.File
+import push
 import kotlin.js.Promise
 
-@OptIn(InternalAPI::class)
 @Composable
 fun GroupPage(group: GroupExtended?) {
     val me by application.me.collectAsState()
@@ -90,6 +92,12 @@ fun GroupPage(group: GroupExtended?) {
 
     LaunchedEffect(group) {
         reload()
+    }
+
+    LaunchedEffect(group) {
+        push.events.collectLatest {
+            reload()
+        }
     }
 
     fun sendPhotos(files: List<File>, message: Message? = null) {
