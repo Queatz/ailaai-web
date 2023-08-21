@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.dsl.KotlinJsOptions
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinJsCompilation
 
 val ktorVersion = "3.0.0-eap-772"
 
