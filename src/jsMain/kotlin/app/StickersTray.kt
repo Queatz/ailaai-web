@@ -28,7 +28,7 @@ fun StickersTray(onSticker: (Sticker) -> Unit) {
         try {
             allStickerPacks.value = http.get("$baseUrl/sticker-packs") {
                 contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                bearerAuth(application.bearer!!)
+                bearerAuth(application.bearer)
             }.body()
         } catch (e: Exception) {
             e.printStackTrace()

@@ -16,6 +16,7 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.utils.io.charsets.*
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import lib.formatDistanceToNow
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
@@ -34,15 +35,12 @@ fun GroupsNavPage(selectedGroup: GroupExtended?, onGroupSelected: (GroupExtended
         mutableStateOf(emptyList<GroupExtended>())
     }
 
-    if (me == null) {
-        return
-    }
-
     suspend fun reload() {
+        application.bearerToken.first { it != null }
         try {
             groups = http.get("$baseUrl/groups") {
                 contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                bearerAuth(application.bearer!!)
+                bearerAuth(application.bearer)
             }.body()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -55,15 +53,14 @@ fun GroupsNavPage(selectedGroup: GroupExtended?, onGroupSelected: (GroupExtended
         }
     }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(me) {
         reload()
         isLoading = false
     }
 
     if (isLoading) {
         Loading()
-    }
-    else if (groups.isEmpty()) {
+    } else if (groups.isEmpty()) {
         Div({
             style {
                 height(100.percent)

@@ -48,7 +48,7 @@ fun MessageContent(message: Message, myMember: MemberAndPerson?, isReply: Boolea
         try {
             reply = http.get("$baseUrl/messages/${replyAttachment.message!!}") {
                 contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                bearerAuth(application.bearer!!)
+                bearerAuth(application.bearer)
             }.body()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -160,7 +160,7 @@ fun MessageContent(message: Message, myMember: MemberAndPerson?, isReply: Boolea
                     story = try {
                         http.get("$baseUrl/stories/${attachment.story!!}") {
                             contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                            bearerAuth(application.bearer!!)
+                            bearerAuth(application.bearer)
                         }.body()
                     } catch (e: Exception) {
                         e.printStackTrace()

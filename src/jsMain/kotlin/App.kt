@@ -12,8 +12,9 @@ val application = Application()
 
 class Application {
     val me = MutableStateFlow<Person?>(null)
-    var bearer: String? = null
-        private set
+    val bearerToken = MutableStateFlow<String?>(null)
+
+    val bearer: String get() = bearerToken.value!!
 
     init {
         val meJson = localStorage["me"]
@@ -24,7 +25,7 @@ class Application {
                 e.printStackTrace()
             }
         }
-        bearer = localStorage["bearer"]
+        bearerToken.value = localStorage["bearer"]
     }
 
     fun setMe(me: Person?) {
@@ -37,6 +38,7 @@ class Application {
     }
 
     fun setToken(token: String?) {
+        this.bearerToken.value = token
         if (token != null) {
             localStorage["bearer"] = token
         } else {
@@ -45,12 +47,12 @@ class Application {
     }
 
     suspend fun sync() {
-        if (me.value != null && bearer != null) {
+        if (me.value != null && bearerToken.value != null) {
             try {
                 setMe(
                     http.get("$baseUrl/me") {
                         contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                        bearerAuth(bearer!!)
+                        bearerAuth(bearerToken.value!!)
                     }.body<Person>()
                 )
             } catch (e: Exception) {

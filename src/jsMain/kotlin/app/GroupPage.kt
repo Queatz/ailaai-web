@@ -72,7 +72,7 @@ fun GroupPage(group: GroupExtended?) {
         try {
             messages = http.get("$baseUrl/groups/${group.group?.id}/messages") {
                 contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                bearerAuth(application.bearer!!)
+                bearerAuth(application.bearer)
             }.body()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -118,7 +118,7 @@ fun GroupPage(group: GroupExtended?) {
             try {
                 http.post("$baseUrl/groups/${group!!.group!!.id!!}/photos") {
                     //contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                    bearerAuth(application.bearer!!)
+                    bearerAuth(application.bearer)
                     setBody(
                         MultiPartFormDataContent(formData {
                             if (message != null) {
@@ -167,7 +167,7 @@ fun GroupPage(group: GroupExtended?) {
             try {
                 http.post("$baseUrl/groups/${group!!.group!!.id!!}/messages") {
                     contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                    bearerAuth(application.bearer!!)
+                    bearerAuth(application.bearer)
                     setBody(Message(text = text))
                 }
                 reload()
@@ -185,7 +185,7 @@ fun GroupPage(group: GroupExtended?) {
             try {
                 http.post("$baseUrl/groups/${group!!.group!!.id!!}/messages") {
                     contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                    bearerAuth(application.bearer!!)
+                    bearerAuth(application.bearer)
                     setBody(Message(
                         attachment = json.encodeToString(
                             StickerAttachment(

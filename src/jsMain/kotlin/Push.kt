@@ -6,6 +6,7 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.w3c.dom.EventSource
 
@@ -19,10 +20,11 @@ class Push {
 
     fun start(scope: CoroutineScope) {
         job = scope.launch {
+            application.bearerToken.first { it != null }
             try {
                 http.post("$baseUrl/me/device") {
                     contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                    bearerAuth(application.bearer!!)
+                    bearerAuth(application.bearer)
                     setBody(
                         Device(
                             type = DeviceType.Web,
