@@ -98,6 +98,12 @@ fun GroupPage(group: GroupExtended?) {
         }
     }
 
+    LaunchedEffect(group) {
+        push.reconnect.collectLatest {
+            reload()
+        }
+    }
+
     fun sendPhotos(files: List<File>, message: Message? = null) {
         scope.launch {
             val photos = files.map {
@@ -260,7 +266,10 @@ fun GroupPage(group: GroupExtended?) {
                     IconButton("image", "Send photo", styles = { marginLeft(1.cssRem) }) {
                         pickPhoto()
                     }
-                    IconButton(if (showStickers) "expand_less" else "expand_more", "More", styles = { marginLeft(1.cssRem) }) {
+                    IconButton(if (showStickers) "expand_less" else "expand_more", "Stickers", styles = {
+                        marginLeft(1.cssRem)
+                        marginRight(1.cssRem)
+                    }) {
                         showStickers = !showStickers
                     }
                 } else {

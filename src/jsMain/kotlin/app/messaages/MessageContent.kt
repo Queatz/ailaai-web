@@ -216,7 +216,12 @@ fun MessageContent(message: Message, myMember: MemberAndPerson?, isReply: Boolea
             }
 
             is StickerAttachment -> {
-                StickerItem(attachment.photo!!, 96.px) {}
+                StickerItem(
+                    attachment.photo!!,
+                    attachment.message,
+                    96.px,
+                    messageAlign = if (isMe) AlignItems.Start else AlignItems.End
+                ) {}
             }
         }
 

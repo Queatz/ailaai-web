@@ -53,6 +53,12 @@ fun GroupsNavPage(selectedGroup: GroupExtended?, onGroupSelected: (GroupExtended
         }
     }
 
+    LaunchedEffect(Unit) {
+        push.reconnect.collectLatest {
+            reload()
+        }
+    }
+
     LaunchedEffect(me) {
         reload()
         isLoading = false
