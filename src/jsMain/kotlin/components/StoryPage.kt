@@ -34,7 +34,7 @@ fun StoryPage(storyUrl: String, onStoryLoaded: (Story) -> Unit) {
         try {
             story = http.get("$baseUrl/urls/stories/$storyUrl").body()
             onStoryLoaded(story!!)
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             e.printStackTrace()
         } finally {
             isLoading = false

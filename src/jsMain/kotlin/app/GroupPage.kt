@@ -74,7 +74,7 @@ fun GroupPage(group: GroupExtended?) {
                 contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
                 bearerAuth(application.bearer)
             }.body()
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             e.printStackTrace()
         }
         isLoading = false
@@ -138,7 +138,7 @@ fun GroupPage(group: GroupExtended?) {
                     )
                 }
                 reload()
-            } catch (e: Exception) {
+            } catch (e: Throwable) {
                 e.printStackTrace()
             }
         }
@@ -171,7 +171,7 @@ fun GroupPage(group: GroupExtended?) {
                     setBody(Message(text = text))
                 }
                 reload()
-            } catch (e: Exception) {
+            } catch (e: Throwable) {
                 e.printStackTrace()
                 if (messageText.isBlank()) {
                     messageText = text
@@ -197,7 +197,7 @@ fun GroupPage(group: GroupExtended?) {
                     ))
                 }
                 reload()
-            } catch (e: Exception) {
+            } catch (e: Throwable) {
                 e.printStackTrace()
             }
         }

@@ -48,7 +48,7 @@ fun ProfilePage(personId: String? = null, url: String? = null, onProfile: (Perso
                 personId = profile!!.person.id
             }
             onProfile(profile!!)
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             e.printStackTrace()
             router.navigate("/")
         } finally {
@@ -60,7 +60,7 @@ fun ProfilePage(personId: String? = null, url: String? = null, onProfile: (Perso
         if (personId != null) {
             try {
                 cards = http.get("$baseUrl/people/$personId/profile/cards").body()
-            } catch (e: Exception) {
+            } catch (e: Throwable) {
                 e.printStackTrace()
             }
         }
@@ -112,7 +112,7 @@ fun ProfilePage(personId: String? = null, url: String? = null, onProfile: (Perso
 //                                    try {
 ////                                        if (window.navigator.getAutoplayPolicy)
 //                                        videoElement!!.muted = false
-//                                    } catch (e: Exception) {
+//                                    } catch (e: Throwable) {
 //                                        // ignore
 //                                    }
 //                                }

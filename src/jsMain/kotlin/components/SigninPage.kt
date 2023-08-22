@@ -60,7 +60,7 @@ fun SigninPage() {
             http.post("$baseUrl/link-device") {
                 contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
             }.body<LinkDeviceToken>().token!!
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             e.printStackTrace()
             status = "Error"
             return@LaunchedEffect
@@ -79,7 +79,7 @@ fun SigninPage() {
                     if (link.person != null) {
                         qrCodeLinked = true
                     }
-                } catch (e: Exception) {
+                } catch (e: Throwable) {
                     e.printStackTrace()
                 }
             }
@@ -102,7 +102,7 @@ fun SigninPage() {
 
                 status = "Xin chào, ${me.name}"
                 router.navigate("/")
-            } catch (e: Exception) {
+            } catch (e: Throwable) {
                 e.printStackTrace()
                 status = "Error"
             }
@@ -128,7 +128,7 @@ fun SigninPage() {
 
                 status = "Xin chào, ${me.name}"
                 router.navigate("/")
-            } catch (e: Exception) {
+            } catch (e: Throwable) {
                 e.printStackTrace()
                 status = "Error"
             }

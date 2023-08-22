@@ -22,7 +22,7 @@ fun CardItem(cardId: String, openInNewWindow: Boolean = false, styles: (StyleSco
     LaunchedEffect(Unit) {
         try {
             card = http.get("$baseUrl/cards/$cardId").body()
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             e.printStackTrace()
         }
     }

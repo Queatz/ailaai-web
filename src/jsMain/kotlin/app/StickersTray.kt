@@ -30,7 +30,7 @@ fun StickersTray(onSticker: (Sticker) -> Unit) {
                 contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
                 bearerAuth(application.bearer)
             }.body()
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             e.printStackTrace()
         }
     }

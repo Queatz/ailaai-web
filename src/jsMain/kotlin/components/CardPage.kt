@@ -78,7 +78,7 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
             stack.clear()
             cardLoaded(card!!)
             cards = http.get("$baseUrl/cards/$cardId/cards").body()
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             e.printStackTrace()
             onError()
         } finally {
@@ -106,7 +106,7 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
             replyMessage = ""
             isReplying = null
             window.alert(sentString)
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             window.alert(didntWorkString)
             e.printStackTrace()
         } finally {
@@ -160,7 +160,7 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
 //                                    try {
 ////                                        if (window.navigator.getAutoplayPolicy)
 //                                        videoElement!!.muted = false
-//                                    } catch (e: Exception) {
+//                                    } catch (e: Throwable) {
 //                                        // ignore
 //                                    }
 //                                }

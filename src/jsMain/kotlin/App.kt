@@ -21,7 +21,7 @@ class Application {
         if (meJson != null) {
             try {
                 me.value = json.decodeFromString<Person>(meJson)
-            } catch (e: Exception) {
+            } catch (e: Throwable) {
                 e.printStackTrace()
             }
         }
@@ -55,7 +55,7 @@ class Application {
                         bearerAuth(bearerToken.value!!)
                     }.body<Person>()
                 )
-            } catch (e: Exception) {
+            } catch (e: Throwable) {
                 e.printStackTrace()
             }
         }

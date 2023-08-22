@@ -82,7 +82,7 @@ private fun String.asMessageAttachment(): MessageAttachment? {
             "sticker" -> json.decodeFromJsonElement<StickerAttachment>(jsonElement)
             else -> null
         }
-    } catch (e: Exception) {
+    } catch (e: Throwable) {
         e.printStackTrace()
         null
     }

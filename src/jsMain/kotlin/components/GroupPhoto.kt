@@ -3,12 +3,15 @@ package components
 import GroupExtended
 import Person
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 
 @Composable
 fun GroupPhoto(group: GroupExtended, me: Person) {
-    val otherMembers = group.members?.filter { it.person?.id != me.id }?.shuffled() ?: emptyList()
+    val otherMembers = remember {
+        group.members?.filter { it.person?.id != me.id }?.shuffled() ?: emptyList()
+    }
 
     if (otherMembers.size > 1) {
         Div({

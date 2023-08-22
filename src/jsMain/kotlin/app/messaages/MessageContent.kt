@@ -50,7 +50,7 @@ fun MessageContent(message: Message, myMember: MemberAndPerson?, isReply: Boolea
                 contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
                 bearerAuth(application.bearer)
             }.body()
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             e.printStackTrace()
         }
     }
@@ -162,7 +162,7 @@ fun MessageContent(message: Message, myMember: MemberAndPerson?, isReply: Boolea
                             contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
                             bearerAuth(application.bearer)
                         }.body()
-                    } catch (e: Exception) {
+                    } catch (e: Throwable) {
                         e.printStackTrace()
                         null
                     }

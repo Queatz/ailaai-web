@@ -55,7 +55,7 @@ fun AppPage() {
                 }) {
                     nav = "cards"
                 }
-                IconButton("mail", "Stories", styles = {
+                IconButton("feed", "Stories", styles = {
                     if (nav == "stories") {
                         backgroundColor(Styles.colors.primary)
                         color(Color.white)

@@ -60,7 +60,7 @@ fun HomePage() {
                         parameter("geo", "10.7915858,106.7426523") // HCMC
                         parameter("search", searchText)
                     }.body()
-                } catch (e: Exception) {
+                } catch (e: Throwable) {
                     e.printStackTrace()
                     emptyList()
                 }
