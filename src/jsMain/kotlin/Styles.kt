@@ -7,6 +7,10 @@ object Styles : StyleSheet() {
         val primary = Color("#006689")
         val secondary = Color("#767676")
         val tertiary = Color("#2e8900")
+
+        object dark {
+            val background = Color("#18191a")
+        }
     }
 
     fun CSSBuilder.cardStyle() {
@@ -286,6 +290,23 @@ object Styles : StyleSheet() {
         property("font-size", "inherit")
         fontFamily("inherit")
         boxSizing("border-box")
+
+        backgroundColor(Color.white)
+        media("(prefers-color-scheme: dark)") {
+            self style {
+                backgroundColor(colors.dark.background)
+                border(1.px, LineStyle.Solid, Color("#444444"))
+            }
+        }
+
+        self + selector("::placeholder") style {
+            media("(prefers-color-scheme: dark)") {
+                self style {
+                    color(Color.white)
+                    opacity(.5)
+                }
+            }
+        }
     }
 
     val profilePhotoText by style {
@@ -294,5 +315,34 @@ object Styles : StyleSheet() {
         display(DisplayStyle.Flex)
         alignItems(AlignItems.Center)
         justifyContent(JustifyContent.Center)
+
+        media("(prefers-color-scheme: dark)") {
+            self style {
+                backgroundColor(Color.black)
+            }
+        }
+    }
+
+    val profilePhotoPhoto by style {
+        borderRadius(100.percent)
+        backgroundColor(Styles.colors.background)
+        backgroundPosition("center")
+        backgroundSize("cover")
+
+        media("(prefers-color-scheme: dark)") {
+            self style {
+                backgroundColor(Color.black)
+            }
+        }
+    }
+
+    val profilePhotoBorder by style {
+        border(3.px, LineStyle.Solid, Color.white)
+
+        media("(prefers-color-scheme: dark)") {
+            self style {
+                border(3.px, LineStyle.Solid, Color.black)
+            }
+        }
     }
 }

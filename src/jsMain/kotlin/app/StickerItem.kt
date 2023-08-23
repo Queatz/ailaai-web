@@ -12,7 +12,7 @@ import org.jetbrains.compose.web.dom.Text
 fun StickerItem(
     photo: String,
     message: String? = null,
-    size: CSSNumeric = 54.px,
+    size: CSSNumeric = 64.px,
     title: String? = null,
     messageAlign: AlignItems = AlignItems.Start,
     onClick: () -> Unit
@@ -50,14 +50,10 @@ fun StickerItem(
         if (showMessage) {
             message?.let { message ->
                 Div({
+                    classes(AppStyles.stickerMessage)
                     style {
-                        borderRadius(4.cssRem)
-                        backgroundColor(Color.white)
-                        padding(PaddingDefault / 2, PaddingDefault)
                         position(Position.Absolute)
                         top(50.percent)
-                        whiteSpace("nowrap")
-                        property("z-index", "1")
                         if (messageAlign == AlignItems.End) {
                             right(0.cssRem)
                             property("transform", "translateX(calc(1rem + 100%)) translateY(-50%)")

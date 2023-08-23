@@ -22,17 +22,15 @@ fun GroupPhoto(group: GroupExtended, me: Person) {
                 marginRight(.5.cssRem)
             }
         }) {
-            ProfilePhoto(otherMembers[0].person ?: me, size = 33.px) {
+            ProfilePhoto(otherMembers[0].person ?: me, size = 33.px, border = true) {
                 position(Position.Absolute)
                 top(0.cssRem)
                 right(0.cssRem)
-                border(3.px, LineStyle.Solid, Color.white)
             }
-            ProfilePhoto(otherMembers[1].person ?: me, size = 33.px) {
+            ProfilePhoto(otherMembers[1].person ?: me, size = 33.px, border = true) {
                 position(Position.Absolute)
                 bottom(0.cssRem)
                 left(0.cssRem)
-                border(3.px, LineStyle.Solid, Color.white)
             }
         }
     } else {

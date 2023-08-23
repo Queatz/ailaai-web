@@ -229,19 +229,11 @@ fun GroupPage(group: GroupExtended?) {
 
         if (showStickers) {
             Div({
+                classes(AppStyles.tray)
                 style {
-                    display(DisplayStyle.Flex)
-                    height(18.cssRem)
-                    maxHeight(50.vh)
-                    overflowX("hidden")
-                    overflowY("auto")
-                    flexDirection(FlexDirection.Column)
-                    backgroundColor(Color("#fafafa"))
-                    border(1.px, LineStyle.Solid, Color("#e4e4e4"))
                     marginLeft(1.cssRem)
                     marginRight(1.cssRem)
                     marginBottom(1.cssRem)
-                    borderRadius(CornerDefault)
                 }
             }) {
                 StickersTray {

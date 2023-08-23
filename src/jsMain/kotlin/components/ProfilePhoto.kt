@@ -1,6 +1,7 @@
 package components
 
 import Person
+import Styles
 import androidx.compose.runtime.Composable
 import baseUrl
 import org.jetbrains.compose.web.css.*
@@ -9,10 +10,14 @@ import org.jetbrains.compose.web.dom.Img
 import org.jetbrains.compose.web.dom.Text
 
 @Composable
-fun ProfilePhoto(person: Person, size: CSSNumeric = 36.px, onClick: (() -> Unit)? = null, styles: (StyleScope.() -> Unit)? = null) {
+fun ProfilePhoto(person: Person, size: CSSNumeric = 36.px, border: Boolean = false, onClick: (() -> Unit)? = null, styles: (StyleScope.() -> Unit)? = null) {
     if (person.photo == null) {
         Div({
-            classes(Styles.profilePhotoText)
+            classes(listOf(Styles.profilePhotoText) + if (border) {
+                listOf(Styles.profilePhotoBorder)
+            } else {
+                emptyList()
+            })
 
             style {
                 width(size)
@@ -34,13 +39,14 @@ fun ProfilePhoto(person: Person, size: CSSNumeric = 36.px, onClick: (() -> Unit)
         }
     } else {
         Div({
+            classes(listOf(Styles.profilePhotoPhoto) + if (border) {
+                listOf(Styles.profilePhotoBorder)
+            } else {
+                emptyList()
+            })
             style {
                 width(size)
                 height(size)
-                borderRadius(100.percent)
-                backgroundColor(Styles.colors.background)
-                backgroundPosition("center")
-                backgroundSize("cover")
                 backgroundImage("url('$baseUrl${person.photo}')")
                 if (onClick != null) {
                     cursor("pointer")

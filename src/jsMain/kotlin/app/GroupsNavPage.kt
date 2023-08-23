@@ -89,14 +89,15 @@ fun GroupsNavPage(selectedGroup: GroupExtended?, onGroupSelected: (GroupExtended
             groups.forEach { group ->
                 val myMember = group.members?.find { it.person?.id == me!!.id }
                 Div({
-                    classes(AppStyles.groupItem)
+                    classes(
+                        listOf(AppStyles.groupItem) + if (selectedGroup?.group?.id == group.group?.id) {
+                            listOf(AppStyles.groupItemSelected)
+                        } else {
+                            emptyList()
+                        }
+                    )
                     onClick {
                         onGroupSelected(group)
-                    }
-                    style {
-                        if (selectedGroup?.group?.id == group.group?.id) {
-                            backgroundColor(Styles.colors.background)
-                        }
                     }
                 }) {
                     GroupPhoto(group, me!!)

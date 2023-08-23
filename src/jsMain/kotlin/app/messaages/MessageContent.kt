@@ -1,10 +1,10 @@
 package app.messaages
 
-import CornerDefault
 import MemberAndPerson
 import Message
 import PaddingDefault
 import Story
+import Styles
 import androidx.compose.runtime.*
 import app.AppStyles
 import app.StickerItem
@@ -105,16 +105,7 @@ fun MessageContent(message: Message, myMember: MemberAndPerson?, isReply: Boolea
                 }) {
                     attachment.photos?.forEach { photo ->
                         Img(src = "$baseUrl$photo") {
-                            classes(StoryStyles.contentPhotosPhoto)
-                            style {
-                                backgroundColor(Styles.colors.background)
-                                height(320.px)
-//                                width(320.px)
-                                maxHeight(100.vw)
-                                borderRadius(CornerDefault)
-                                border(3.px, LineStyle.Solid, Color.white)
-                                cursor("pointer")
-                            }
+                            classes(StoryStyles.contentPhotosPhoto, AppStyles.messageItemPhoto)
                             onClick {
                                 window.open("$baseUrl$photo", target = "_blank")
                             }
@@ -170,15 +161,7 @@ fun MessageContent(message: Message, myMember: MemberAndPerson?, isReply: Boolea
 
                 story?.let { story ->
                     Div({
-                        style {
-                            borderRadius(CornerDefault)
-                            backgroundColor(Color.white)
-                            property("box-shadow", "rgba(0, 0, 0, 0.125) 1px 1px 4px")
-                            padding(PaddingDefault)
-                            cursor("pointer")
-                            overflow("hidden")
-                            maxWidth(36.cssRem)
-                        }
+                        classes(AppStyles.messageItemStory)
 
                         onClick {
                             window.open("/story/${story.url ?: story.id}", target = "_blank")

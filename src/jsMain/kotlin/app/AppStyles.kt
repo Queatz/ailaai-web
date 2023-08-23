@@ -14,6 +14,13 @@ object AppStyles : StyleSheet() {
         height(100.vh)
         overflow("hidden")
         display(DisplayStyle.Flex)
+
+        media("(prefers-color-scheme: dark)") {
+            self style {
+                backgroundColor(Color.black)
+                color(Color.white)
+            }
+        }
     }
     val sideLayout by style {
         width(24.cssRem)
@@ -26,6 +33,12 @@ object AppStyles : StyleSheet() {
         marginBottom(1.cssRem)
         property("z-index", "1")
         elevated()
+
+        media("(prefers-color-scheme: dark)") {
+            self style {
+                backgroundColor(Styles.colors.dark.background)
+            }
+        }
     }
     val mainLayout by style {
         overflow("hidden")
@@ -71,7 +84,7 @@ object AppStyles : StyleSheet() {
         flexDirection(FlexDirection.RowReverse)
         alignItems(AlignItems.Center)
     }
-    @OptIn(ExperimentalComposeWebApi::class)
+
     val groupItem by style {
         padding(.5.cssRem, 1.cssRem)
         borderRadius(1.cssRem)
@@ -83,6 +96,15 @@ object AppStyles : StyleSheet() {
             backgroundColor(Styles.colors.background)
         }
 
+        media("(prefers-color-scheme: dark)") {
+            self style {
+                hover(self) style {
+                    backgroundColor(Color.black)
+                }
+            }
+        }
+
+        @OptIn(ExperimentalComposeWebApi::class)
         transitions {
             "color" {
                 duration = 100.ms
@@ -92,6 +114,17 @@ object AppStyles : StyleSheet() {
             }
         }
     }
+
+    val groupItemSelected by style {
+        backgroundColor(Styles.colors.background)
+
+        media("(prefers-color-scheme: dark)") {
+            self style {
+                backgroundColor(Color.black)
+            }
+        }
+    }
+
     val groupItemName by style {
 
     }
@@ -131,6 +164,21 @@ object AppStyles : StyleSheet() {
             backgroundColor(Styles.colors.background)
             property("border", "none")
         }
+
+        media("(prefers-color-scheme: dark)") {
+            self style {
+                self + className(myMessage) style {
+                    backgroundColor(Styles.colors.dark.background)
+                }
+            }
+        }
+
+        media("(prefers-color-scheme: dark)") {
+            self style {
+                backgroundColor(Color.black)
+                border(1.px, LineStyle.Solid, Color("#444444"))
+            }
+        }
     }
 
     val myMessageReply by style {
@@ -161,6 +209,82 @@ object AppStyles : StyleSheet() {
             )
             property("border-left", "none")
             property("border-right", "4px solid ${Styles.colors.background}")
+        }
+
+        media("(prefers-color-scheme: dark)") {
+            self style {
+                backgroundColor(Styles.colors.dark.background)
+            }
+        }
+    }
+
+    val iconButton by style {
+
+    }
+
+    val tray by style {
+        display(DisplayStyle.Flex)
+        height(18.cssRem)
+        maxHeight(50.vh)
+        overflowX("hidden")
+        overflowY("auto")
+        flexDirection(FlexDirection.Column)
+        backgroundColor(Color("#fafafa"))
+        border(1.px, LineStyle.Solid, Color("#e4e4e4"))
+        borderRadius(CornerDefault)
+
+        media("(prefers-color-scheme: dark)") {
+            self style {
+                backgroundColor(Styles.colors.dark.background)
+                border(1.px, LineStyle.Solid, Color("#444444"))
+            }
+        }
+    }
+
+    val messageItemPhoto by style {
+        backgroundColor(Styles.colors.background)
+        height(320.px)
+        maxHeight(100.vw)
+        borderRadius(CornerDefault)
+        border(3.px, LineStyle.Solid, Color.white)
+        cursor("pointer")
+
+        media("(prefers-color-scheme: dark)") {
+            self style {
+                backgroundColor(Color.black)
+                border(3.px, LineStyle.Solid, Color.black)
+            }
+        }
+    }
+
+    val stickerMessage by style {
+        borderRadius(4.cssRem)
+        backgroundColor(Color.white)
+        padding(PaddingDefault / 2, PaddingDefault)
+        whiteSpace("nowrap")
+        property("z-index", "1")
+
+        media("(prefers-color-scheme: dark)") {
+            self style {
+                backgroundColor(Styles.colors.dark.background)
+                color(Color.white)
+            }
+        }
+    }
+
+    val messageItemStory by style {
+        borderRadius(CornerDefault)
+        backgroundColor(Color.white)
+        property("box-shadow", "rgba(0, 0, 0, 0.125) 1px 1px 4px")
+        padding(PaddingDefault)
+        cursor("pointer")
+        overflow("hidden")
+        maxWidth(36.cssRem)
+
+        media("(prefers-color-scheme: dark)") {
+            self style {
+                backgroundColor(Styles.colors.dark.background)
+            }
         }
     }
 }
