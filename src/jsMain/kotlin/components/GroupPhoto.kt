@@ -9,7 +9,7 @@ import org.jetbrains.compose.web.dom.Div
 
 @Composable
 fun GroupPhoto(group: GroupExtended, me: Person) {
-    val otherMembers = remember {
+    val otherMembers = remember(group) {
         group.members?.filter { it.person?.id != me.id }?.shuffled() ?: emptyList()
     }
 

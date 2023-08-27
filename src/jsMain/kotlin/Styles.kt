@@ -295,6 +295,7 @@ object Styles : StyleSheet() {
         media("(prefers-color-scheme: dark)") {
             self style {
                 backgroundColor(colors.dark.background)
+                color(Color.white)
                 border(1.px, LineStyle.Solid, Color("#444444"))
             }
         }
@@ -328,6 +329,7 @@ object Styles : StyleSheet() {
         backgroundColor(Styles.colors.background)
         backgroundPosition("center")
         backgroundSize("cover")
+        flexShrink(0)
 
         media("(prefers-color-scheme: dark)") {
             self style {

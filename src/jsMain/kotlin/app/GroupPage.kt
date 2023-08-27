@@ -1,6 +1,5 @@
 package app
 
-import CornerDefault
 import GroupExtended
 import Message
 import Sticker
@@ -59,6 +58,10 @@ fun GroupPage(group: GroupExtended?) {
         mutableStateOf(true)
     }
 
+    var isSending by remember(group) {
+        mutableStateOf(false)
+    }
+
     var showStickers by remember(group) {
         mutableStateOf(false)
     }
@@ -105,48 +108,58 @@ fun GroupPage(group: GroupExtended?) {
     }
 
     fun sendPhotos(files: List<File>, message: Message? = null) {
+        isSending = true
         scope.launch {
-            val photos = files.map {
-                val reader = it.asDynamic().stream().getReader()
-                var bytes = ByteArray(0)
-                while (true) {
-                    val chunk = (reader.read() as Promise<*>).await().asDynamic()
-                    val value = chunk.value as? Uint8Array
-                    if (value != null) {
-                        bytes += ByteArray(value.length) { value[it] }
-                    }
-                    if (chunk.done == true) {
-                        break
-                    }
-                }
-                bytes
-            }
             try {
-                http.post("$baseUrl/groups/${group!!.group!!.id!!}/photos") {
-                    //contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                    bearerAuth(application.bearer)
-                    setBody(
-                        MultiPartFormDataContent(formData {
-                            if (message != null) {
-                                append("message", json.encodeToString(message))
-                            }
-                            photos.forEachIndexed { index, photo ->
-                                append(
-                                    "photo[$index]",
-                                    photo,
-                                    Headers.build {
-                                        append(HttpHeaders.ContentType, "image/jpeg")
-                                        append(HttpHeaders.ContentDisposition, "filename=photo.jpg")
-                                    }
-                                )
-                            }
-                        })
-                    )
+                val photos = files.map {
+                    val reader = it.asDynamic().stream().getReader()
+                    var bytes = ByteArray(0)
+                    while (true) {
+                        val chunk = (reader.read() as Promise<*>).await().asDynamic()
+                        val value = chunk.value as? Uint8Array
+                        if (value != null) {
+                            bytes += ByteArray(value.length) { value[it] }
+                        }
+                        if (chunk.done == true) {
+                            break
+                        }
+                    }
+                    bytes
                 }
-                reload()
+
+                try {
+                    http.post("$baseUrl/groups/${group!!.group!!.id!!}/photos") {
+                        //contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
+                        bearerAuth(application.bearer)
+                        setBody(
+                            MultiPartFormDataContent(formData {
+                                if (message != null) {
+                                    append("message", json.encodeToString(message))
+                                }
+                                photos.forEachIndexed { index, photo ->
+                                    append(
+                                        "photo[$index]",
+                                        photo,
+                                        Headers.build {
+                                            append(HttpHeaders.ContentType, "image/jpeg")
+                                            append(HttpHeaders.ContentDisposition, "filename=photo.jpg")
+                                        }
+                                    )
+                                }
+                            })
+                        )
+                    }
+                    isSending = false
+                    reload()
+                } catch (e: Throwable) {
+                    e.printStackTrace()
+                }
             } catch (e: Throwable) {
                 e.printStackTrace()
+                return@launch
             }
+
+            isSending = false
         }
     }
 
@@ -169,6 +182,8 @@ fun GroupPage(group: GroupExtended?) {
         val text = messageText
         messageText = ""
 
+        isSending = true
+
         scope.launch {
             try {
                 http.post("$baseUrl/groups/${group!!.group!!.id!!}/messages") {
@@ -176,6 +191,7 @@ fun GroupPage(group: GroupExtended?) {
                     bearerAuth(application.bearer)
                     setBody(Message(text = text))
                 }
+                isSending = false
                 reload()
             } catch (e: Throwable) {
                 e.printStackTrace()
@@ -183,10 +199,13 @@ fun GroupPage(group: GroupExtended?) {
                     messageText = text
                 }
             }
+
+            isSending = false
         }
     }
 
     fun sendSticker(sticker: Sticker) {
+        isSending = true
         scope.launch {
             try {
                 http.post("$baseUrl/groups/${group!!.group!!.id!!}/messages") {
@@ -202,10 +221,13 @@ fun GroupPage(group: GroupExtended?) {
                         )
                     ))
                 }
+                isSending = false
                 reload()
             } catch (e: Throwable) {
                 e.printStackTrace()
             }
+
+            isSending = false
         }
     }
 
@@ -270,7 +292,7 @@ fun GroupPage(group: GroupExtended?) {
                     }
                 }
             }
-            val messageString = appString { message }
+            val messageString = if (isSending) appString { sending } else appString { message }
             TextArea(messageText) {
                 classes(Styles.textarea)
                 style {
@@ -293,6 +315,22 @@ fun GroupPage(group: GroupExtended?) {
                     messageText = it.value
                     it.target.style.height = "0"
                     it.target.style.height = "${it.target.scrollHeight + 2}px"
+                }
+
+                onPaste {
+                    val items = it.clipboardData?.items ?: return@onPaste
+
+                    val photos = (0 until items.length).mapNotNull {
+                        items[it]
+                    }.filter {
+                        it.type.startsWith("image/")
+                    }.mapNotNull {
+                        it.getAsFile()
+                    }
+
+                    if (photos.isEmpty()) return@onPaste
+
+                    sendPhotos(photos)
                 }
 
                 autoFocus()

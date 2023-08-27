@@ -103,6 +103,11 @@ object Strings {
         "Nhắn tin",
         "Cообщение"
     )
+    val sending = Translation(
+        "Sending...",
+        "Đang gửi...",
+        // todo
+    )
     val cancel = Translation(
         "Cancel",
         "Hủy",
