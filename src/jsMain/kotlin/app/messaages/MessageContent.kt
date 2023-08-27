@@ -21,7 +21,6 @@ import io.ktor.utils.io.charsets.*
 import kotlinx.browser.window
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
-import stories.StoryStyles
 import kotlin.js.Date
 
 @Composable
@@ -101,11 +100,18 @@ fun MessageContent(message: Message, myMember: MemberAndPerson?, isReply: Boolea
         when (attachment) {
             is PhotosAttachment -> {
                 Div({
-                    classes(StoryStyles.contentPhotos)
+                    style {
+                        display(DisplayStyle.Flex)
+                        flexWrap(FlexWrap.Wrap)
+
+                        if (isMe) {
+                            justifyContent(JustifyContent.FlexEnd)
+                        }
+                    }
                 }) {
                     attachment.photos?.forEach { photo ->
                         Img(src = "$baseUrl$photo") {
-                            classes(StoryStyles.contentPhotosPhoto, AppStyles.messageItemPhoto)
+                            classes(AppStyles.messageItemPhoto)
                             onClick {
                                 window.open("$baseUrl$photo", target = "_blank")
                             }
