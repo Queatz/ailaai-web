@@ -1,7 +1,9 @@
 package app.nav
 
+import CreateGroupBody
 import GroupExtended
 import Member
+import Group
 import PaddingDefault
 import Styles
 import androidx.compose.runtime.*
@@ -17,8 +19,10 @@ import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.utils.io.charsets.*
+import kotlinx.browser.window
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import lib.formatDistanceToNow
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
@@ -29,6 +33,7 @@ import kotlin.js.Date
 
 @Composable
 fun GroupsNavPage(selectedGroup: GroupExtended?, onGroupSelected: (GroupExtended) -> Unit) {
+    val scope = rememberCoroutineScope()
     val me by application.me.collectAsState()
     var isLoading by remember {
         mutableStateOf(true)
@@ -74,8 +79,37 @@ fun GroupsNavPage(selectedGroup: GroupExtended?, onGroupSelected: (GroupExtended
 //        IconButton("search", "Search", styles = {
 //            marginRight(1.cssRem)
 //        }) {
-//            showSearch = !showSearch
+//            showSearch = !showSearchz
 //        }
+        IconButton("add", "New group", styles = {
+            marginRight(1.cssRem)
+        }) {
+            scope.launch {
+                val name = window.prompt("Group name")
+                if (name == null) return@launch
+                try {
+                    val group = http.post("$baseUrl/groups") {
+                        setBody(CreateGroupBody(people = emptyList()))
+                        contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
+                        bearerAuth(application.bearer)
+                    }.body<Group>()
+                    http.post("$baseUrl/groups/${group.id!!}") {
+                        setBody(Group(name = name))
+                        contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
+                        bearerAuth(application.bearer)
+                    }
+                    reload()
+                    onGroupSelected(
+                        http.get("$baseUrl/groups/${group.id!!}") {
+                            contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
+                            bearerAuth(application.bearer)
+                        }.body<GroupExtended>()
+                    )
+                } catch (e: Throwable) {
+                    e.printStackTrace()
+                }
+            }
+        }
     }
     if (isLoading) {
         Loading()

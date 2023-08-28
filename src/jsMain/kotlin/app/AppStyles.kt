@@ -3,12 +3,15 @@ package app
 import CornerDefault
 import PaddingDefault
 import Styles
+import Styles.card
 import Styles.elevated
+import Styles.style
 import org.jetbrains.compose.web.ExperimentalComposeWebApi
 import org.jetbrains.compose.web.css.*
 
 
 object AppStyles : StyleSheet() {
+
     val baseLayout by style {
         width(100.vw)
         height(100.vh)

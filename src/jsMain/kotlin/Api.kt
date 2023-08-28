@@ -22,6 +22,9 @@ data class SignInRequest(
     val link: String? = null
 )
 
+@Serializable
+data class CreateGroupBody(val people: List<String>, val reuse: Boolean = false)
+
 
 class Api {
     val token: String

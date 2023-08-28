@@ -1,10 +1,12 @@
-package app
+package app.page
 
 import GroupExtended
 import Message
 import Sticker
 import Styles
 import androidx.compose.runtime.*
+import app.AppStyles
+import app.StickersTray
 import app.messaages.MessageItem
 import app.messaages.StickerAttachment
 import appString
