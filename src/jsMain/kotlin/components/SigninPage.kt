@@ -3,10 +3,12 @@ package components
 import LinkDeviceToken
 import Person
 import SignInRequest
+import SignUpRequest
 import Styles
 import TokenResponse
 import androidx.compose.runtime.*
 import app.softwork.routingcompose.Router
+import appText
 import application
 import baseUrl
 import http
@@ -135,6 +137,32 @@ fun SigninPage() {
         }
     }
 
+    fun signUp(inviteCode: String? = null) {
+        scope.launch {
+            try {
+                val signInResponse = http.post("$baseUrl/sign/up") {
+                    contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
+                    setBody(SignUpRequest(code = inviteCode))
+                }.body<TokenResponse>()
+
+                application.setToken(signInResponse.token)
+
+                val me = http.get("$baseUrl/me") {
+                    contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
+                    bearerAuth(signInResponse.token)
+                }.body<Person>()
+
+                application.setMe(me)
+
+                status = "Xin chào!"
+                router.navigate("/")
+            } catch (e: Throwable) {
+                e.printStackTrace()
+                status = "Error"
+            }
+        }
+    }
+
     Div({
         classes(Styles.mainContent)
     }) {
@@ -184,6 +212,21 @@ fun SigninPage() {
                     }
 
                     autoFocus()
+                }
+
+                Div({
+                    style {
+                        color(Styles.colors.primary)
+                        fontWeight("bold")
+                        margin(1.cssRem)
+                        cursor("pointer")
+                    }
+
+                    onClick {
+                        signUp()
+                    }
+                }) {
+                    appText { signUp }
                 }
             }
         }

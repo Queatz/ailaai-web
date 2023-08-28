@@ -250,6 +250,10 @@ object Strings {
         "Sign in",
         "Đăng nhập"
     )
+    val signUp = Translation(
+        "Sign up",
+        "Đăng ký"
+    )
 }
 
 @Composable

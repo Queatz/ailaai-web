@@ -32,7 +32,7 @@ fun Loading() {
                 opacity = .25f
                 side = when (side) {
                     "_top" -> "_bottom"
-                    "_bottom" -> ""
+                    "_bottom" -> "_empty"
                     else -> "_top"
                 }
             }
