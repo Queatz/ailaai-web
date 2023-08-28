@@ -1,9 +1,13 @@
-package components
+package app
 
 import GroupExtended
 import Styles
 import androidx.compose.runtime.*
-import app.*
+import app.nav.CardsNavPage
+import app.nav.GroupsNavPage
+import app.nav.ScheduleNavPage
+import app.nav.StoriesNavPage
+import components.IconButton
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 

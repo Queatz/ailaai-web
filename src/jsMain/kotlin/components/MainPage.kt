@@ -1,7 +1,7 @@
 import androidx.compose.runtime.Composable
 import components.AppFooter
 import components.AppHeader
-import components.AppPage
+import app.AppPage
 import components.HomePage
 
 @Composable

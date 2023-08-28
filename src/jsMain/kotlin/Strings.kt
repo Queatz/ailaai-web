@@ -254,6 +254,10 @@ object Strings {
         "Sign up",
         "Đăng ký"
     )
+    val profile = Translation(
+        "Profile",
+        "Trang cá nhân"
+    )
 }
 
 @Composable

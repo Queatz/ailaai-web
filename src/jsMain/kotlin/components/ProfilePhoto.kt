@@ -3,14 +3,16 @@ package components
 import Person
 import Styles
 import androidx.compose.runtime.Composable
+import app.AppStyles
 import baseUrl
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Img
+import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text
 
 @Composable
-fun ProfilePhoto(person: Person, size: CSSNumeric = 36.px, border: Boolean = false, onClick: (() -> Unit)? = null, styles: (StyleScope.() -> Unit)? = null) {
+fun ProfilePhoto(person: Person, size: CSSNumeric = 36.px, title: String? = null, border: Boolean = false, onClick: (() -> Unit)? = null, styles: (StyleScope.() -> Unit)? = null) {
     if (person.photo == null) {
         Div({
             classes(listOf(Styles.profilePhotoText) + if (border) {
@@ -29,13 +31,23 @@ fun ProfilePhoto(person: Person, size: CSSNumeric = 36.px, border: Boolean = fal
                 styles?.invoke(this)
             }
 
-            title(person.name ?: "Someone")
+            title(title ?: person.name ?: "Someone")
 
             onClick {
                 onClick?.invoke()
             }
         }) {
-            Text(person.name?.take(1) ?: "?")
+            person.name?.takeIf { it.isNotBlank() }?.take(1)?.let {
+                Text(it)
+            } ?: let {
+                Span(
+                    {
+                        classes("material-symbols-outlined")
+                    }
+                ) {
+                    Text("account_circle")
+                }
+            }
         }
     } else {
         Div({
@@ -54,7 +66,7 @@ fun ProfilePhoto(person: Person, size: CSSNumeric = 36.px, border: Boolean = fal
                 styles?.invoke(this)
             }
 
-            title(person.name ?: "Someone")
+            title(title ?: person.name ?: "Someone")
 
             onClick {
                 onClick?.invoke()

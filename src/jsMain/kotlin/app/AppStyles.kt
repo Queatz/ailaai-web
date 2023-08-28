@@ -245,9 +245,11 @@ object AppStyles : StyleSheet() {
         backgroundColor(Styles.colors.background)
         height(320.px)
         maxHeight(100.vw)
+        maxWidth(100.percent)
         borderRadius(CornerDefault)
         border(3.px, LineStyle.Solid, Color.white)
         cursor("pointer")
+        property("object-fit", "cover")
 
         media("(prefers-color-scheme: dark)") {
             self style {

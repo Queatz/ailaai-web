@@ -1,14 +1,16 @@
-package app
+package app.nav
 
 import GroupExtended
 import Member
 import PaddingDefault
 import Styles
 import androidx.compose.runtime.*
+import app.AppStyles
 import app.messaages.preview
 import application
 import baseUrl
 import components.GroupPhoto
+import components.IconButton
 import components.Loading
 import http
 import io.ktor.client.call.*
@@ -30,6 +32,9 @@ fun GroupsNavPage(selectedGroup: GroupExtended?, onGroupSelected: (GroupExtended
     val me by application.me.collectAsState()
     var isLoading by remember {
         mutableStateOf(true)
+    }
+    var showSearch by remember {
+        mutableStateOf(false)
     }
     var groups by remember {
         mutableStateOf(emptyList<GroupExtended>())
@@ -64,6 +69,14 @@ fun GroupsNavPage(selectedGroup: GroupExtended?, onGroupSelected: (GroupExtended
         isLoading = false
     }
 
+
+    NavTopBar(me, "Groups") {
+//        IconButton("search", "Search", styles = {
+//            marginRight(1.cssRem)
+//        }) {
+//            showSearch = !showSearch
+//        }
+    }
     if (isLoading) {
         Loading()
     } else if (groups.isEmpty()) {
@@ -134,7 +147,16 @@ fun GroupsNavPage(selectedGroup: GroupExtended?, onGroupSelected: (GroupExtended
                                 opacity(.5)
                             }
                         }) {
-                            Text(" ${group.group?.seen?.let { formatDistanceToNow(Date(it), js("{ addSuffix: true }")) }}")
+                            Text(
+                                " ${
+                                    group.group?.seen?.let {
+                                        formatDistanceToNow(
+                                            Date(it),
+                                            js("{ addSuffix: true }")
+                                        )
+                                    }
+                                }"
+                            )
                         }
                     }
                 }
@@ -153,5 +175,6 @@ fun GroupExtended.name(someone: String, emptyGroup: String, omit: List<String>) 
         ?: emptyGroup
 
 fun GroupExtended.isUnread(member: Member?): Boolean {
-    return (member?.seen?.let { Date(it) }?.getTime() ?: return false) < (latestMessage?.createdAt?.let { Date(it) }?.getTime() ?: return false)
+    return (member?.seen?.let { Date(it) }?.getTime() ?: return false) < (latestMessage?.createdAt?.let { Date(it) }
+        ?.getTime() ?: return false)
 }
