@@ -12,7 +12,6 @@ import application
 import baseUrl
 import components.CardItem
 import components.LinkifyText
-import components.textContent
 import http
 import io.ktor.client.call.*
 import io.ktor.client.request.*
@@ -21,6 +20,7 @@ import io.ktor.utils.io.charsets.*
 import kotlinx.browser.window
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
+import stories.textContent
 import kotlin.js.Date
 
 @Composable

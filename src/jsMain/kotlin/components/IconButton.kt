@@ -23,3 +23,15 @@ fun IconButton(name: String, title: String, styles: (StyleScope.() -> Unit)? = n
         Text(name)
     }
 }
+
+@Composable
+fun Icon(name: String, styles: (StyleScope.() -> Unit)? = null) {
+    Span({
+        classes("material-symbols-outlined")
+        style {
+            styles?.invoke(this)
+        }
+    }) {
+        Text(name)
+    }
+}

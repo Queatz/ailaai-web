@@ -73,6 +73,7 @@ object AppStyles : StyleSheet() {
             }
         }
     }
+
     val messages by style {
         flex(1)
         display(DisplayStyle.Flex)
@@ -131,11 +132,22 @@ object AppStyles : StyleSheet() {
     val groupItemName by style {
 
     }
+
     val groupItemMessage by style {
         color(Styles.colors.secondary)
         whiteSpace("nowrap")
         property("text-overflow", "ellipsis")
         overflow("hidden")
+    }
+
+    val navMenuItem by style {
+        self + className(groupItem) style {
+            padding(1.cssRem)
+        }
+
+        child(self, className("material-symbols-outlined")) style {
+            marginRight(1.cssRem)
+        }
     }
 
     val myMessageLayout by style {

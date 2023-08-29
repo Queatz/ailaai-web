@@ -15,7 +15,7 @@ import components.IconButton
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 
-private enum class NavPage {
+enum class NavPage {
     Groups,
     Schedule,
     Cards,
@@ -40,45 +40,7 @@ fun AppPage() {
         Div({
             classes(AppStyles.sideLayout)
         }) {
-            Div({
-                classes(AppStyles.bottomBar)
-                style {
-                    flexShrink(0)
-                }
-            }) {
-                IconButton("people", "Groups", styles = {
-                    if (nav == NavPage.Groups) {
-                        backgroundColor(Styles.colors.primary)
-                        color(Color.white)
-                    }
-                }) {
-                    nav = NavPage.Groups
-                }
-                IconButton("calendar_today", "Schedule", styles = {
-                    if (nav == NavPage.Schedule) {
-                        backgroundColor(Styles.colors.primary)
-                        color(Color.white)
-                    }
-                }) {
-                    nav = NavPage.Schedule
-                }
-                IconButton("style", "Cards", styles = {
-                    if (nav == NavPage.Cards) {
-                        backgroundColor(Styles.colors.primary)
-                        color(Color.white)
-                    }
-                }) {
-                    nav = NavPage.Cards
-                }
-                IconButton("feed", "Stories", styles = {
-                    if (nav == NavPage.Stories) {
-                        backgroundColor(Styles.colors.primary)
-                        color(Color.white)
-                    }
-                }) {
-                    nav = NavPage.Stories
-                }
-            }
+            AppBottomBar(nav) { nav = it }
             Div({
                 style {
                     flexGrow(1)

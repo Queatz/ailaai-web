@@ -79,7 +79,7 @@ fun GroupsNavPage(selectedGroup: GroupExtended?, onGroupSelected: (GroupExtended
 //        IconButton("search", "Search", styles = {
 //            marginRight(1.cssRem)
 //        }) {
-//            showSearch = !showSearchz
+//            showSearch = !showSearch
 //        }
         IconButton("add", "New group", styles = {
             marginRight(1.cssRem)

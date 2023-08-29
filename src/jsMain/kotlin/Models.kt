@@ -96,7 +96,8 @@ class Story(
 class Person(
     var name: String? = null,
     var photo: String? = null,
-    var seen: String? = null
+    var seen: String? = null,
+    var geo: List<Double>? = null
 ) : Model()
 
 @Serializable

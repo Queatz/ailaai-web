@@ -61,8 +61,18 @@ object StoryStyles : StyleSheet() {
         child(self, className(Styles.card)) style {
             self style {
                 width(320.px)
+                marginRight(1.cssRem)
+                marginBottom(1.cssRem)
             }
         }
+    }
+
+    val divider by style {
+        display(DisplayStyle.Flex)
+        justifyContent(JustifyContent.Center)
+        alignItems(AlignItems.Center)
+        alignSelf(AlignSelf.Stretch)
+        padding(1.cssRem)
     }
 
     val contentPhotosPhoto by style {
