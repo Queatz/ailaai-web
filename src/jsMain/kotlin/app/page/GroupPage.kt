@@ -309,12 +309,21 @@ fun GroupPage(group: GroupExtended?) {
                     if (it.key == "Enter" && !it.shiftKey) {
                         sendMessage()
                         it.preventDefault()
-                        it.stopPropagation()
+                        scope.launch {
+                            delay(1)
+                            (it.target as HTMLTextAreaElement).style.height = "0"
+                            (it.target as HTMLTextAreaElement).style.height = "${(it.target as HTMLTextAreaElement).scrollHeight + 2}px"
+                        }
                     }
                 }
 
                 onInput {
                     messageText = it.value
+                    it.target.style.height = "0"
+                    it.target.style.height = "${it.target.scrollHeight + 2}px"
+                }
+
+                onChange {
                     it.target.style.height = "0"
                     it.target.style.height = "${it.target.scrollHeight + 2}px"
                 }

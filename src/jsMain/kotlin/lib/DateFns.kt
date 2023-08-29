@@ -3,7 +3,8 @@
 
 package lib
 
-import org.khronos.webgl.Uint8Array
 import kotlin.js.Date
 
 external fun formatDistanceToNow(date: Date, options: dynamic = definedExternally): String
+
+external fun format(date: Date, format: String, options: dynamic = definedExternally): String

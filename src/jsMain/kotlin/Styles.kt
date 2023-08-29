@@ -33,6 +33,25 @@ object Styles : StyleSheet() {
         }
     }
 
+    val dateTimeInput by style {
+        borderRadius(1.cssRem)
+        property("color", "inherit")
+        property("font", "inherit")
+        border(1.px, LineStyle.Solid, Color("#444444"))
+
+        media("(prefers-color-scheme: dark)") {
+            self style {
+                backgroundColor(colors.dark.background)
+            }
+        }
+
+        child(self, selector("option")) style {
+            borderRadius(1.cssRem)
+            margin(.5.cssRem)
+            padding(.5.cssRem, 1.cssRem)
+        }
+    }
+
     val menuButton by style {
         cursor("pointer")
 
