@@ -165,32 +165,40 @@ fun GroupsNavPage(selectedGroup: GroupExtended?, onGroupSelected: (GroupExtended
                             if (group.latestMessage?.member == myMember?.member?.id) {
                                 Text("You: ")
                             }
-                            Text(group.latestMessage?.preview() ?: "")
+                            Text(
+                                group.latestMessage?.preview() ?: "Created ${formatDistanceToNow(
+                                    Date(group.group!!.createdAt!!),
+                                    js("{ addSuffix: true }")
+                                )}"
+                            )
+
                         }
                     }
-                    Div({
-                        style {
-                            marginLeft(.5.cssRem)
-                            flexShrink(0)
-                        }
-                    }) {
-                        Span({
+                    if (group.latestMessage != null) {
+                        Div({
                             style {
-                                color(Styles.colors.secondary)
-                                fontSize(14.px)
-                                opacity(.5)
+                                marginLeft(.5.cssRem)
+                                flexShrink(0)
                             }
                         }) {
-                            Text(
-                                " ${
-                                    group.group?.seen?.let {
-                                        formatDistanceToNow(
-                                            Date(it),
-                                            js("{ addSuffix: true }")
-                                        )
-                                    }
-                                }"
-                            )
+                            Span({
+                                style {
+                                    color(Styles.colors.secondary)
+                                    fontSize(14.px)
+                                    opacity(.5)
+                                }
+                            }) {
+                                Text(
+                                    " ${
+                                        group.group?.seen?.let {
+                                            formatDistanceToNow(
+                                                Date(it),
+                                                js("{ addSuffix: true }")
+                                            )
+                                        }
+                                    }"
+                                )
+                            }
                         }
                     }
                 }

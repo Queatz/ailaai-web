@@ -7,10 +7,7 @@ import app.nav.CardsNavPage
 import app.nav.GroupsNavPage
 import app.nav.ScheduleNavPage
 import app.nav.StoriesNavPage
-import app.page.CardsPage
-import app.page.GroupPage
-import app.page.SchedulePage
-import app.page.StoriesPage
+import app.page.*
 import components.IconButton
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
@@ -32,6 +29,10 @@ fun AppPage() {
 
     var group by remember {
         mutableStateOf<GroupExtended?>(null)
+    }
+
+    var scheduleView by remember {
+        mutableStateOf(ScheduleView.Monthly)
     }
 
     Div({
@@ -56,7 +57,9 @@ fun AppPage() {
                             group = it
                         }
                     )
-                    NavPage.Schedule -> ScheduleNavPage()
+                    NavPage.Schedule -> ScheduleNavPage(scheduleView) {
+                        scheduleView = it
+                    }
                     NavPage.Cards -> CardsNavPage()
                     NavPage.Stories -> StoriesNavPage()
                 }
@@ -67,7 +70,7 @@ fun AppPage() {
         }) {
             when (nav) {
                 NavPage.Groups -> GroupPage(group)
-                NavPage.Schedule -> SchedulePage()
+                NavPage.Schedule -> SchedulePage(scheduleView)
                 NavPage.Cards -> CardsPage()
                 NavPage.Stories -> StoriesPage()
             }

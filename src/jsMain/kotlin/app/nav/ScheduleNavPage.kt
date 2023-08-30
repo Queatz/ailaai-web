@@ -2,6 +2,7 @@ package app.nav
 
 import PaddingDefault
 import androidx.compose.runtime.*
+import app.page.ScheduleView
 import application
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -15,7 +16,7 @@ import org.w3c.dom.HTMLTextAreaElement
 import kotlin.js.Date
 
 @Composable
-fun ScheduleNavPage() {
+fun ScheduleNavPage(view: ScheduleView, onViewClick: (ScheduleView) -> Unit) {
     val me by application.me.collectAsState()
     val scope = rememberCoroutineScope()
 
@@ -270,10 +271,10 @@ fun ScheduleNavPage() {
         // todo this is same as groupsnavpage Should be NavMainContent
         Div({
         }) {
-            NavMenuItem("routine", "Daily") {}
-            NavMenuItem("calendar_view_week", "Weekly") {}
-            NavMenuItem("calendar_month", "Monthly") {}
-            NavMenuItem("rotate_right", "Yearly") {}
+            NavMenuItem("routine", "Daily", selected = view == ScheduleView.Daily) { onViewClick(ScheduleView.Daily) }
+            NavMenuItem("calendar_view_week", "Weekly", selected = view == ScheduleView.Weekly) { onViewClick(ScheduleView.Weekly) }
+            NavMenuItem("calendar_month", "Monthly", selected = view == ScheduleView.Monthly) { onViewClick(ScheduleView.Monthly) }
+            NavMenuItem("rotate_right", "Yearly", selected = view == ScheduleView.Yearly) { onViewClick(ScheduleView.Yearly) }
         }
     }
 }

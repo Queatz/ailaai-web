@@ -2,6 +2,7 @@ package app.page
 
 import Story
 import androidx.compose.runtime.*
+import app.FullPageLayout
 import application
 import baseUrl
 import components.Loading
@@ -43,37 +44,16 @@ fun StoriesPage() {
     if (isLoading) {
         Loading()
     } else {
-        Div({
-            style {
-                display(DisplayStyle.Flex)
-                flexDirection(FlexDirection.Column)
-                width(100.percent)
-                height(100.percent)
-                overflowX("hidden")
-                overflowY("auto")
-            }
-        }) {
+        FullPageLayout {
             Div({
+                classes(Styles.cardContent)
                 style {
                     display(DisplayStyle.Flex)
                     flexDirection(FlexDirection.Column)
-                    width(100.percent)
-                    height(100.percent)
-                    alignItems(AlignItems.Stretch)
-                    maxWidth(960.px)
-                    alignSelf(AlignSelf.Center)
+                    padding(1.cssRem)
                 }
             }) {
-                Div({
-                    classes(Styles.cardContent)
-                    style {
-                        display(DisplayStyle.Flex)
-                        flexDirection(FlexDirection.Column)
-                        padding(1.cssRem)
-                    }
-                }) {
-                    StoryContents(storyContent)
-                }
+                StoryContents(storyContent)
             }
         }
     }
