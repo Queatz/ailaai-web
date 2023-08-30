@@ -35,7 +35,6 @@ fun ScheduleNavPage(view: ScheduleView, onViewClick: (ScheduleView) -> Unit) {
             flexDirection(FlexDirection.Column)
         }
     }) {
-
         TextArea(note) {
             classes(Styles.textarea)
             style {

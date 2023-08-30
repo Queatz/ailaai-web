@@ -24,10 +24,10 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import lib.formatDistanceToNow
+import org.jetbrains.compose.web.attributes.autoFocus
+import org.jetbrains.compose.web.attributes.placeholder
 import org.jetbrains.compose.web.css.*
-import org.jetbrains.compose.web.dom.Div
-import org.jetbrains.compose.web.dom.Span
-import org.jetbrains.compose.web.dom.Text
+import org.jetbrains.compose.web.dom.*
 import push
 import kotlin.js.Date
 
@@ -41,8 +41,26 @@ fun GroupsNavPage(selectedGroup: GroupExtended?, onGroupSelected: (GroupExtended
     var showSearch by remember {
         mutableStateOf(false)
     }
+    var searchText by remember {
+        mutableStateOf("")
+    }
     var groups by remember {
         mutableStateOf(emptyList<GroupExtended>())
+    }
+
+    LaunchedEffect(selectedGroup) {
+        searchText = ""
+    }
+
+    val shownGroups = remember(groups, searchText) {
+        val search = searchText.trim()
+        if (searchText.isBlank()) {
+            groups
+        } else {
+            groups.filter {
+                (it.group?.name?.contains(search, true) ?: false) || (it.members?.any { it.person?.name?.contains(search, true) ?: false } ?: false)
+            }
+        }
     }
 
     suspend fun reload() {
@@ -76,11 +94,11 @@ fun GroupsNavPage(selectedGroup: GroupExtended?, onGroupSelected: (GroupExtended
 
 
     NavTopBar(me, "Groups") {
-//        IconButton("search", "Search", styles = {
-//            marginRight(1.cssRem)
-//        }) {
-//            showSearch = !showSearch
-//        }
+        IconButton("search", "Search", styles = {
+            marginRight(1.cssRem)
+        }) {
+            showSearch = !showSearch
+        }
         IconButton("add", "New group", styles = {
             marginRight(1.cssRem)
         }) {
@@ -111,9 +129,37 @@ fun GroupsNavPage(selectedGroup: GroupExtended?, onGroupSelected: (GroupExtended
             }
         }
     }
+    if (showSearch) {
+        TextInput(searchText) {
+            classes(Styles.textarea)
+            style {
+                margin(.5.cssRem, 1.cssRem, 0.cssRem, 1.cssRem)
+                height(3.5.cssRem)
+                maxHeight(6.5.cssRem)
+            }
+
+            onKeyDown {
+                if (it.key == "Escape") {
+                    it.preventDefault()
+                    it.stopPropagation()
+                    searchText = ""
+                    showSearch = false
+                }
+            }
+
+            onInput {
+                searchText = it.value
+            }
+
+            placeholder("Search")
+
+            autoFocus()
+        }
+    }
+
     if (isLoading) {
         Loading()
-    } else if (groups.isEmpty()) {
+    } else if (shownGroups.isEmpty()) {
         Div({
             style {
                 height(100.percent)
@@ -133,7 +179,7 @@ fun GroupsNavPage(selectedGroup: GroupExtended?, onGroupSelected: (GroupExtended
                 padding(PaddingDefault / 2)
             }
         }) {
-            groups.forEach { group ->
+            shownGroups.forEach { group ->
                 val myMember = group.members?.find { it.person?.id == me!!.id }
                 Div({
                     classes(

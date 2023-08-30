@@ -7,6 +7,8 @@ import baseUrl
 import components.CardItem
 import components.Icon
 import components.LinkifyText
+import lib.format
+import lib.isThisYear
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
 import org.jetbrains.compose.web.dom.Style
@@ -28,8 +30,10 @@ fun StoryContents(storyContent: List<StoryContent>) {
                 Div({
                     classes(StoryStyles.contentAuthors)
                 }) {
-                    Span {
-                        Text("${part.publishDate?.let { Date(it) } ?: appString { draft }} ${appString { inlineBy }} ")
+                    Span({
+                        title("${part.publishDate?.let { Date(it) }}")
+                    }) {
+                        Text("${part.publishDate?.let { Date(it) }?.let { format(it, "MMMM do${if (isThisYear(it)) "" else ", yyyy"}") } ?: appString { draft }} ${appString { inlineBy }} ")
                         part.authors.forEachIndexed { index, person ->
                             if (index > 0) {
                                 Text(", ")

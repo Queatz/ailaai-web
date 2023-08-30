@@ -17,3 +17,4 @@ external fun addYears(date: Date, amount: Double): Date
 external fun previousSunday(date: Date): Date
 external fun isToday(date: Date): Boolean
 external fun isTomorrow(date: Date): Boolean
+external fun isThisYear(date: Date): Boolean

@@ -335,6 +335,7 @@ object Styles : StyleSheet() {
         display(DisplayStyle.Flex)
         alignItems(AlignItems.Center)
         justifyContent(JustifyContent.Center)
+        flexShrink(0)
 
         media("(prefers-color-scheme: dark)") {
             self style {
