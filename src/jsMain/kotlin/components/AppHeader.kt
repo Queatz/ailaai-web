@@ -8,6 +8,7 @@ import app.softwork.routingcompose.Router
 import appString
 import appText
 import application
+import ellipsize
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
 
@@ -56,9 +57,7 @@ fun AppHeader(
                 style {
                     paddingLeft(PaddingDefault)
                     fontSize(24.px)
-                    overflow("hidden")
-                    whiteSpace("nowrap")
-                    property("text-overflow", "ellipsis")
+                    ellipsize()
                     marginRight(.5.cssRem)
                 }
             }) {

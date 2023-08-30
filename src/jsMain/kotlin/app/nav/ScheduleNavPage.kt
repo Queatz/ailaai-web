@@ -72,10 +72,10 @@ fun ScheduleNavPage() {
             autoFocus()
         }
 
-        var until by remember { mutableStateOf(false) }
-        var reoccurs by remember { mutableStateOf(false) }
-        var date by remember { mutableStateOf(format(Date(), "yyyy-MM-dd")) }
-        var time by remember { mutableStateOf(format(Date(), "HH:mm")) }
+        var until by remember(note == "") { mutableStateOf(false) }
+        var reoccurs by remember(note == "") { mutableStateOf(false) }
+        var date by remember(note == "") { mutableStateOf(format(Date(), "yyyy-MM-dd")) }
+        var time by remember(note == "") { mutableStateOf(format(Date(), "HH:mm")) }
 
         if (note.isNotBlank()) {
             Div({
@@ -133,16 +133,34 @@ fun ScheduleNavPage() {
                     Select({
                         classes(Styles.dateTimeInput)
                     }, multiple = true) {
+                        Option("1:00pm", { selected() }) { Text("1:00pm") }
+                        Option("2:00pm") { Text("2:00pm") }
+                        Option("3:00pm") { Text("3:00pm") }
+                        Option("4:00pm") { Text("4:00pm") }
+                        Option("5:00pm") { Text("5:00pm") }
+                        Option("6:00pm") { Text("6:00pm") }
+                        Option("7:00pm") { Text("7:00pm") }
+                        Option("8:00pm") { Text("8:00pm") }
+                        Option("9:00pm") { Text("9:00pm") }
+                        Option("10:00pm") { Text("10:00pm") }
+                    }
+
+                    Select({
+                        classes(Styles.dateTimeInput)
+                        style {
+                            marginTop(1.cssRem)
+                        }
+                    }, multiple = true) {
                         Option("Every day", { selected() }) { Text("Every day") }
-                        Option("Every Monday") { Text("Every Monday") }
-                        Option("Every Tuesday") { Text("Every Tuesday") }
-                        Option("Every Wednesday") { Text("Every Wednesday") }
-                        Option("Every Thursday") { Text("Every Thursday") }
-                        Option("Every Friday") { Text("Every Friday") }
-                        Option("Every Saturday") { Text("Every Saturday") }
-                        Option("Every Sunday") { Text("Every Sunday") }
-                        Option("Every 1st day") { Text("Every 1st day") }
-                        Option("Every last day") { Text("Every last day") }
+                        Option("Every Monday") { Text("Monday") }
+                        Option("Tuesday") { Text("Tuesday") }
+                        Option("Wednesday") { Text("Wednesday") }
+                        Option("Thursday") { Text("Thursday") }
+                        Option("Friday") { Text("Friday") }
+                        Option("Saturday") { Text("Saturday") }
+                        Option("Sunday") { Text("Sunday") }
+                        Option("the 1st") { Text("1st of the month") }
+                        Option("the last day") { Text("Last day of the month") }
                     }
 
                     Select({
@@ -151,12 +169,12 @@ fun ScheduleNavPage() {
                             marginTop(1.cssRem)
                         }
                     }, multiple = true) {
-                        Option("Of every week", { selected() }) { Text("Of every week") }
-                        Option("Of week 1") { Text("Of week 1") }
-                        Option("Of week 2") { Text("Of week 2") }
-                        Option("Of week 3") { Text("Of week 3") }
-                        Option("Of week 4") { Text("Of week 4") }
-                        Option("Of week 5") { Text("Of week 5") }
+                        Option("Every week", { selected() }) { Text("Every week") }
+                        Option("Week 1") { Text("Week 1") }
+                        Option("Week 2") { Text("Week 2") }
+                        Option("Week 3") { Text("Week 3") }
+                        Option("Week 4") { Text("Week 4") }
+                        Option("Week 5") { Text("Week 5") }
                     }
 
                     Select({
@@ -165,19 +183,19 @@ fun ScheduleNavPage() {
                             marginTop(1.cssRem)
                         }
                     }, multiple = true) {
-                        Option("Of every month", { selected() }) { Text("Of every month") }
-                        Option("Of January") { Text("Of January") }
-                        Option("Of February") { Text("Of February") }
-                        Option("Of March") { Text("Of March") }
-                        Option("Of April") { Text("Of April") }
-                        Option("Of May") { Text("Of May") }
-                        Option("Of June") { Text("Of June") }
-                        Option("Of July") { Text("Of July") }
-                        Option("Of August") { Text("Of August") }
-                        Option("Of September") { Text("Of September") }
-                        Option("Of October") { Text("Of October") }
-                        Option("Of November") { Text("Of November") }
-                        Option("Of December") { Text("Of December") }
+                        Option("Every month", { selected() }) { Text("Every month") }
+                        Option("January") { Text("January") }
+                        Option("February") { Text("February") }
+                        Option("March") { Text("March") }
+                        Option("April") { Text("April") }
+                        Option("May") { Text("May") }
+                        Option("June") { Text("June") }
+                        Option("July") { Text("July") }
+                        Option("August") { Text("August") }
+                        Option("September") { Text("September") }
+                        Option("October") { Text("October") }
+                        Option("November") { Text("November") }
+                        Option("December") { Text("December") }
                     }
 
                     Label(attrs = {

@@ -46,7 +46,7 @@ object Styles : StyleSheet() {
         }
 
         child(self, selector("option")) style {
-            borderRadius(1.cssRem)
+            borderRadius(.5.cssRem)
             margin(.5.cssRem)
             padding(.5.cssRem, 1.cssRem)
         }
@@ -345,7 +345,7 @@ object Styles : StyleSheet() {
 
     val profilePhotoPhoto by style {
         borderRadius(100.percent)
-        backgroundColor(Styles.colors.background)
+        backgroundColor(colors.background)
         backgroundPosition("center")
         backgroundSize("cover")
         flexShrink(0)
@@ -366,4 +366,16 @@ object Styles : StyleSheet() {
             }
         }
     }
+}
+
+fun CSSBuilder.ellipsize() {
+    overflow("hidden")
+    property("text-overflow", "ellipsis")
+    whiteSpace("nowrap")
+}
+
+fun StyleScope.ellipsize() {
+    overflow("hidden")
+    property("text-overflow", "ellipsis")
+    whiteSpace("nowrap")
 }

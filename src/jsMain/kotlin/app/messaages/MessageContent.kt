@@ -12,6 +12,7 @@ import application
 import baseUrl
 import components.CardItem
 import components.LinkifyText
+import ellipsize
 import http
 import io.ktor.client.call.*
 import io.ktor.client.request.*
@@ -193,9 +194,7 @@ fun MessageContent(message: Message, myMember: MemberAndPerson?, isReply: Boolea
                         Div({
                             style {
                                 marginBottom(.5.cssRem)
-                                overflow("hidden")
-                                property("text-overflow", "ellipsis")
-                                whiteSpace("nowrap")
+                                ellipsize()
                             }
                         }) {
                             Text(story.textContent())

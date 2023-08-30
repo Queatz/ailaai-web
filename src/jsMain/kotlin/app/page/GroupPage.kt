@@ -5,15 +5,21 @@ import Message
 import Sticker
 import Styles
 import androidx.compose.runtime.*
+import app.AppBottomBar
 import app.AppStyles
+import app.NavPage
 import app.StickersTray
 import app.messaages.MessageItem
 import app.messaages.StickerAttachment
+import app.messaages.preview
+import app.nav.name
 import appString
 import application
 import baseUrl
+import components.Icon
 import components.IconButton
 import components.Loading
+import ellipsize
 import http
 import io.ktor.client.call.*
 import io.ktor.client.request.*
@@ -27,6 +33,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
+import lib.formatDistanceToNow
 import org.jetbrains.compose.web.attributes.autoFocus
 import org.jetbrains.compose.web.attributes.placeholder
 import org.jetbrains.compose.web.css.*
@@ -38,6 +45,7 @@ import org.khronos.webgl.get
 import org.w3c.dom.*
 import org.w3c.files.File
 import push
+import kotlin.js.Date
 import kotlin.js.Promise
 
 @Composable
@@ -245,8 +253,7 @@ fun GroupPage(group: GroupExtended?) {
         }) {
             Text("Select a group")
         }
-    }
-    else if (isLoading) {
+    } else if (isLoading) {
         Loading()
     } else {
         val myMember = group.members?.find { it.person?.id == me!!.id }
@@ -365,6 +372,63 @@ fun GroupPage(group: GroupExtended?) {
                     myMember
                 )
             }
+        }
+
+        GroupTopBar(group)
+    }
+}
+
+@Composable
+fun GroupTopBar(group: GroupExtended) {
+    val me by application.me.collectAsState()
+    val myMember = group.members?.find { it.person?.id == me?.id }
+
+    Div({
+        style {
+            display(DisplayStyle.Flex)
+            padding(.5.cssRem)
+            margin(1.cssRem, 1.cssRem, .5.cssRem, 1.cssRem)
+            alignItems(AlignItems.Center)
+            overflow("hidden")
+        }
+    }) {
+        Div({
+            style {
+                display(DisplayStyle.Flex)
+                flexDirection(FlexDirection.Column)
+                flex(1)
+                overflow("hidden")
+            }
+        }) {
+            Div({
+                style {
+                    fontSize(24.px)
+                    ellipsize()
+                }
+            }) {
+                Text(group.name("Someone", "New group", listOf(me!!.id!!)))
+            }
+            Div({
+                classes(AppStyles.groupItemMessage)
+                style {
+                    ellipsize()
+                }
+            }) {
+                group.members?.filter { it != myMember }?.maxByOrNull {
+                    it.person?.seen?.let { Date(it).getTime() } ?: 0.0
+                }?.person?.seen?.let { Date(it) }?.let {
+                    Text(
+                        "Active ${formatDistanceToNow(it, js("{ addSuffix: true }"))}"
+                    )
+                }
+            }
+        }
+        IconButton("more_vert", "Options", styles = {
+            flexShrink(0)
+            fontWeight("bold")
+            margin(0.cssRem, .5.cssRem)
+        }) {
+
         }
     }
 }

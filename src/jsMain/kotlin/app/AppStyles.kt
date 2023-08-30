@@ -6,6 +6,7 @@ import Styles
 import Styles.card
 import Styles.elevated
 import Styles.style
+import ellipsize
 import org.jetbrains.compose.web.ExperimentalComposeWebApi
 import org.jetbrains.compose.web.css.*
 
@@ -135,9 +136,7 @@ object AppStyles : StyleSheet() {
 
     val groupItemMessage by style {
         color(Styles.colors.secondary)
-        whiteSpace("nowrap")
-        property("text-overflow", "ellipsis")
-        overflow("hidden")
+        ellipsize()
     }
 
     val navMenuItem by style {

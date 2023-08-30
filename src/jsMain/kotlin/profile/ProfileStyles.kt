@@ -2,6 +2,7 @@ package profile
 
 import PaddingDefault
 import Styles
+import ellipsize
 import org.jetbrains.compose.web.css.*
 
 object ProfileStyles : StyleSheet() {
@@ -95,9 +96,7 @@ object ProfileStyles : StyleSheet() {
         alignItems(AlignItems.Stretch)
 
         child(self, selector("div")) style {
-            overflow("hidden")
-            whiteSpace("nowrap")
-            property("text-overflow", "ellipsis")
+            ellipsize()
             textAlign("center")
         }
 
