@@ -75,6 +75,10 @@ fun EventRow(view: ScheduleView, text: String) {
         mutableStateOf(false)
     }
 
+    var edit by remember {
+        mutableStateOf(false)
+    }
+
     Div({
         classes(SchedulePageStyles.row)
 
@@ -135,7 +139,7 @@ fun EventRow(view: ScheduleView, text: String) {
             IconButton("edit", "Edit", styles = {
                 marginLeft(.5.cssRem)
             }) {
-
+                edit = !edit
             }
             IconButton("clear", "Delete", styles = {
                 marginLeft(.5.cssRem)

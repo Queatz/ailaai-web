@@ -4,6 +4,7 @@ import Message
 import json
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.*
+import notBlank
 
 
 @Serializable
@@ -116,5 +117,5 @@ fun Message.attachmentText(): String? = when (val attachment = getAttachment()) 
 }
 
 fun Message.preview(): String? {
-    return text?.takeIf { it.isNotBlank() } ?: attachmentText()
+    return text?.notBlank ?: attachmentText()
 }

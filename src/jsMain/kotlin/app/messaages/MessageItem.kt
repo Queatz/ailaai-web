@@ -29,6 +29,7 @@ fun MessageItem(message: Message, previousMessage: Message?, member: MemberAndPe
                         width(36.px)
                         height(36.px)
                         marginRight(.5.cssRem)
+                        flexShrink(0)
                     }
                 })
             } else {

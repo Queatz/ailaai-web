@@ -15,6 +15,9 @@ import org.jetbrains.compose.web.dom.Style
 import kotlin.js.Date
 
 @Composable
+fun storyStatus(publishDate: String?) = publishDate?.let { Date(it) }?.let { format(it, "MMMM do${if (isThisYear(it)) "" else ", yyyy"}") } ?: appString { draft }
+
+@Composable
 fun StoryContents(storyContent: List<StoryContent>) {
     Style(StoryStyles)
     storyContent.forEach { part ->
@@ -33,7 +36,7 @@ fun StoryContents(storyContent: List<StoryContent>) {
                     Span({
                         title("${part.publishDate?.let { Date(it) }}")
                     }) {
-                        Text("${part.publishDate?.let { Date(it) }?.let { format(it, "MMMM do${if (isThisYear(it)) "" else ", yyyy"}") } ?: appString { draft }} ${appString { inlineBy }} ")
+                        Text("${storyStatus(part.publishDate)} ${appString { inlineBy }} ")
                         part.authors.forEachIndexed { index, person ->
                             if (index > 0) {
                                 Text(", ")

@@ -1,17 +1,20 @@
 package app
 
+import Card
 import GroupExtended
-import Styles
+import Story
 import androidx.compose.runtime.*
 import app.nav.CardsNavPage
 import app.nav.GroupsNavPage
 import app.nav.ScheduleNavPage
 import app.nav.StoriesNavPage
 import app.page.*
-import components.IconButton
+import application
+import kotlinx.serialization.Serializable
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 
+@Serializable
 enum class NavPage {
     Groups,
     Schedule,
@@ -24,15 +27,27 @@ fun AppPage() {
     Style(AppStyles)
 
     var nav by remember {
-        mutableStateOf(NavPage.Groups)
+        mutableStateOf(application.navPage)
     }
 
     var group by remember {
         mutableStateOf<GroupExtended?>(null)
     }
 
+    var card by remember {
+        mutableStateOf<Card?>(null)
+    }
+
+    var story by remember {
+        mutableStateOf<Story?>(null)
+    }
+
     var scheduleView by remember {
         mutableStateOf(ScheduleView.Monthly)
+    }
+
+    LaunchedEffect(nav) {
+        application.setNavPage(nav)
     }
 
     Div({
@@ -60,8 +75,8 @@ fun AppPage() {
                     NavPage.Schedule -> ScheduleNavPage(scheduleView) {
                         scheduleView = it
                     }
-                    NavPage.Cards -> CardsNavPage()
-                    NavPage.Stories -> StoriesNavPage()
+                    NavPage.Cards -> CardsNavPage(card) { card = it }
+                    NavPage.Stories -> StoriesNavPage(story) { story = it }
                 }
             }
         }
@@ -71,8 +86,8 @@ fun AppPage() {
             when (nav) {
                 NavPage.Groups -> GroupPage(group)
                 NavPage.Schedule -> SchedulePage(scheduleView)
-                NavPage.Cards -> CardsPage()
-                NavPage.Stories -> StoriesPage()
+                NavPage.Cards -> CardsPage(card) { card = it }
+                NavPage.Stories -> StoriesPage(story)
             }
         }
     }

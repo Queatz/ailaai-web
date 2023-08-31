@@ -2,11 +2,13 @@ package app.nav
 
 import PaddingDefault
 import androidx.compose.runtime.*
+import app.AppStyles
 import app.page.ScheduleView
 import application
+import components.IconButton
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import lib.format
+import lib.*
 import org.jetbrains.compose.web.attributes.autoFocus
 import org.jetbrains.compose.web.attributes.placeholder
 import org.jetbrains.compose.web.attributes.selected
@@ -24,7 +26,13 @@ fun ScheduleNavPage(view: ScheduleView, onViewClick: (ScheduleView) -> Unit) {
         mutableStateOf("")
     }
 
-    NavTopBar(me, "Reminders")
+    NavTopBar(me, "Reminders") {
+        IconButton("search", "Search", styles = {
+            marginRight(1.cssRem)
+        }) {
+
+        }
+    }
 
     Div({
         style {
@@ -70,6 +78,11 @@ fun ScheduleNavPage(view: ScheduleView, onViewClick: (ScheduleView) -> Unit) {
             placeholder("New reminder")
 
             autoFocus()
+
+            ref { element ->
+                element.focus()
+                onDispose {}
+            }
         }
 
         var until by remember(note == "") { mutableStateOf(false) }
@@ -133,16 +146,10 @@ fun ScheduleNavPage(view: ScheduleView, onViewClick: (ScheduleView) -> Unit) {
                     Select({
                         classes(Styles.dateTimeInput)
                     }, multiple = true) {
-                        Option("1:00pm", { selected() }) { Text("1:00pm") }
-                        Option("2:00pm") { Text("2:00pm") }
-                        Option("3:00pm") { Text("3:00pm") }
-                        Option("4:00pm") { Text("4:00pm") }
-                        Option("5:00pm") { Text("5:00pm") }
-                        Option("6:00pm") { Text("6:00pm") }
-                        Option("7:00pm") { Text("7:00pm") }
-                        Option("8:00pm") { Text("8:00pm") }
-                        Option("9:00pm") { Text("9:00pm") }
-                        Option("10:00pm") { Text("10:00pm") }
+                        val t = setMinutes(startOfDay(Date()), getMinutes(parse(time, "HH:mm", Date())))
+                        (0..23).forEach {
+                            Option("$it") { Text(format(addHours(t, it.toDouble()), "h:mm a")) }
+                        }
                     }
 
                     Select({
@@ -152,14 +159,14 @@ fun ScheduleNavPage(view: ScheduleView, onViewClick: (ScheduleView) -> Unit) {
                         }
                     }, multiple = true) {
                         Option("Every day", { selected() }) { Text("Every day") }
-                        Option("Every Monday") { Text("Monday") }
-                        Option("Tuesday") { Text("Tuesday") }
-                        Option("Wednesday") { Text("Wednesday") }
-                        Option("Thursday") { Text("Thursday") }
-                        Option("Friday") { Text("Friday") }
-                        Option("Saturday") { Text("Saturday") }
-                        Option("Sunday") { Text("Sunday") }
-                        Option("the 1st") { Text("1st of the month") }
+                        (0..6).forEach {
+                            val n = enUS.localize.day(it).toString()
+                            Option("$it") { Text("$n") }
+                        }
+                        (1..31).forEach {
+                            val n = enUS.localize.ordinalNumber(it).toString()
+                            Option("$it") { Text("$n of the month") }
+                        }
                         Option("the last day") { Text("Last day of the month") }
                     }
 
@@ -170,11 +177,10 @@ fun ScheduleNavPage(view: ScheduleView, onViewClick: (ScheduleView) -> Unit) {
                         }
                     }, multiple = true) {
                         Option("Every week", { selected() }) { Text("Every week") }
-                        Option("Week 1") { Text("Week 1") }
-                        Option("Week 2") { Text("Week 2") }
-                        Option("Week 3") { Text("Week 3") }
-                        Option("Week 4") { Text("Week 4") }
-                        Option("Week 5") { Text("Week 5") }
+                        (1..5).forEach {
+                            val n = enUS.localize.ordinalNumber(it).toString()
+                            Option("$it") { Text("$n week") }
+                        }
                     }
 
                     Select({
@@ -184,18 +190,10 @@ fun ScheduleNavPage(view: ScheduleView, onViewClick: (ScheduleView) -> Unit) {
                         }
                     }, multiple = true) {
                         Option("Every month", { selected() }) { Text("Every month") }
-                        Option("January") { Text("January") }
-                        Option("February") { Text("February") }
-                        Option("March") { Text("March") }
-                        Option("April") { Text("April") }
-                        Option("May") { Text("May") }
-                        Option("June") { Text("June") }
-                        Option("July") { Text("July") }
-                        Option("August") { Text("August") }
-                        Option("September") { Text("September") }
-                        Option("October") { Text("October") }
-                        Option("November") { Text("November") }
-                        Option("December") { Text("December") }
+                        (0..11).forEach {
+                            val n = enUS.localize.month(it).toString()
+                            Option(n) { Text(n) }
+                        }
                     }
 
                     Label(attrs = {
@@ -274,6 +272,42 @@ fun ScheduleNavPage(view: ScheduleView, onViewClick: (ScheduleView) -> Unit) {
             NavMenuItem("calendar_view_week", "Weekly", selected = view == ScheduleView.Weekly) { onViewClick(ScheduleView.Weekly) }
             NavMenuItem("calendar_month", "Monthly", selected = view == ScheduleView.Monthly) { onViewClick(ScheduleView.Monthly) }
             NavMenuItem("rotate_right", "Yearly", selected = view == ScheduleView.Yearly) { onViewClick(ScheduleView.Yearly) }
+        }
+        Div({ style { height(1.cssRem) } })
+        ReminderItem("Pet Mochi", selected = false) {}
+    }
+}
+
+@Composable
+fun ReminderItem(reminder: String, selected: Boolean, onSelected: () -> Unit) {
+    Div({
+        classes(
+            listOf(AppStyles.groupItem) + if (selected) {
+                listOf(AppStyles.groupItemSelected)
+            } else {
+                emptyList()
+            }
+        )
+        onClick {
+            onSelected()
+        }
+    }) {
+        Div({
+            style {
+                width(0.px)
+                flexGrow(1)
+            }
+        }) {
+            Div({
+                classes(AppStyles.groupItemName)
+            }) {
+                Text(reminder)
+            }
+            Div({
+                classes(AppStyles.groupItemMessage)
+            }) {
+                Text("⏰ Every Sunday at 1pm and 9pm until January 1st, 2024")
+            }
         }
     }
 }

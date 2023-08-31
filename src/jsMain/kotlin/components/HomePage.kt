@@ -113,9 +113,9 @@ fun HomePage() {
                                 margin(PaddingDefault)
                             }
 
-                            is Card -> CardItem(card) {
+                            is Card -> CardItem(card, styles = {
                                 margin(PaddingDefault)
-                            }
+                            })
                         }
                     }
                 }

@@ -1,3 +1,4 @@
+import app.NavPage
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
@@ -15,8 +16,12 @@ class Application {
     val bearerToken = MutableStateFlow<String?>(null)
 
     val bearer: String get() = bearerToken.value!!
+    var navPage: NavPage = NavPage.Groups
+        private set
 
     init {
+        bearerToken.value = localStorage["bearer"]
+
         val meJson = localStorage["me"]
         if (meJson != null) {
             try {
@@ -25,7 +30,24 @@ class Application {
                 e.printStackTrace()
             }
         }
-        bearerToken.value = localStorage["bearer"]
+
+        val navPageJson = localStorage["app.nav"]
+        if (navPageJson != null) {
+            try {
+                navPage = json.decodeFromString<NavPage>(navPageJson)
+            } catch (e: Throwable) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    fun setNavPage(navPage: NavPage?) {
+        this.navPage = navPage ?: NavPage.Groups
+        if (navPage != null) {
+            localStorage["app.nav"] = json.encodeToString(navPage)
+        } else {
+            localStorage.removeItem("app.nav")
+        }
     }
 
     fun setMe(me: Person?) {

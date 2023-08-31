@@ -18,26 +18,33 @@ import stories.StoryContents
 import stories.full
 
 @Composable
-fun StoriesPage() {
+fun StoriesPage(story: Story?) {
     val me by application.me.collectAsState()
     var storyContent by remember { mutableStateOf<List<StoryContent>>(emptyList()) }
     var isLoading by remember {
         mutableStateOf(true)
     }
 
-    LaunchedEffect(Unit) {
-        try {
-            val stories = http.get("$baseUrl/stories") {
-                parameter("geo", me?.geo?.joinToString(",") ?: "0,0") // todo
-                contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                bearerAuth(application.bearer)
-            }.body<List<Story>>()
-            storyContent = stories.flatMapIndexed { index, it ->
-                if (index < stories.lastIndex) it.full() + StoryContent.Divider else it.full()
+    LaunchedEffect(story) {
+        isLoading = true
+
+        if (story == null) {
+            try {
+                val stories = http.get("$baseUrl/stories") {
+                    parameter("geo", me?.geo?.joinToString(",") ?: "10.7915858,106.7426523") // todo
+                    contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
+                    bearerAuth(application.bearer)
+                }.body<List<Story>>()
+                storyContent = stories.flatMapIndexed { index, it ->
+                    if (index < stories.lastIndex) it.full() + StoryContent.Divider else it.full()
+                }
+            } catch (e: Throwable) {
+                e.printStackTrace()
             }
-        } catch (e: Throwable) {
-            e.printStackTrace()
+        } else {
+            storyContent = story.full()
         }
+
         isLoading = false
     }
 

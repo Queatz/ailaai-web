@@ -5,7 +5,7 @@ import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 
 @Composable
-fun FullPageLayout(content: @Composable () -> Unit) {
+fun FullPageLayout(maxWidth: CSSpxValue? = 960.px, content: @Composable () -> Unit) {
     Div({
         style {
             display(DisplayStyle.Flex)
@@ -16,18 +16,22 @@ fun FullPageLayout(content: @Composable () -> Unit) {
             overflowY("auto")
         }
     }) {
-        Div({
-            style {
-                display(DisplayStyle.Flex)
-                flexDirection(FlexDirection.Column)
-                width(100.percent)
-                height(100.percent)
-                alignItems(AlignItems.Stretch)
-                maxWidth(960.px)
-                alignSelf(AlignSelf.Center)
-            }
-        }) {
+        if (maxWidth == null) {
             content()
+        } else {
+            Div({
+                style {
+                    display(DisplayStyle.Flex)
+                    flexDirection(FlexDirection.Column)
+                    width(100.percent)
+                    height(100.percent)
+                    alignItems(AlignItems.Stretch)
+                    maxWidth(maxWidth)
+                    alignSelf(AlignSelf.Center)
+                }
+            }) {
+                content()
+            }
         }
     }
 }

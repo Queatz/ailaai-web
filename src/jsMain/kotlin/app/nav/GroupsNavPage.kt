@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import lib.formatDistanceToNow
+import notBlank
 import org.jetbrains.compose.web.attributes.autoFocus
 import org.jetbrains.compose.web.attributes.placeholder
 import org.jetbrains.compose.web.css.*
@@ -38,18 +39,22 @@ fun GroupsNavPage(selectedGroup: GroupExtended?, onGroupSelected: (GroupExtended
     var isLoading by remember {
         mutableStateOf(true)
     }
-    var showSearch by remember {
-        mutableStateOf(false)
-    }
-    var searchText by remember {
-        mutableStateOf("")
-    }
+
     var groups by remember {
         mutableStateOf(emptyList<GroupExtended>())
     }
 
+    var showSearch by remember {
+        mutableStateOf(false)
+    }
+
+    var searchText by remember {
+        mutableStateOf("")
+    }
+
     LaunchedEffect(selectedGroup) {
         searchText = ""
+        showSearch = false
     }
 
     val shownGroups = remember(groups, searchText) {
@@ -130,31 +135,10 @@ fun GroupsNavPage(selectedGroup: GroupExtended?, onGroupSelected: (GroupExtended
         }
     }
     if (showSearch) {
-        TextInput(searchText) {
-            classes(Styles.textarea)
-            style {
-                margin(.5.cssRem, 1.cssRem, 0.cssRem, 1.cssRem)
-                height(3.5.cssRem)
-                maxHeight(6.5.cssRem)
-            }
-
-            onKeyDown {
-                if (it.key == "Escape") {
-                    it.preventDefault()
-                    it.stopPropagation()
-                    searchText = ""
-                    showSearch = false
-                }
-            }
-
-            onInput {
-                searchText = it.value
-            }
-
-            placeholder("Search")
-
-            autoFocus()
-        }
+        NavSearchInput(searchText, { searchText = it }, onDismissRequest = {
+            searchText = ""
+            showSearch = false
+        })
     }
 
     if (isLoading) {
@@ -254,12 +238,12 @@ fun GroupsNavPage(selectedGroup: GroupExtended?, onGroupSelected: (GroupExtended
 }
 
 fun GroupExtended.name(someone: String, emptyGroup: String, omit: List<String>) =
-    group?.name?.takeIf { it.isNotBlank() }
+    group?.name?.notBlank
         ?: members
             ?.filter { !omit.contains(it.person?.id) }
             ?.mapNotNull { it.person }
             ?.joinToString { it.name ?: someone }
-            ?.takeIf { it.isNotBlank() }
+            ?.notBlank
         ?: emptyGroup
 
 fun GroupExtended.isUnread(member: Member?): Boolean {

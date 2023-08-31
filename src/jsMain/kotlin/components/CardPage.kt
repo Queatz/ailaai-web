@@ -17,7 +17,7 @@ import io.ktor.utils.io.charsets.*
 import kotlinx.browser.window
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.decodeFromString
+import notEmpty
 import org.jetbrains.compose.web.attributes.autoFocus
 import org.jetbrains.compose.web.attributes.disabled
 import org.jetbrains.compose.web.attributes.placeholder
@@ -94,8 +94,8 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
         try {
             val body = WildReplyBody(
                 message = replyMessage,
-                conversation = isReplying!!.map { it.title }.filter { it.isBlank().not() }
-                    .takeIf { it.isNotEmpty() }?.joinToString(" → "),
+                conversation = isReplying!!.map { it.title }.filter { it.isNotBlank() }
+                    .notEmpty?.joinToString(" → "),
                 card = cardId,
                 device = api.token
             )
@@ -140,64 +140,7 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
                     classes(Styles.navContent)
                 }) {
                     card?.let { card ->
-                        card.photo?.let {
-                            Div({
-                                style {
-                                    width(100.percent)
-                                    backgroundColor(Styles.colors.background)
-                                    backgroundImage("url($baseUrl$it)")
-                                    backgroundPosition("center")
-                                    backgroundSize("cover")
-                                    maxHeight(50.vh)
-                                    property("aspect-ratio", "2")
-                                }
-                            }) {}
-                        } ?: card.video?.let {
-                            var videoElement by remember { mutableStateOf<HTMLVideoElement?>(null) }
-//                            LaunchedEffect(videoElement) {
-//                                if (videoElement != null) {
-//                                    delay(250)
-//                                    try {
-////                                        if (window.navigator.getAutoplayPolicy)
-//                                        videoElement!!.muted = false
-//                                    } catch (e: Throwable) {
-//                                        // ignore
-//                                    }
-//                                }
-//                            }
-                            Video({
-                                attr("muted", "muted")
-                                attr("autoplay", "")
-                                attr("loop", "")
-                                attr("playsinline", "")
-                                style {
-                                    property("object-fit", "cover")
-                                    width(100.percent)
-                                    backgroundColor(Styles.colors.background)
-                                    property("aspect-ratio", "2")
-                                }
-                                onClick {
-                                    (it.target as? HTMLVideoElement)?.apply {
-                                        play()
-                                        muted = false
-                                    }
-                                }
-                                // Do this so that auto-play works on page load, but unmute on page navigation
-                                ref { videoEl ->
-                                    videoEl.onloadedmetadata = {
-                                        videoEl.muted = true
-                                        videoElement = videoEl
-                                        it
-                                    }
-                                    onDispose {  }
-                                }
-                            }) {
-                                Source({
-                                    attr("src", "$baseUrl$it")
-                                    attr("type", "video/webm")
-                                })
-                            }
-                        }
+                        CardPhotoOrVideo(card)
                     }
                     Div({
                         classes(Styles.cardContent)
@@ -370,9 +313,9 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
                 classes(Styles.content)
             }) {
                 cards.forEach { card ->
-                    CardItem(card) {
+                    CardItem(card, styles = {
                         margin(PaddingDefault)
-                    }
+                    })
                 }
             }
         }

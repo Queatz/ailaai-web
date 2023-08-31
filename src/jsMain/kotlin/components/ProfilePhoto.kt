@@ -5,6 +5,7 @@ import Styles
 import androidx.compose.runtime.Composable
 import app.AppStyles
 import baseUrl
+import notBlank
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Img
@@ -37,7 +38,7 @@ fun ProfilePhoto(person: Person, size: CSSNumeric = 36.px, title: String? = null
                 onClick?.invoke()
             }
         }) {
-            person.name?.takeIf { it.isNotBlank() }?.take(1)?.let {
+            person.name?.notBlank?.take(1)?.let {
                 Text(it)
             } ?: let {
                 Span(

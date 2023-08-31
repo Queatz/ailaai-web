@@ -5,10 +5,7 @@ import Message
 import Sticker
 import Styles
 import androidx.compose.runtime.*
-import app.AppBottomBar
-import app.AppStyles
-import app.NavPage
-import app.StickersTray
+import app.*
 import app.messaages.MessageItem
 import app.messaages.StickerAttachment
 import app.messaages.preview
@@ -352,6 +349,11 @@ fun GroupPage(group: GroupExtended?) {
                 }
 
                 autoFocus()
+
+                ref { element ->
+                    element.focus()
+                    onDispose {}
+                }
             }
         }
         Div({
@@ -383,52 +385,12 @@ fun GroupTopBar(group: GroupExtended) {
     val me by application.me.collectAsState()
     val myMember = group.members?.find { it.person?.id == me?.id }
 
-    Div({
-        style {
-            display(DisplayStyle.Flex)
-            padding(.5.cssRem)
-            margin(1.cssRem, 1.cssRem, .5.cssRem, 1.cssRem)
-            alignItems(AlignItems.Center)
-            overflow("hidden")
+    PageTopBar(
+        group.name("Someone", "New group", listOf(me!!.id!!)),
+        group.members?.filter { it != myMember }?.maxByOrNull {
+            it.person?.seen?.let { Date(it).getTime() } ?: 0.0
+        }?.person?.seen?.let { Date(it) }?.let {
+            "Active ${formatDistanceToNow(it, js("{ addSuffix: true }"))}"
         }
-    }) {
-        Div({
-            style {
-                display(DisplayStyle.Flex)
-                flexDirection(FlexDirection.Column)
-                flex(1)
-                overflow("hidden")
-            }
-        }) {
-            Div({
-                style {
-                    fontSize(24.px)
-                    ellipsize()
-                }
-            }) {
-                Text(group.name("Someone", "New group", listOf(me!!.id!!)))
-            }
-            Div({
-                classes(AppStyles.groupItemMessage)
-                style {
-                    ellipsize()
-                }
-            }) {
-                group.members?.filter { it != myMember }?.maxByOrNull {
-                    it.person?.seen?.let { Date(it).getTime() } ?: 0.0
-                }?.person?.seen?.let { Date(it) }?.let {
-                    Text(
-                        "Active ${formatDistanceToNow(it, js("{ addSuffix: true }"))}"
-                    )
-                }
-            }
-        }
-        IconButton("more_vert", "Options", styles = {
-            flexShrink(0)
-            fontWeight("bold")
-            margin(0.cssRem, .5.cssRem)
-        }) {
-
-        }
-    }
+    )
 }

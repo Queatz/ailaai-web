@@ -5,6 +5,7 @@ import Story
 import json
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.*
+import notBlank
 
 @Serializable
 sealed class StoryContent {
@@ -40,9 +41,9 @@ fun Story.contents() = json.parseToJsonElement(content ?: "[]").jsonArray.toList
 
 fun Story.textContent(): String = contents().mapNotNull {
     when (it) {
-        is StoryContent.Title -> it.title.takeIf { it.isNotBlank() }
-        is StoryContent.Section -> it.section.takeIf { it.isNotBlank() }
-        is StoryContent.Text -> it.text.takeIf { it.isNotBlank() }
+        is StoryContent.Title -> it.title.notBlank
+        is StoryContent.Section -> it.section.notBlank
+        is StoryContent.Text -> it.text.notBlank
         else -> null
     }
 }.joinToString("\n")

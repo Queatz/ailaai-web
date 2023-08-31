@@ -11,6 +11,7 @@ import http
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import kotlinx.browser.window
+import notBlank
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
 import org.w3c.dom.HTMLDivElement
@@ -32,7 +33,12 @@ fun CardItem(cardId: String, openInNewWindow: Boolean = false, styles: (StyleSco
 }
 
 @Composable
-fun CardItem(card: Card, openInNewWindow: Boolean = false, styles: (StyleScope.() -> Unit)? = null) {
+fun CardItem(
+    card: Card,
+    openInNewWindow: Boolean = false,
+    styles: (StyleScope.() -> Unit)? = null,
+    onClick: ((openInNewWindow: Boolean) -> Unit)? = null
+) {
     val router = Router.current
     Div({
         classes(Styles.card)
@@ -48,10 +54,14 @@ fun CardItem(card: Card, openInNewWindow: Boolean = false, styles: (StyleScope.(
             styles?.invoke(this)
         }
         onClick { event ->
-            if (event.ctrlKey || openInNewWindow) {
-                window.open("/card/${card.id}", target = "_blank")
+            if (onClick == null) {
+                if (event.ctrlKey || openInNewWindow) {
+                    window.open("/card/${card.id}", target = "_blank")
+                } else {
+                    router.navigate("/card/${card.id}")
+                }
             } else {
-                router.navigate("/card/${card.id}")
+                onClick(event.ctrlKey || openInNewWindow)
             }
         }
         onMouseMove { event ->
@@ -136,7 +146,7 @@ fun CardItem(card: Card, openInNewWindow: Boolean = false, styles: (StyleScope.(
                 }
             }
 
-            card.getConversation().message.takeIf { it.isNotEmpty() }
+            card.getConversation().message.notBlank
                 ?.let { conversationMessage ->
                     Div({
                         style {
