@@ -14,6 +14,7 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.utils.io.charsets.*
+import json
 import kotlinx.browser.window
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
@@ -322,6 +323,6 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
     }
 }
 
-fun Card.getConversation() = DefaultJson.decodeFromString<ConversationItem>(conversation ?: "{}")
+fun Card.getConversation() = json.decodeFromString<ConversationItem>(conversation ?: "{}")
 
-fun Card.getOptions() = DefaultJson.decodeFromString<CardOptions>(options ?: "{}")
+fun Card.getOptions() = json.decodeFromString<CardOptions>(options ?: "{}")

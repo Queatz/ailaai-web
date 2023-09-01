@@ -23,14 +23,14 @@ class Push {
                 application.bearerToken.first { it != null }
                 try {
                     http.post("$baseUrl/me/device") {
-                        contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                        bearerAuth(application.bearer)
                         setBody(
                             Device(
                                 type = DeviceType.Web,
                                 token = api.token
                             )
                         )
+                        contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
+                        bearerAuth(application.bearer)
                     }
                 } catch (e: Throwable) {
                     e.printStackTrace()

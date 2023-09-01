@@ -1,9 +1,9 @@
 package app.nav
 
 import CreateGroupBody
+import Group
 import GroupExtended
 import Member
-import Group
 import PaddingDefault
 import Styles
 import androidx.compose.runtime.*
@@ -20,20 +20,25 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.utils.io.charsets.*
 import kotlinx.browser.window
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import lib.formatDistanceToNow
 import notBlank
-import org.jetbrains.compose.web.attributes.autoFocus
-import org.jetbrains.compose.web.attributes.placeholder
 import org.jetbrains.compose.web.css.*
-import org.jetbrains.compose.web.dom.*
+import org.jetbrains.compose.web.dom.Div
+import org.jetbrains.compose.web.dom.Span
+import org.jetbrains.compose.web.dom.Text
 import push
 import kotlin.js.Date
 
 @Composable
-fun GroupsNavPage(selectedGroup: GroupExtended?, onGroupSelected: (GroupExtended) -> Unit) {
+fun GroupsNavPage(
+    groupUpdates: Flow<Unit>,
+    selectedGroup: GroupExtended?,
+    onGroupSelected: (GroupExtended?) -> Unit
+) {
     val scope = rememberCoroutineScope()
     val me by application.me.collectAsState()
     var isLoading by remember {
@@ -75,18 +80,21 @@ fun GroupsNavPage(selectedGroup: GroupExtended?, onGroupSelected: (GroupExtended
                 contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
                 bearerAuth(application.bearer)
             }.body()
+            onGroupSelected(groups.firstOrNull { it.group?.id == selectedGroup?.group?.id })
         } catch (e: Throwable) {
             e.printStackTrace()
         }
     }
 
-    LaunchedEffect(Unit) {
+    // todo remove selectedGroup
+    LaunchedEffect(selectedGroup) {
         push.events.collectLatest {
             reload()
         }
     }
 
-    LaunchedEffect(Unit) {
+    // todo remove selectedGroup
+    LaunchedEffect(selectedGroup) {
         push.reconnect.collectLatest {
             reload()
         }
@@ -95,6 +103,13 @@ fun GroupsNavPage(selectedGroup: GroupExtended?, onGroupSelected: (GroupExtended
     LaunchedEffect(me) {
         reload()
         isLoading = false
+    }
+
+    // todo remove selectedGroup
+    LaunchedEffect(selectedGroup) {
+        groupUpdates.collectLatest {
+            reload()
+        }
     }
 
 

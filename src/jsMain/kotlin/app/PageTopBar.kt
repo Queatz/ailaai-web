@@ -1,6 +1,7 @@
 package app
 
 import androidx.compose.runtime.Composable
+import androidx.compose.web.events.SyntheticMouseEvent
 import components.IconButton
 import ellipsize
 import org.jetbrains.compose.web.css.*
@@ -8,7 +9,7 @@ import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Text
 
 @Composable
-fun PageTopBar(title: String, description: String? = null) {
+fun PageTopBar(title: String, description: String? = null, onMenu: ((SyntheticMouseEvent) -> Unit)? = null) {
     Div({
         style {
             display(DisplayStyle.Flex)
@@ -50,7 +51,7 @@ fun PageTopBar(title: String, description: String? = null) {
             fontWeight("bold")
             margin(0.cssRem, .5.cssRem)
         }) {
-            // todo
+            onMenu?.invoke(it)
         }
     }
 }

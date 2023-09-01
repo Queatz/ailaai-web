@@ -10,6 +10,8 @@ import app.nav.ScheduleNavPage
 import app.nav.StoriesNavPage
 import app.page.*
 import application
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
@@ -26,6 +28,8 @@ enum class NavPage {
 fun AppPage() {
     Style(AppStyles)
 
+    val scope = rememberCoroutineScope()
+
     var nav by remember {
         mutableStateOf(application.navPage)
     }
@@ -36,6 +40,14 @@ fun AppPage() {
 
     var card by remember {
         mutableStateOf<Card?>(null)
+    }
+
+    val cardUpdates = remember {
+        MutableSharedFlow<Card>()
+    }
+
+    val groupUpdates = remember {
+        MutableSharedFlow<Unit>()
     }
 
     var story by remember {
@@ -67,6 +79,7 @@ fun AppPage() {
             }) {
                 when (nav) {
                     NavPage.Groups -> GroupsNavPage(
+                        groupUpdates,
                         group,
                         onGroupSelected = {
                             group = it
@@ -75,7 +88,7 @@ fun AppPage() {
                     NavPage.Schedule -> ScheduleNavPage(scheduleView) {
                         scheduleView = it
                     }
-                    NavPage.Cards -> CardsNavPage(card) { card = it }
+                    NavPage.Cards -> CardsNavPage(cardUpdates, card) { card = it }
                     NavPage.Stories -> StoriesNavPage(story) { story = it }
                 }
             }
@@ -84,9 +97,17 @@ fun AppPage() {
             classes(AppStyles.mainLayout)
         }) {
             when (nav) {
-                NavPage.Groups -> GroupPage(group)
+                NavPage.Groups -> GroupPage(group) {
+                    scope.launch {
+                        groupUpdates.emit(Unit)
+                    }
+                }
                 NavPage.Schedule -> SchedulePage(scheduleView)
-                NavPage.Cards -> CardsPage(card) { card = it }
+                NavPage.Cards -> CardsPage(card, { card = it }) {
+                    scope.launch {
+                        cardUpdates.emit(it)
+                    }
+                }
                 NavPage.Stories -> StoriesPage(story)
             }
         }

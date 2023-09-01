@@ -33,6 +33,18 @@ class MemberAndPerson(
 )
 
 @Serializable
+class Save(
+    var person: String? = null,
+    var card: String? = null
+) : Model()
+
+@Serializable
+class SaveAndCard(
+    var save: Save? = null,
+    var card: Card? = null
+)
+
+@Serializable
 class Message(
     var group: String? = null,
     var member: String? = null,

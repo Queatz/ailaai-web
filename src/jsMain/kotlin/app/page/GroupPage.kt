@@ -4,19 +4,18 @@ import GroupExtended
 import Message
 import Sticker
 import Styles
+import Group
 import androidx.compose.runtime.*
 import app.*
+import app.menu.Menu
 import app.messaages.MessageItem
 import app.messaages.StickerAttachment
-import app.messaages.preview
 import app.nav.name
 import appString
 import application
 import baseUrl
-import components.Icon
 import components.IconButton
 import components.Loading
-import ellipsize
 import http
 import io.ktor.client.call.*
 import io.ktor.client.request.*
@@ -25,6 +24,7 @@ import io.ktor.http.*
 import io.ktor.utils.io.charsets.*
 import json
 import kotlinx.browser.document
+import kotlinx.browser.window
 import kotlinx.coroutines.await
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -46,7 +46,7 @@ import kotlin.js.Date
 import kotlin.js.Promise
 
 @Composable
-fun GroupPage(group: GroupExtended?) {
+fun GroupPage(group: GroupExtended?, onGroupUpdated: () -> Unit) {
     val me by application.me.collectAsState()
     val scope = rememberCoroutineScope()
     var messageText by remember {
@@ -61,7 +61,7 @@ fun GroupPage(group: GroupExtended?) {
         mutableStateOf<String?>(null)
     }
 
-    var isLoading by remember(group) {
+    var isLoading by remember(group?.group?.id) {
         mutableStateOf(true)
     }
 
@@ -93,7 +93,12 @@ fun GroupPage(group: GroupExtended?) {
             latestMessage = messages.lastOrNull()?.id
             scope.launch {
                 delay(100)
-                messagesDiv?.scroll(ScrollToOptions(top = messagesDiv!!.scrollHeight.toDouble(), behavior = ScrollBehavior.SMOOTH))
+                messagesDiv?.scroll(
+                    ScrollToOptions(
+                        top = messagesDiv!!.scrollHeight.toDouble(),
+                        behavior = ScrollBehavior.SMOOTH
+                    )
+                )
             }
         }
     }
@@ -218,15 +223,17 @@ fun GroupPage(group: GroupExtended?) {
                 http.post("$baseUrl/groups/${group!!.group!!.id!!}/messages") {
                     contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
                     bearerAuth(application.bearer)
-                    setBody(Message(
-                        attachment = json.encodeToString(
-                            StickerAttachment(
-                                sticker.photo,
-                                sticker.id,
-                                sticker.message
+                    setBody(
+                        Message(
+                            attachment = json.encodeToString(
+                                StickerAttachment(
+                                    sticker.photo,
+                                    sticker.id,
+                                    sticker.message
+                                )
                             )
                         )
-                    ))
+                    )
                 }
                 isSending = false
                 reload()
@@ -316,7 +323,8 @@ fun GroupPage(group: GroupExtended?) {
                         scope.launch {
                             delay(1)
                             (it.target as HTMLTextAreaElement).style.height = "0"
-                            (it.target as HTMLTextAreaElement).style.height = "${(it.target as HTMLTextAreaElement).scrollHeight + 2}px"
+                            (it.target as HTMLTextAreaElement).style.height =
+                                "${(it.target as HTMLTextAreaElement).scrollHeight + 2}px"
                         }
                     }
                 }
@@ -376,14 +384,51 @@ fun GroupPage(group: GroupExtended?) {
             }
         }
 
-        GroupTopBar(group)
+        GroupTopBar(group) {
+            onGroupUpdated()
+        }
     }
 }
 
 @Composable
-fun GroupTopBar(group: GroupExtended) {
+fun GroupTopBar(group: GroupExtended, onGroupUpdated: () -> Unit) {
     val me by application.me.collectAsState()
     val myMember = group.members?.find { it.person?.id == me?.id }
+    val scope = rememberCoroutineScope()
+
+    var menuTarget by remember {
+        mutableStateOf<DOMRect?>(null)
+    }
+
+    fun renameGroup() {
+        scope.launch {
+            try {
+                val name = window.prompt("Group name", group.group?.name ?: "")
+
+                if (name == null) return@launch
+
+                http.post("$baseUrl/groups/${group.group!!.id!!}") {
+                    contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
+                    bearerAuth(application.bearer)
+                    setBody(Group(name = name))
+                }
+                onGroupUpdated()
+            } catch (e: Throwable) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    if (menuTarget != null) {
+        Menu({ menuTarget = null }, menuTarget!!) {
+//            item("Pin") {
+//
+//            }
+            item("Rename") {
+                renameGroup()
+            }
+        }
+    }
 
     PageTopBar(
         group.name("Someone", "New group", listOf(me!!.id!!)),
@@ -392,5 +437,7 @@ fun GroupTopBar(group: GroupExtended) {
         }?.person?.seen?.let { Date(it) }?.let {
             "Active ${formatDistanceToNow(it, js("{ addSuffix: true }"))}"
         }
-    )
+    ) {
+        menuTarget = if (menuTarget == null) (it.target as HTMLElement).getBoundingClientRect() else null
+    }
 }

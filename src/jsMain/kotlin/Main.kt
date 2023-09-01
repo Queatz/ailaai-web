@@ -64,6 +64,7 @@ fun main() {
                 delay(500)
                 application.sync()
                 push.start(this)
+                saves.start(this)
             }
 
             BrowserRouter("") {

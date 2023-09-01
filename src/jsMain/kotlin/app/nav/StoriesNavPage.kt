@@ -58,7 +58,7 @@ fun StoriesNavPage(selected: Story?, onSelected: (Story?) -> Unit) {
         }
     }
 
-    LaunchedEffect(Unit) {
+    suspend fun reload() {
         myStories = try {
             http.get("$baseUrl/me/stories") {
                 contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
@@ -70,6 +70,10 @@ fun StoriesNavPage(selected: Story?, onSelected: (Story?) -> Unit) {
         }
 
         isLoading = false
+    }
+
+    LaunchedEffect(Unit) {
+        reload()
     }
 
     NavTopBar(me, "Stories") {
@@ -90,7 +94,7 @@ fun StoriesNavPage(selected: Story?, onSelected: (Story?) -> Unit) {
                         contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
                         bearerAuth(application.bearer)
                     }.body<Story>()
-//                    reload()
+                    reload()
                 } catch (e: Throwable) {
                     e.printStackTrace()
                 }

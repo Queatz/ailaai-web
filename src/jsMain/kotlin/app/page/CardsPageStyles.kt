@@ -10,8 +10,6 @@ object CardsPageStyles : StyleSheet() {
         display(DisplayStyle.Flex)
         flexWrap(FlexWrap.Wrap)
         position(Position.Relative)
-        overflowX("hidden")
-        overflowY("auto")
 
         child(self, className(card)) style {
             self style {

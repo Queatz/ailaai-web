@@ -13,6 +13,38 @@ import org.jetbrains.compose.web.css.*
 
 object AppStyles : StyleSheet() {
 
+    val menu by style {
+        padding(.5.cssRem)
+        backgroundColor(Color.white)
+        borderRadius(1.cssRem)
+        property("box-shadow", "2px 2px 16px rgba(0, 0, 0, 0.125)")
+        position(Position.Absolute)
+        property("z-index", "10")
+        property("transform", "translateX(-100%)")
+
+        media("(prefers-color-scheme: dark)") {
+            self style {
+                backgroundColor(Styles.colors.dark.background)
+            }
+        }
+    }
+
+    val menuItem by style {
+        borderRadius(.5.cssRem)
+        padding(1.cssRem)
+        cursor("pointer")
+
+        hover(self) style {
+        backgroundColor(Styles.colors.background)
+        }
+
+        media("(prefers-color-scheme: dark)") {
+            hover(self) style {
+                backgroundColor(Color.black)
+            }
+        }
+    }
+
     val baseLayout by style {
         width(100.vw)
         height(100.vh)
@@ -291,7 +323,7 @@ object AppStyles : StyleSheet() {
     val messageItemStory by style {
         borderRadius(CornerDefault)
         backgroundColor(Color.white)
-        property("box-shadow", "rgba(0, 0, 0, 0.125) 1px 1px 4px")
+        property("box-shadow", "1px 1px 4px rgba(0, 0, 0, 0.125)")
         padding(PaddingDefault)
         cursor("pointer")
         overflow("hidden")

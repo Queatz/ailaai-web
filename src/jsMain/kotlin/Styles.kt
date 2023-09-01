@@ -20,7 +20,7 @@ object Styles : StyleSheet() {
     }
 
     fun CSSBuilder.elevated() {
-        property("box-shadow", "rgba(0, 0, 0, 0.125) 1px 1px 4px")
+        property("box-shadow", "1px 1px 4px, rgba(0, 0, 0, 0.125)")
         backgroundColor(Color.white)
         borderRadius(CornerDefault)
     }
@@ -126,7 +126,7 @@ object Styles : StyleSheet() {
         alignItems(AlignItems.Stretch)
 //        padding(PaddingDefault)
         overflowX("hidden")
-        property("box-shadow", "rgba(0, 0, 0, 0.125) 2px 2px 16px")
+        property("box-shadow", "2px 2px 16px rgba(0, 0, 0, 0.125)")
         backgroundColor(Color.white)
         borderRadius(CornerDefault)
         marginLeft(PaddingDefault)
@@ -252,6 +252,10 @@ object Styles : StyleSheet() {
         selector(".material-symbols-outlined") style {
             marginRight(.5.cssRem)
         }
+
+        self + disabled style {
+            opacity(.5)
+        }
     }
 
     val outlineButton by style {
@@ -268,6 +272,10 @@ object Styles : StyleSheet() {
         selector(".material-symbols-outlined") style {
             marginRight(.5.cssRem)
         }
+
+        self + disabled style {
+            opacity(.5)
+        }
     }
 
     val textButton by style {
@@ -283,6 +291,10 @@ object Styles : StyleSheet() {
         property("font-size", "inherit")
         selector(".material-symbols-outlined") style {
             marginRight(.5.cssRem)
+        }
+
+        self + disabled style {
+            opacity(.5)
         }
     }
 

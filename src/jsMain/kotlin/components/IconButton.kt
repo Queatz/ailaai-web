@@ -1,6 +1,7 @@
 package components
 
 import androidx.compose.runtime.Composable
+import androidx.compose.web.events.SyntheticMouseEvent
 import app.AppStyles
 import org.jetbrains.compose.web.css.StyleScope
 import org.jetbrains.compose.web.css.cursor
@@ -8,7 +9,7 @@ import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text
 
 @Composable
-fun IconButton(name: String, title: String, styles: (StyleScope.() -> Unit)? = null, onClick: () -> Unit) {
+fun IconButton(name: String, title: String, styles: (StyleScope.() -> Unit)? = null, onClick: (SyntheticMouseEvent) -> Unit) {
     Span({
         classes("material-symbols-outlined", AppStyles.iconButton)
         title(title)
@@ -17,7 +18,7 @@ fun IconButton(name: String, title: String, styles: (StyleScope.() -> Unit)? = n
             styles?.invoke(this)
         }
         onClick {
-            onClick()
+            onClick(it)
         }
     }) {
         Text(name)

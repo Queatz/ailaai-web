@@ -2,12 +2,13 @@ package app.nav
 
 import Card
 import PaddingDefault
+import Styles
 import androidx.compose.runtime.*
 import app.AppStyles
 import appString
-import appText
 import application
 import baseUrl
+import components.Icon
 import components.IconButton
 import components.Loading
 import http
@@ -16,20 +17,20 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.utils.io.charsets.*
 import kotlinx.browser.window
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import lib.formatDistanceToNow
 import notBlank
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text
-import stories.storyStatus
-import stories.textContent
-import kotlin.js.Date
+import saves
 
 @Composable
-fun CardsNavPage(selected: Card?, onSelected: (Card?) -> Unit) {
+fun CardsNavPage(cardUpdates: Flow<Card>, selected: Card?, onSelected: (Card?) -> Unit) {
     val me by application.me.collectAsState()
+    val saved by saves.cards.collectAsState()
     val scope = rememberCoroutineScope()
     var isLoading by remember { mutableStateOf(true) }
 
@@ -48,18 +49,20 @@ fun CardsNavPage(selected: Card?, onSelected: (Card?) -> Unit) {
 
     var myCards by remember { mutableStateOf(emptyList<Card>()) }
 
-    val shownCards = remember(myCards, searchText) {
+    val shownCards = remember(myCards, searchText, saved) {
         val search = searchText.trim()
-        if (searchText.isBlank()) {
+        (if (searchText.isBlank()) {
             myCards
         } else {
             myCards.filter {
                 (it.name?.contains(search, true) ?: false)
             }
-        }
+        }).sortedByDescending { saved.any { save -> it.id == save.id } }
     }
 
     suspend fun reload() {
+        val selectedId = selected?.id
+
         myCards = try {
             http.get("$baseUrl/me/cards") {
                 contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
@@ -71,10 +74,22 @@ fun CardsNavPage(selected: Card?, onSelected: (Card?) -> Unit) {
         }
 
         isLoading = false
+
+        if (selected != null) {
+            onSelected(myCards.firstOrNull { it.id == selectedId })
+        }
     }
 
     LaunchedEffect(Unit) {
         reload()
+    }
+
+    // todo if (selected) is not passed in, then selected is always null in reload()
+    // https://youtrack.jetbrains.com/issue/KT-61632/Kotlin-JS-argument-scope-bug
+    LaunchedEffect(selected) {
+        cardUpdates.collectLatest {
+            reload()
+        }
     }
 
     NavTopBar(me, "Cards") {
@@ -95,6 +110,9 @@ fun CardsNavPage(selected: Card?, onSelected: (Card?) -> Unit) {
                         contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
                         bearerAuth(application.bearer)
                     }.body<Card>()
+                    onSelected(card)
+
+                    // todo this reloads old card
                     reload()
                 } catch (e: Throwable) {
                     e.printStackTrace()
@@ -134,7 +152,7 @@ fun CardsNavPage(selected: Card?, onSelected: (Card?) -> Unit) {
 
             }
             shownCards.forEach {
-                CardItem(it, selected == it) {
+                CardItem(it, selected == it, saved.any { save -> save.id == it.id }) {
                     onSelected(it)
                 }
             }
@@ -143,7 +161,7 @@ fun CardsNavPage(selected: Card?, onSelected: (Card?) -> Unit) {
 }
 
 @Composable
-fun CardItem(card: Card, selected: Boolean, onSelected: () -> Unit) {
+fun CardItem(card: Card, selected: Boolean, saved: Boolean, onSelected: () -> Unit) {
     Div({
         classes(
             listOf(AppStyles.groupItem) + if (selected) {
@@ -175,13 +193,15 @@ fun CardItem(card: Card, selected: Boolean, onSelected: () -> Unit) {
                 }
             }
         }
-        if ((card.cardCount ?: 0) > 0) {
-            Div({
-                style {
-                    marginLeft(.5.cssRem)
-                    flexShrink(0)
-                }
-            }) {
+        Div({
+            style {
+                marginLeft(.5.cssRem)
+                flexShrink(0)
+                display(DisplayStyle.Flex)
+                alignItems(AlignItems.Center)
+            }
+        }) {
+            if ((card.cardCount ?: 0) > 0) {
                 Span({
                     style {
                         color(Styles.colors.secondary)
@@ -192,6 +212,14 @@ fun CardItem(card: Card, selected: Boolean, onSelected: () -> Unit) {
                     Text(
                         "${card.cardCount} ${appString { if (card.cardCount == 1) inlineCard else inlineCards }}"
                     )
+                }
+            }
+            if (saved) {
+                Icon("favorite") {
+                    fontSize(18.px)
+                    color(Styles.colors.secondary)
+                    opacity(.5)
+                    marginLeft(.5.cssRem)
                 }
             }
         }
