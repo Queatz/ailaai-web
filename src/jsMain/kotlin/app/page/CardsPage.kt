@@ -162,6 +162,15 @@ fun MyCardPage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Unit
                     }
                 }
             }
+            if (card.parent != null) {
+                item("Open enclosing card") {
+                    scope.launch {
+                        api.card(card.parent!!) {
+                            onCard(it)
+                        }
+                    }
+                }
+            }
         }
     }
 

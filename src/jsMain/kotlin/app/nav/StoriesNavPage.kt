@@ -9,6 +9,8 @@ import application
 import components.IconButton
 import components.Loading
 import kotlinx.browser.window
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
@@ -17,7 +19,7 @@ import stories.storyStatus
 import stories.textContent
 
 @Composable
-fun StoriesNavPage(selected: Story?, onSelected: (Story?) -> Unit) {
+fun StoriesNavPage(storyUpdates: Flow<Story>, selected: Story?, onSelected: (Story?) -> Unit) {
     val me by application.me.collectAsState()
     val scope = rememberCoroutineScope()
 
@@ -53,11 +55,22 @@ fun StoriesNavPage(selected: Story?, onSelected: (Story?) -> Unit) {
             myStories = it
         }
 
+        if (selected != null) {
+            onSelected(myStories.firstOrNull { it.id == selected.id })
+        }
+
         isLoading = false
     }
 
     LaunchedEffect(Unit) {
         reload()
+    }
+
+    // todo see youtrack, should not need (selected)
+    LaunchedEffect(selected) {
+        storyUpdates.collectLatest {
+            reload()
+        }
     }
 
     NavTopBar(me, "Stories") {

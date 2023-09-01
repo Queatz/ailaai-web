@@ -17,6 +17,7 @@ fun PageTopBar(title: String, description: String? = null, onMenu: ((SyntheticMo
             margin(1.cssRem, 1.cssRem, .5.cssRem, 1.cssRem)
             alignItems(AlignItems.Center)
             overflow("hidden")
+            flexShrink(0)
         }
     }) {
         Div({

@@ -33,6 +33,7 @@ object AppStyles : StyleSheet() {
         borderRadius(.5.cssRem)
         padding(1.cssRem)
         cursor("pointer")
+        whiteSpace("nowrap")
 
         hover(self) style {
         backgroundColor(Styles.colors.background)

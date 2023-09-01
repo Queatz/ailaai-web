@@ -203,6 +203,18 @@ class Api {
         onSuccess = onSuccess
     )
 
+    suspend fun updateStory(
+        storyId: String,
+        story: Story,
+        onError: suspend (Throwable) -> Unit = {},
+        onSuccess: suspend (Story) -> Unit
+    ) = post(
+        url = "stories/$storyId",
+        body = story,
+        onError = onError,
+        onSuccess = onSuccess
+    )
+
     suspend fun updateGroup(
         groupId: String,
         group: Group,

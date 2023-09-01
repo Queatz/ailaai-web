@@ -47,6 +47,10 @@ fun AppPage() {
         MutableSharedFlow<Unit>()
     }
 
+    val storyUpdates = remember {
+        MutableSharedFlow<Story>()
+    }
+
     var story by remember {
         mutableStateOf<Story?>(null)
     }
@@ -86,7 +90,7 @@ fun AppPage() {
                         scheduleView = it
                     }
                     NavPage.Cards -> CardsNavPage(cardUpdates, card) { card = it }
-                    NavPage.Stories -> StoriesNavPage(story) { story = it }
+                    NavPage.Stories -> StoriesNavPage(storyUpdates, story) { story = it }
                 }
             }
         }
@@ -105,7 +109,11 @@ fun AppPage() {
                         cardUpdates.emit(it)
                     }
                 }
-                NavPage.Stories -> StoriesPage(story)
+                NavPage.Stories -> StoriesPage(story) {
+                    scope.launch {
+                        storyUpdates.emit(it)
+                    }
+                }
             }
         }
     }
