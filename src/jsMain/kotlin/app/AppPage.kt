@@ -4,10 +4,7 @@ import Card
 import GroupExtended
 import Story
 import androidx.compose.runtime.*
-import app.nav.CardsNavPage
-import app.nav.GroupsNavPage
-import app.nav.ScheduleNavPage
-import app.nav.StoriesNavPage
+import app.nav.*
 import app.page.*
 import application
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -39,7 +36,7 @@ fun AppPage() {
     }
 
     var card by remember {
-        mutableStateOf<Card?>(null)
+        mutableStateOf<CardNav>(CardNav.Explore)
     }
 
     val cardUpdates = remember {

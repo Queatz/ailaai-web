@@ -201,6 +201,12 @@ fun GroupsNavPage(
                     }) {
                         Div({
                             classes(AppStyles.groupItemName)
+
+                            style {
+                                if (group.isUnread(myMember?.member)) {
+                                    fontWeight("bold")
+                                }
+                            }
                         }) {
                             Text(group.name("Someone", "New group", listOf(me!!.id!!)))
                         }
@@ -228,9 +234,14 @@ fun GroupsNavPage(
                         }) {
                             Span({
                                 style {
-                                    color(Styles.colors.secondary)
+                                    if (group.isUnread(myMember?.member)) {
+                                        color(Styles.colors.primary)
+                                        fontWeight("bold")
+                                    } else {
+                                        color(Styles.colors.secondary)
+                                        opacity(.5)
+                                    }
                                     fontSize(14.px)
-                                    opacity(.5)
                                 }
                             }) {
                                 Text(

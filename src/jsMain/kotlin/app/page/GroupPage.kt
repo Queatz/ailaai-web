@@ -77,7 +77,17 @@ fun GroupPage(group: GroupExtended?, onGroupUpdated: () -> Unit) {
         mutableStateOf<HTMLDivElement?>(null)
     }
 
-    suspend fun reload() {
+    LaunchedEffect(group?.group?.id) {
+        group?.group?.id?.let { groupId ->
+            // Mark group as read
+            val group = http.get("$baseUrl/groups/${group.group?.id}") {
+                contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
+                bearerAuth(application.bearer)
+            }.body<GroupExtended>()
+        }
+    }
+
+    suspend fun reloadMessages() {
         if (group == null) return
         try {
             messages = http.get("$baseUrl/groups/${group.group?.id}/messages") {
@@ -104,18 +114,18 @@ fun GroupPage(group: GroupExtended?, onGroupUpdated: () -> Unit) {
     }
 
     LaunchedEffect(group) {
-        reload()
+        reloadMessages()
     }
 
     LaunchedEffect(group) {
         push.events.collectLatest {
-            reload()
+            reloadMessages()
         }
     }
 
     LaunchedEffect(group) {
         push.reconnect.collectLatest {
-            reload()
+            reloadMessages()
         }
     }
 
@@ -162,7 +172,7 @@ fun GroupPage(group: GroupExtended?, onGroupUpdated: () -> Unit) {
                         )
                     }
                     isSending = false
-                    reload()
+                    reloadMessages()
                 } catch (e: Throwable) {
                     e.printStackTrace()
                 }
@@ -204,7 +214,7 @@ fun GroupPage(group: GroupExtended?, onGroupUpdated: () -> Unit) {
                     setBody(Message(text = text))
                 }
                 isSending = false
-                reload()
+                reloadMessages()
             } catch (e: Throwable) {
                 e.printStackTrace()
                 if (messageText.isBlank()) {
@@ -236,7 +246,7 @@ fun GroupPage(group: GroupExtended?, onGroupUpdated: () -> Unit) {
                     )
                 }
                 isSending = false
-                reload()
+                reloadMessages()
             } catch (e: Throwable) {
                 e.printStackTrace()
             }

@@ -27,8 +27,14 @@ import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text
 import saves
 
+sealed class CardNav {
+    data object Explore : CardNav()
+    data object Saved : CardNav()
+    data class Selected(val card: Card) : CardNav()
+}
+
 @Composable
-fun CardsNavPage(cardUpdates: Flow<Card>, selected: Card?, onSelected: (Card?) -> Unit) {
+fun CardsNavPage(cardUpdates: Flow<Card>, nav: CardNav, onSelected: (CardNav) -> Unit) {
     val me by application.me.collectAsState()
     val saved by saves.cards.collectAsState()
     val scope = rememberCoroutineScope()
@@ -42,7 +48,7 @@ fun CardsNavPage(cardUpdates: Flow<Card>, selected: Card?, onSelected: (Card?) -
         mutableStateOf("")
     }
 
-    LaunchedEffect(selected) {
+    LaunchedEffect(nav) {
         searchText = ""
         showSearch = false
     }
@@ -61,7 +67,7 @@ fun CardsNavPage(cardUpdates: Flow<Card>, selected: Card?, onSelected: (Card?) -
     }
 
     suspend fun reload() {
-        val selectedId = selected?.id
+        val selectedId = (nav as? CardNav.Selected)?.card?.id
 
         myCards = try {
             http.get("$baseUrl/me/cards") {
@@ -75,8 +81,10 @@ fun CardsNavPage(cardUpdates: Flow<Card>, selected: Card?, onSelected: (Card?) -
 
         isLoading = false
 
-        if (selected != null) {
-            onSelected(myCards.firstOrNull { it.id == selectedId })
+        if (selectedId != null) {
+            onSelected(myCards.firstOrNull { it.id == selectedId }?.let {
+                CardNav.Selected(it)
+            } ?: CardNav.Explore)
         }
     }
 
@@ -86,7 +94,7 @@ fun CardsNavPage(cardUpdates: Flow<Card>, selected: Card?, onSelected: (Card?) -
 
     // todo if (selected) is not passed in, then selected is always null in reload()
     // https://youtrack.jetbrains.com/issue/KT-61632/Kotlin-JS-argument-scope-bug
-    LaunchedEffect(selected) {
+    LaunchedEffect(nav) {
         cardUpdates.collectLatest {
             reload()
         }
@@ -110,7 +118,7 @@ fun CardsNavPage(cardUpdates: Flow<Card>, selected: Card?, onSelected: (Card?) -
                         contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
                         bearerAuth(application.bearer)
                     }.body<Card>()
-                    onSelected(card)
+                    onSelected(CardNav.Selected(card))
 
                     // todo this reloads old card
                     reload()
@@ -138,22 +146,25 @@ fun CardsNavPage(cardUpdates: Flow<Card>, selected: Card?, onSelected: (Card?) -
                 padding(PaddingDefault / 2)
             }
         }) {
-            NavMenuItem("explore", "Explore nearby", selected = selected == null) {
-                onSelected(null)
-            }
-            NavMenuItem("favorite", "Saved") {
-                // todo
-            }
-            Div({
-                style {
-                    height(1.cssRem)
+            if (!showSearch) {
+                NavMenuItem("explore", "Explore nearby", selected = nav == CardNav.Explore) {
+                    onSelected(CardNav.Explore)
                 }
-            }) {
+                NavMenuItem("favorite", "Saved", selected = nav == CardNav.Saved) {
+                    onSelected(CardNav.Saved)
+                }
+                Div({
+                    style {
+                        height(1.cssRem)
+                    }
+                }) {
 
+                }
             }
+            val selected = (nav as? CardNav.Selected)?.card
             shownCards.forEach {
                 CardItem(it, selected == it, saved.any { save -> save.id == it.id }) {
-                    onSelected(it)
+                    onSelected(CardNav.Selected(it))
                 }
             }
         }

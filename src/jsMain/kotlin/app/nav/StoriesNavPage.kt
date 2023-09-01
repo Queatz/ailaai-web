@@ -122,9 +122,9 @@ fun StoriesNavPage(selected: Story?, onSelected: (Story?) -> Unit) {
                 NavMenuItem("explore", "Explore nearby", selected = selected == null) {
                     onSelected(null)
                 }
-                NavMenuItem("favorite", "Saved") {
-                    // todo
-                }
+//                NavMenuItem("favorite", "Saved") {
+//                    // todo
+//                }
                 Div({
                     style {
                         height(1.cssRem)

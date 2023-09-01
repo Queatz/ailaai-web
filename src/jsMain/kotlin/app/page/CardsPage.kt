@@ -1,11 +1,13 @@
 package app.page
 
 import Card
+import SaveAndCard
 import Styles
 import androidx.compose.runtime.*
 import app.FullPageLayout
 import app.PageTopBar
 import app.menu.Menu
+import app.nav.CardNav
 import app.nav.NavSearchInput
 import application
 import baseUrl
@@ -36,31 +38,47 @@ import org.w3c.dom.events.Event
 import saves
 
 @Composable
-fun CardsPage(card: Card?, onCard: (Card?) -> Unit, onCardUpdated: (Card) -> Unit) {
+fun CardsPage(nav: CardNav, onCard: (CardNav) -> Unit, onCardUpdated: (Card) -> Unit) {
     Style(CardsPageStyles)
     val me by application.me.collectAsState()
-    var cards by remember(card) {
+    var cards by remember(nav) {
         mutableStateOf(listOf<Card>())
     }
-    var isLoading by remember(card == null) {
-        mutableStateOf(card == null)
+    var isLoading by remember(nav !is CardNav.Selected) {
+        mutableStateOf(nav !is CardNav.Selected)
     }
 
     suspend fun reload() {
         if (me == null) return
-        try {
-            cards = http.get("$baseUrl/cards") {
-                parameter("geo", me?.geo?.joinToString(",") ?: "10.7915858,106.7426523") // todo
-                contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                bearerAuth(application.bearer)
-            }.body()
-        } catch (e: Throwable) {
-            e.printStackTrace()
+
+        when (nav) {
+            is CardNav.Saved -> {
+                try {
+                    cards = http.get("$baseUrl/me/saved") {
+                        contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
+                        bearerAuth(application.bearer)
+                    }.body<List<SaveAndCard>>().mapNotNull { it.card }
+                } catch (e: Throwable) {
+                    e.printStackTrace()
+                }
+            }
+
+            else -> {
+                try {
+                    cards = http.get("$baseUrl/cards") {
+                        parameter("geo", me?.geo?.joinToString(",") ?: "10.7915858,106.7426523") // todo
+                        contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
+                        bearerAuth(application.bearer)
+                    }.body()
+                } catch (e: Throwable) {
+                    e.printStackTrace()
+                }
+            }
         }
         isLoading = false
     }
 
-    LaunchedEffect(card) {
+    LaunchedEffect(nav) {
         reload()
     }
 
@@ -68,7 +86,7 @@ fun CardsPage(card: Card?, onCard: (Card?) -> Unit, onCardUpdated: (Card) -> Uni
         Loading()
     } else {
         FullPageLayout(maxWidth = null) {
-            if (card == null) {
+            if (nav !is CardNav.Selected) {
                 Div(
                     {
                         classes(CardsPageStyles.layout)
@@ -80,12 +98,12 @@ fun CardsPage(card: Card?, onCard: (Card?) -> Unit, onCardUpdated: (Card) -> Uni
                     }
                 ) {
                     cards.forEach {
-                        CardItem(it)
+                        CardItem(it, openInNewWindow = true)
                     }
                 }
             } else {
-                MyCardPage(card, {
-                    onCard(it)
+                MyCardPage(nav.card, {
+                    onCard(CardNav.Selected(it))
                 }, onCardUpdated = {
                     onCardUpdated(it)
                 })
