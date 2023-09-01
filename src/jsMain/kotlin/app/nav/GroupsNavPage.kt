@@ -13,6 +13,7 @@ import application
 import components.GroupPhoto
 import components.IconButton
 import components.Loading
+import focusable
 import kotlinx.browser.window
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
@@ -105,12 +106,11 @@ fun GroupsNavPage(
 
     NavTopBar(me, "Groups") {
         IconButton("search", "Search", styles = {
-            marginRight(1.cssRem)
         }) {
             showSearch = !showSearch
         }
         IconButton("add", "New group", styles = {
-            marginRight(1.cssRem)
+            marginRight(.5.cssRem)
         }) {
             scope.launch {
                 val name = window.prompt("Group name")
@@ -167,6 +167,8 @@ fun GroupsNavPage(
                     onClick {
                         onGroupSelected(group)
                     }
+
+                    focusable()
                 }) {
                     GroupPhoto(group, me!!)
                     Div({

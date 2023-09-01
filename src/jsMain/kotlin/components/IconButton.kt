@@ -3,6 +3,7 @@ package components
 import androidx.compose.runtime.Composable
 import androidx.compose.web.events.SyntheticMouseEvent
 import app.AppStyles
+import focusable
 import org.jetbrains.compose.web.css.StyleScope
 import org.jetbrains.compose.web.css.cursor
 import org.jetbrains.compose.web.dom.Span
@@ -13,6 +14,7 @@ fun IconButton(name: String, title: String, styles: (StyleScope.() -> Unit)? = n
     Span({
         classes("material-symbols-outlined", AppStyles.iconButton)
         title(title)
+        focusable()
         style {
             cursor("pointer")
             styles?.invoke(this)

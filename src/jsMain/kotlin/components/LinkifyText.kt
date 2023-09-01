@@ -46,7 +46,7 @@ fun LinkifyText(text: String) {
             A(
                 href = part.first.let {
                     when {
-                        it.contains("@") -> "mailto:$it"
+                        it.contains("@") && !it.contains("/") -> "mailto:$it"
                         it.contains("://") -> it
                         else -> "https://$it"
                     }

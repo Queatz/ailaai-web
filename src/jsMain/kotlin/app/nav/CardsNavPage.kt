@@ -11,6 +11,7 @@ import application
 import components.Icon
 import components.IconButton
 import components.Loading
+import focusable
 import kotlinx.browser.window
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
@@ -91,12 +92,11 @@ fun CardsNavPage(cardUpdates: Flow<Card>, nav: CardNav, onSelected: (CardNav) ->
 
     NavTopBar(me, "Cards") {
         IconButton("search", "Search", styles = {
-            marginRight(1.cssRem)
         }) {
             showSearch = !showSearch
         }
         IconButton("add", "New card", styles = {
-            marginRight(1.cssRem)
+            marginRight(.5.cssRem)
         }) {
             scope.launch {
                 val name = window.prompt("Card title")
@@ -164,6 +164,7 @@ fun CardItem(card: Card, selected: Boolean, saved: Boolean, onSelected: () -> Un
                 emptyList()
             }
         )
+        focusable()
         onClick {
             onSelected()
         }

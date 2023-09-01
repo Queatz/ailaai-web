@@ -1,4 +1,6 @@
+import org.jetbrains.compose.web.attributes.AttrsScope
 import org.w3c.dom.Element
+import org.w3c.dom.HTMLElement
 import kotlin.random.Random
 
 val String.notBlank get() = takeIf { it.isNotBlank() }
@@ -16,3 +18,14 @@ val Element.parents get() = let { element ->
 }
 
 fun IntRange.token() = joinToString("") { Random.nextInt(35).toString(36) }
+
+fun AttrsScope<HTMLElement>.focusable() {
+    tabIndex(1)
+
+    onKeyDown {
+        if (it.key == "Enter") {
+            it.preventDefault()
+            (it.target as HTMLElement).click()
+        }
+    }
+}

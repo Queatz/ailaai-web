@@ -8,6 +8,7 @@ import app.AppStyles
 import application
 import components.IconButton
 import components.Loading
+import focusable
 import kotlinx.browser.window
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
@@ -75,12 +76,11 @@ fun StoriesNavPage(storyUpdates: Flow<Story>, selected: Story?, onSelected: (Sto
 
     NavTopBar(me, "Stories") {
         IconButton("search", "Search", styles = {
-            marginRight(1.cssRem)
         }) {
             showSearch = !showSearch
         }
         IconButton("add", "New story", styles = {
-            marginRight(1.cssRem)
+            marginRight(.5.cssRem)
         }) {
             scope.launch {
                 val title = window.prompt("Story title")
@@ -138,6 +138,7 @@ fun StoryItem(story: Story, selected: Boolean, onSelected: () -> Unit) {
                 emptyList()
             }
         )
+        focusable()
         onClick {
             onSelected()
         }

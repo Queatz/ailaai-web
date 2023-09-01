@@ -50,7 +50,6 @@ fun PageTopBar(title: String, description: String? = null, onMenu: ((SyntheticMo
         IconButton("more_vert", "Options", styles = {
             flexShrink(0)
             fontWeight("bold")
-            margin(0.cssRem, .5.cssRem)
         }) {
             onMenu?.invoke(it)
         }

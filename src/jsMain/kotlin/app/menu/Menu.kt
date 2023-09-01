@@ -2,6 +2,7 @@ package app.menu
 
 import androidx.compose.runtime.Composable
 import app.AppStyles
+import focusable
 import kotlinx.browser.document
 import kotlinx.browser.window
 import org.jetbrains.compose.web.css.left
@@ -20,6 +21,8 @@ class MenuScope {
     fun item(title: String, onClick: () -> Unit) {
         Div({
             classes(AppStyles.menuItem)
+
+            focusable()
 
             onClick {
                 onClick()

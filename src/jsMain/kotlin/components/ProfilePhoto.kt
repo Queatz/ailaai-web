@@ -5,6 +5,7 @@ import Styles
 import androidx.compose.runtime.Composable
 import app.AppStyles
 import baseUrl
+import focusable
 import notBlank
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
@@ -21,6 +22,10 @@ fun ProfilePhoto(person: Person, size: CSSNumeric = 36.px, title: String? = null
             } else {
                 emptyList()
             })
+
+            if (onClick != null) {
+                focusable()
+            }
 
             style {
                 width(size)
@@ -68,6 +73,10 @@ fun ProfilePhoto(person: Person, size: CSSNumeric = 36.px, title: String? = null
             }
 
             title(title ?: person.name ?: "Someone")
+
+            if (onClick != null) {
+                focusable()
+            }
 
             onClick {
                 onClick?.invoke()

@@ -6,6 +6,7 @@ import app.AppStyles
 import app.page.ScheduleView
 import application
 import components.IconButton
+import focusable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import lib.*
@@ -28,7 +29,7 @@ fun ScheduleNavPage(view: ScheduleView, onViewClick: (ScheduleView) -> Unit) {
 
     NavTopBar(me, "Reminders") {
         IconButton("search", "Search", styles = {
-            marginRight(1.cssRem)
+            marginRight(.5.cssRem)
         }) {
 
         }
@@ -288,6 +289,7 @@ fun ReminderItem(reminder: String, selected: Boolean, onSelected: () -> Unit) {
                 emptyList()
             }
         )
+        focusable()
         onClick {
             onSelected()
         }

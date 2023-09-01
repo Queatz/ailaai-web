@@ -137,13 +137,10 @@ fun EventRow(view: ScheduleView, text: String) {
             classes(SchedulePageStyles.rowActions)
         }) {
             IconButton("edit", "Edit", styles = {
-                marginLeft(.5.cssRem)
             }) {
                 edit = !edit
             }
             IconButton("clear", "Delete", styles = {
-                marginLeft(.5.cssRem)
-                marginRight(.5.cssRem)
             }) {
 
             }

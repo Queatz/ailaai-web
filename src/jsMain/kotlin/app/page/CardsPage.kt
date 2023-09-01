@@ -342,8 +342,10 @@ fun MyCardPage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Unit
         }
 
         NavSearchInput(newCardTitle, { newCardTitle = it }, placeholder = "New card", autoFocus = false) {
-            newSubCard(card, it)
-            newCardTitle = ""
+            if (newCardTitle.isNotBlank()) {
+                newSubCard(card, it)
+                newCardTitle = ""
+            }
         }
 
         if (isLoading) {

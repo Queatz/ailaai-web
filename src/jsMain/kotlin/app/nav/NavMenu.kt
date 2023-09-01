@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import app.AppStyles
 import app.messaages.inList
 import components.Icon
+import focusable
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Text
 
@@ -12,6 +13,7 @@ import org.jetbrains.compose.web.dom.Text
         classes(
             listOf(AppStyles.groupItem, AppStyles.navMenuItem) + if (selected) AppStyles.groupItemSelected.inList() else emptyList()
         )
+        focusable()
         onClick {
             onClick()
         }

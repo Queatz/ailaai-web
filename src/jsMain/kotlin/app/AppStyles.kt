@@ -266,7 +266,8 @@ object AppStyles : StyleSheet() {
     }
 
     val iconButton by style {
-
+        padding(.5.cssRem)
+        borderRadius(2.cssRem)
     }
 
     val tray by style {
