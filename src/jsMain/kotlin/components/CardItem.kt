@@ -3,17 +3,19 @@ package components
 import Card
 import CornerDefault
 import PaddingDefault
+import Styles
 import androidx.compose.runtime.*
+import api
 import app.softwork.routingcompose.Router
 import appString
 import baseUrl
-import http
-import io.ktor.client.call.*
-import io.ktor.client.request.*
 import kotlinx.browser.window
 import notBlank
 import org.jetbrains.compose.web.css.*
-import org.jetbrains.compose.web.dom.*
+import org.jetbrains.compose.web.dom.Div
+import org.jetbrains.compose.web.dom.Source
+import org.jetbrains.compose.web.dom.Text
+import org.jetbrains.compose.web.dom.Video
 import org.w3c.dom.HTMLDivElement
 import kotlin.math.roundToInt
 
@@ -21,10 +23,8 @@ import kotlin.math.roundToInt
 fun CardItem(cardId: String, openInNewWindow: Boolean = false, styles: (StyleScope.() -> Unit)? = null) {
     var card by remember { mutableStateOf<Card?>(null) }
     LaunchedEffect(Unit) {
-        try {
-            card = http.get("$baseUrl/cards/$cardId").body()
-        } catch (e: Throwable) {
-            e.printStackTrace()
+        api.card(cardId) {
+            card = it
         }
     }
     card?.let { card ->

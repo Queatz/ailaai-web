@@ -3,28 +3,18 @@ package app.nav
 import PaddingDefault
 import Story
 import androidx.compose.runtime.*
+import api
 import app.AppStyles
-import app.messaages.preview
 import application
-import baseUrl
-import components.GroupPhoto
 import components.IconButton
 import components.Loading
-import http
-import io.ktor.client.call.*
-import io.ktor.client.request.*
-import io.ktor.http.*
-import io.ktor.utils.io.charsets.*
 import kotlinx.browser.window
 import kotlinx.coroutines.launch
-import lib.formatDistanceToNow
-import org.jetbrains.compose.web.attributes.autoFocus
-import org.jetbrains.compose.web.attributes.placeholder
 import org.jetbrains.compose.web.css.*
-import org.jetbrains.compose.web.dom.*
+import org.jetbrains.compose.web.dom.Div
+import org.jetbrains.compose.web.dom.Text
 import stories.storyStatus
 import stories.textContent
-import kotlin.js.Date
 
 @Composable
 fun StoriesNavPage(selected: Story?, onSelected: (Story?) -> Unit) {
@@ -59,14 +49,8 @@ fun StoriesNavPage(selected: Story?, onSelected: (Story?) -> Unit) {
     }
 
     suspend fun reload() {
-        myStories = try {
-            http.get("$baseUrl/me/stories") {
-                contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                bearerAuth(application.bearer)
-            }.body<List<Story>>().sortedByDescending { it.publishDate == null }
-        } catch (e: Throwable) {
-            e.printStackTrace()
-            emptyList()
+        api.myStories {
+            myStories = it
         }
 
         isLoading = false
@@ -88,15 +72,8 @@ fun StoriesNavPage(selected: Story?, onSelected: (Story?) -> Unit) {
             scope.launch {
                 val title = window.prompt("Story title")
                 if (title == null) return@launch
-                try {
-                    val story = http.post("$baseUrl/stories") {
-                        setBody(Story(title = title))
-                        contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                        bearerAuth(application.bearer)
-                    }.body<Story>()
+                api.newStory(Story(title = title)) {
                     reload()
-                } catch (e: Throwable) {
-                    e.printStackTrace()
                 }
             }
         }

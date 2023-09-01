@@ -1,7 +1,4 @@
 import com.queatz.PushData
-import io.ktor.client.request.*
-import io.ktor.http.*
-import io.ktor.utils.io.charsets.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.first
@@ -21,24 +18,25 @@ class Push {
         job = scope.launch {
             while (true) {
                 application.bearerToken.first { it != null }
-                try {
-                    http.post("$baseUrl/me/device") {
-                        setBody(
-                            Device(
-                                type = DeviceType.Web,
-                                token = api.token
-                            )
-                        )
-                        contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                        bearerAuth(application.bearer)
+
+                var error = false
+                api.device(
+                    Device(
+                        type = DeviceType.Web,
+                        token = api.device
+                    ),
+                    onError = {
+                        error = true
                     }
-                } catch (e: Throwable) {
-                    e.printStackTrace()
+                )
+
+                if (error) {
                     delay(3.seconds)
                     continue
                 }
+
                 val deferred = CompletableDeferred<Unit>()
-                val sse = EventSource("$baseUrl/push/${api.token}")
+                val sse = EventSource("$baseUrl/push/${api.device}")
                 val jobScope = this
                 sse.onmessage = {
                     jobScope.launch {

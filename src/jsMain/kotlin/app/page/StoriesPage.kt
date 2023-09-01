@@ -1,16 +1,12 @@
 package app.page
 
 import Story
+import Styles
 import androidx.compose.runtime.*
+import api
 import app.FullPageLayout
 import application
-import baseUrl
 import components.Loading
-import http
-import io.ktor.client.call.*
-import io.ktor.client.request.*
-import io.ktor.http.*
-import io.ktor.utils.io.charsets.*
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import stories.StoryContent
@@ -29,17 +25,10 @@ fun StoriesPage(story: Story?) {
         isLoading = true
 
         if (story == null) {
-            try {
-                val stories = http.get("$baseUrl/stories") {
-                    parameter("geo", me?.geo?.joinToString(",") ?: "10.7915858,106.7426523") // todo
-                    contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                    bearerAuth(application.bearer)
-                }.body<List<Story>>()
+            api.stories(me?.geo ?: listOf(10.7915858, 106.7426523)) { stories ->
                 storyContent = stories.flatMapIndexed { index, it ->
                     if (index < stories.lastIndex) it.full() + StoryContent.Divider else it.full()
                 }
-            } catch (e: Throwable) {
-                e.printStackTrace()
             }
         } else {
             storyContent = story.full()

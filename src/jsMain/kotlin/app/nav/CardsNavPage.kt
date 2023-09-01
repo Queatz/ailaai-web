@@ -4,18 +4,13 @@ import Card
 import PaddingDefault
 import Styles
 import androidx.compose.runtime.*
+import api
 import app.AppStyles
 import appString
 import application
-import baseUrl
 import components.Icon
 import components.IconButton
 import components.Loading
-import http
-import io.ktor.client.call.*
-import io.ktor.client.request.*
-import io.ktor.http.*
-import io.ktor.utils.io.charsets.*
 import kotlinx.browser.window
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
@@ -69,14 +64,8 @@ fun CardsNavPage(cardUpdates: Flow<Card>, nav: CardNav, onSelected: (CardNav) ->
     suspend fun reload() {
         val selectedId = (nav as? CardNav.Selected)?.card?.id
 
-        myCards = try {
-            http.get("$baseUrl/me/cards") {
-                contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                bearerAuth(application.bearer)
-            }.body<List<Card>>()
-        } catch (e: Throwable) {
-            e.printStackTrace()
-            emptyList()
+        api.myCards {
+            myCards = it
         }
 
         isLoading = false
@@ -111,19 +100,13 @@ fun CardsNavPage(cardUpdates: Flow<Card>, nav: CardNav, onSelected: (CardNav) ->
         }) {
             scope.launch {
                 val name = window.prompt("Card title")
-                if (name == null) return@launch
-                try {
-                    val card = http.post("$baseUrl/cards") {
-                        setBody(Card(name = name))
-                        contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                        bearerAuth(application.bearer)
-                    }.body<Card>()
-                    onSelected(CardNav.Selected(card))
 
+                if (name == null) return@launch
+
+                api.newCard(Card(name = name)) {
+                    onSelected(CardNav.Selected(it))
                     // todo this reloads old card
                     reload()
-                } catch (e: Throwable) {
-                    e.printStackTrace()
                 }
             }
         }

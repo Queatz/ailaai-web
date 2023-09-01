@@ -6,13 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import application
-import baseUrl
-import http
-import io.ktor.client.call.*
-import io.ktor.client.request.*
-import io.ktor.http.*
-import io.ktor.utils.io.charsets.*
+import api
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
@@ -25,13 +19,8 @@ fun StickersTray(onSticker: (Sticker) -> Unit) {
     val stickerPacks by allStickerPacks.collectAsState()
 
     LaunchedEffect(Unit) {
-        try {
-            allStickerPacks.value = http.get("$baseUrl/sticker-packs") {
-                contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                bearerAuth(application.bearer)
-            }.body()
-        } catch (e: Throwable) {
-            e.printStackTrace()
+        api.stickerPacks {
+            allStickerPacks.value = it
         }
     }
 

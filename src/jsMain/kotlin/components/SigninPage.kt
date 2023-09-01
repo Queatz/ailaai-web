@@ -1,21 +1,13 @@
 package components
 
-import LinkDeviceToken
-import Person
 import SignInRequest
 import SignUpRequest
 import Styles
-import TokenResponse
 import androidx.compose.runtime.*
+import api
 import app.softwork.routingcompose.Router
 import appText
 import application
-import baseUrl
-import http
-import io.ktor.client.call.*
-import io.ktor.client.request.*
-import io.ktor.http.*
-import io.ktor.utils.io.charsets.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
@@ -58,107 +50,84 @@ fun SigninPage() {
     }
 
     LaunchedEffect(Unit) {
-        val linkDeviceToken: String = try {
-            http.post("$baseUrl/link-device") {
-                contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-            }.body<LinkDeviceToken>().token!!
-        } catch (e: Throwable) {
-            e.printStackTrace()
+        var linkDeviceToken: String? = null
+
+        api.linkDevice {
+            linkDeviceToken = it.token!!
+        }
+
+        if (linkDeviceToken == null) {
             status = "Error"
             return@LaunchedEffect
         }
+
         val bytes = Qr.createQR("$webBaseUrl/link-device/$linkDeviceToken", "gif", js("{ scale: 5 }"))
         val blob = Blob(arrayOf(bytes), BlobPropertyBag("image/gif"))
         qrCode = URL.createObjectURL(blob)
         withTimeoutOrNull(5.minutes) {
             while (!qrCodeLinked) {
                 delay(2.seconds)
-                try {
-                    val link = http.get("$baseUrl/link-device/$linkDeviceToken") {
-                        contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                    }.body<LinkDeviceToken>()
-
-                    if (link.person != null) {
+                api.linkDevice(linkDeviceToken!!) {
+                    if (it.person != null) {
                         qrCodeLinked = true
                     }
-                } catch (e: Throwable) {
-                    e.printStackTrace()
                 }
             }
         }
         if (qrCodeLinked) {
-            try {
-                val signInResponse = http.post("$baseUrl/sign/in") {
-                    contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                    setBody(SignInRequest(link = linkDeviceToken))
-                }.body<TokenResponse>()
+            api.signIn(
+                SignInRequest(link = linkDeviceToken),
+                onError = {
+                    status = "Error"
+                }
+            ) {
+                application.setToken(it.token)
 
-                application.setToken(signInResponse.token)
-
-                val me = http.get("$baseUrl/me") {
-                    contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                    bearerAuth(signInResponse.token)
-                }.body<Person>()
-
-                application.setMe(me)
-
-                status = "Xin chào, ${me.name}"
-                router.navigate("/")
-            } catch (e: Throwable) {
-                e.printStackTrace()
-                status = "Error"
+                api.me {
+                    application.setMe(it)
+                    status = "Xin chào, ${it.name}"
+                    router.navigate("/")
+                }
             }
         }
     }
 
     fun signIn(transferCode: String) {
         scope.launch {
-            try {
-                val signInResponse = http.post("$baseUrl/sign/in") {
-                    contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                    setBody(SignInRequest(code = transferCode))
-                }.body<TokenResponse>()
+            api.signIn(
+                SignInRequest(code = transferCode),
+                onError = {
+                    status = "Error"
+                }
+                ) {
+                application.setToken(it.token)
 
-                application.setToken(signInResponse.token)
-
-                val me = http.get("$baseUrl/me") {
-                    contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                    bearerAuth(signInResponse.token)
-                }.body<Person>()
-
-                application.setMe(me)
-
-                status = "Xin chào, ${me.name}"
-                router.navigate("/")
-            } catch (e: Throwable) {
-                e.printStackTrace()
-                status = "Error"
+                api.me {
+                    application.setMe(it)
+                    status = "Xin chào, ${it.name}"
+                    router.navigate("/")
+                }
             }
         }
     }
 
     fun signUp(inviteCode: String? = null) {
         scope.launch {
-            try {
-                val signInResponse = http.post("$baseUrl/sign/up") {
-                    contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                    setBody(SignUpRequest(code = inviteCode))
-                }.body<TokenResponse>()
+            api.signUp(
+                SignUpRequest(code = inviteCode),
+                onError = {
+                    status = "Error"
 
-                application.setToken(signInResponse.token)
+                }
+            ) {
+                application.setToken(it.token)
 
-                val me = http.get("$baseUrl/me") {
-                    contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                    bearerAuth(signInResponse.token)
-                }.body<Person>()
-
-                application.setMe(me)
+                api.me {
+                    application.setMe(it)
+                }
 
                 status = "Xin chào!"
                 router.navigate("/")
-            } catch (e: Throwable) {
-                e.printStackTrace()
-                status = "Error"
             }
         }
     }

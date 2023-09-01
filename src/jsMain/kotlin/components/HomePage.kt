@@ -4,12 +4,9 @@ import Card
 import PaddingDefault
 import Styles
 import androidx.compose.runtime.*
+import api
 import appString
 import appText
-import baseUrl
-import http
-import io.ktor.client.call.*
-import io.ktor.client.request.*
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
@@ -54,18 +51,17 @@ fun HomePage() {
         LaunchedEffect(searchText) {
             isLoading = true
             delay(250)
-            searchResults = if (searchText.isNotBlank()) {
-                try {
-                    http.get("$baseUrl/cards") {
-                        parameter("geo", "10.7915858,106.7426523") // HCMC
-                        parameter("search", searchText)
-                    }.body()
-                } catch (e: Throwable) {
-                    e.printStackTrace()
-                    emptyList()
+
+
+            if (searchText.isNotBlank()) {
+                // HCMC
+                api.explore(listOf(10.7915858, 106.7426523), searchText, onError = {
+                    searchResults = emptyList()
+                }) {
+                    searchResults = it
                 }
             } else {
-                emptyList()
+                searchResults = emptyList()
             }
             isLoading = false
         }

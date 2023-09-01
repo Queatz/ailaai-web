@@ -1,27 +1,25 @@
 package app.page
 
+import Group
 import GroupExtended
 import Message
 import Sticker
 import Styles
-import Group
 import androidx.compose.runtime.*
-import app.*
+import api
+import app.AppStyles
+import app.PageTopBar
+import app.StickersTray
 import app.menu.Menu
 import app.messaages.MessageItem
 import app.messaages.StickerAttachment
 import app.nav.name
 import appString
 import application
-import baseUrl
 import components.IconButton
 import components.Loading
-import http
-import io.ktor.client.call.*
-import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.http.*
-import io.ktor.utils.io.charsets.*
 import json
 import kotlinx.browser.document
 import kotlinx.browser.window
@@ -80,22 +78,14 @@ fun GroupPage(group: GroupExtended?, onGroupUpdated: () -> Unit) {
     LaunchedEffect(group?.group?.id) {
         group?.group?.id?.let { groupId ->
             // Mark group as read
-            val group = http.get("$baseUrl/groups/${group.group?.id}") {
-                contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                bearerAuth(application.bearer)
-            }.body<GroupExtended>()
+            api.group(group.group!!.id!!) {}
         }
     }
 
     suspend fun reloadMessages() {
         if (group == null) return
-        try {
-            messages = http.get("$baseUrl/groups/${group.group?.id}/messages") {
-                contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                bearerAuth(application.bearer)
-            }.body()
-        } catch (e: Throwable) {
-            e.printStackTrace()
+        api.groupMessages(group.group!!.id!!) {
+            messages = it
         }
         isLoading = false
 
@@ -149,32 +139,25 @@ fun GroupPage(group: GroupExtended?, onGroupUpdated: () -> Unit) {
                     bytes
                 }
 
-                try {
-                    http.post("$baseUrl/groups/${group!!.group!!.id!!}/photos") {
-                        //contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                        bearerAuth(application.bearer)
-                        setBody(
-                            MultiPartFormDataContent(formData {
-                                if (message != null) {
-                                    append("message", json.encodeToString(message))
+                api.sendPhotos(
+                    group!!.group!!.id!!,
+                    MultiPartFormDataContent(formData {
+                        if (message != null) {
+                            append("message", json.encodeToString(message))
+                        }
+                        photos.forEachIndexed { index, photo ->
+                            append(
+                                "photo[$index]",
+                                photo,
+                                Headers.build {
+                                    append(HttpHeaders.ContentType, "image/jpeg")
+                                    append(HttpHeaders.ContentDisposition, "filename=photo.jpg")
                                 }
-                                photos.forEachIndexed { index, photo ->
-                                    append(
-                                        "photo[$index]",
-                                        photo,
-                                        Headers.build {
-                                            append(HttpHeaders.ContentType, "image/jpeg")
-                                            append(HttpHeaders.ContentDisposition, "filename=photo.jpg")
-                                        }
-                                    )
-                                }
-                            })
-                        )
-                    }
-                    isSending = false
+                            )
+                        }
+                    })
+                ) {
                     reloadMessages()
-                } catch (e: Throwable) {
-                    e.printStackTrace()
                 }
             } catch (e: Throwable) {
                 e.printStackTrace()
@@ -207,19 +190,16 @@ fun GroupPage(group: GroupExtended?, onGroupUpdated: () -> Unit) {
         isSending = true
 
         scope.launch {
-            try {
-                http.post("$baseUrl/groups/${group!!.group!!.id!!}/messages") {
-                    contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                    bearerAuth(application.bearer)
-                    setBody(Message(text = text))
+            api.sendMessage(
+                group!!.group!!.id!!,
+                Message(text = text),
+                onError = {
+                    if (messageText.isBlank()) {
+                        messageText = text
+                    }
                 }
-                isSending = false
+            ) {
                 reloadMessages()
-            } catch (e: Throwable) {
-                e.printStackTrace()
-                if (messageText.isBlank()) {
-                    messageText = text
-                }
             }
 
             isSending = false
@@ -229,26 +209,19 @@ fun GroupPage(group: GroupExtended?, onGroupUpdated: () -> Unit) {
     fun sendSticker(sticker: Sticker) {
         isSending = true
         scope.launch {
-            try {
-                http.post("$baseUrl/groups/${group!!.group!!.id!!}/messages") {
-                    contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                    bearerAuth(application.bearer)
-                    setBody(
-                        Message(
-                            attachment = json.encodeToString(
-                                StickerAttachment(
-                                    sticker.photo,
-                                    sticker.id,
-                                    sticker.message
-                                )
-                            )
+            api.sendMessage(
+                group!!.group!!.id!!,
+                Message(
+                    attachment = json.encodeToString(
+                        StickerAttachment(
+                            sticker.photo,
+                            sticker.id,
+                            sticker.message
                         )
                     )
-                }
-                isSending = false
+                )
+            ) {
                 reloadMessages()
-            } catch (e: Throwable) {
-                e.printStackTrace()
             }
 
             isSending = false
@@ -412,19 +385,13 @@ fun GroupTopBar(group: GroupExtended, onGroupUpdated: () -> Unit) {
 
     fun renameGroup() {
         scope.launch {
-            try {
-                val name = window.prompt("Group name", group.group?.name ?: "")
+            val name = window.prompt("Group name", group.group?.name ?: "")
 
-                if (name == null) return@launch
+            if (name == null) return@launch
 
-                http.post("$baseUrl/groups/${group.group!!.id!!}") {
-                    contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                    bearerAuth(application.bearer)
-                    setBody(Group(name = name))
-                }
+            api.updateGroup(group.group!!.id!!, Group(name = name)) {
                 onGroupUpdated()
-            } catch (e: Throwable) {
-                e.printStackTrace()
+
             }
         }
     }

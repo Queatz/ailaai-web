@@ -4,15 +4,15 @@ import PaddingDefault
 import Story
 import Styles
 import androidx.compose.runtime.*
+import api
 import app.softwork.routingcompose.Router
 import appString
-import baseUrl
-import http
-import io.ktor.client.call.*
-import io.ktor.client.request.*
 import org.jetbrains.compose.web.css.*
-import org.jetbrains.compose.web.dom.*
-import stories.*
+import org.jetbrains.compose.web.dom.Div
+import org.jetbrains.compose.web.dom.Text
+import stories.StoryContent
+import stories.StoryContents
+import stories.full
 
 @Composable
 fun StoryPage(storyUrl: String, onStoryLoaded: (Story) -> Unit) {
@@ -24,14 +24,11 @@ fun StoryPage(storyUrl: String, onStoryLoaded: (Story) -> Unit) {
 
     LaunchedEffect(storyUrl) {
         isLoading = true
-        try {
-            story = http.get("$baseUrl/urls/stories/$storyUrl").body()
+        api.storyByUrl(storyUrl) {
+            story = it
             onStoryLoaded(story!!)
-        } catch (e: Throwable) {
-            e.printStackTrace()
-        } finally {
-            isLoading = false
         }
+        isLoading = false
     }
 
     LaunchedEffect(story) {

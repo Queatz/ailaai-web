@@ -7,13 +7,6 @@ import androidx.compose.runtime.*
 import api
 import app.softwork.routingcompose.Router
 import appString
-import baseUrl
-import http
-import io.ktor.client.call.*
-import io.ktor.client.request.*
-import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.*
-import io.ktor.utils.io.charsets.*
 import json
 import kotlinx.browser.window
 import kotlinx.coroutines.launch
@@ -24,7 +17,6 @@ import org.jetbrains.compose.web.attributes.disabled
 import org.jetbrains.compose.web.attributes.placeholder
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
-import org.w3c.dom.HTMLVideoElement
 
 @Serializable
 data class WildReplyBody(
@@ -73,12 +65,16 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
         card = null
         cards = emptyList()
         try {
-            card = http.get("$baseUrl/cards/$cardId").body()
+            api.card(cardId) {
+                card = it
+            }
             cardConversation = card!!.getConversation()
             cardOptions = card!!.getOptions()
             stack.clear()
             cardLoaded(card!!)
-            cards = http.get("$baseUrl/cards/$cardId/cards").body()
+            api.cardsOfCard(cardId) {
+                cards = it
+            }
         } catch (e: Throwable) {
             e.printStackTrace()
             onError()
@@ -92,27 +88,25 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
 
     suspend fun sendMessage() {
         isSendingReply = true
-        try {
-            val body = WildReplyBody(
-                message = replyMessage,
-                conversation = isReplying!!.map { it.title }.filter { it.isNotBlank() }
-                    .notEmpty?.joinToString(" → "),
-                card = cardId,
-                device = api.token
-            )
-            http.post("$baseUrl/wild/reply") {
-                contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                setBody(body)
+        val body = WildReplyBody(
+            message = replyMessage,
+            conversation = isReplying!!.map { it.title }.filter { it.isNotBlank() }
+                .notEmpty?.joinToString(" → "),
+            card = cardId,
+            device = api.device
+        )
+        api.wildReply(
+            body,
+            onError = {
+                window.alert(didntWorkString)
             }
+        ) {
+
             replyMessage = ""
             isReplying = null
             window.alert(sentString)
-        } catch (e: Throwable) {
-            window.alert(didntWorkString)
-            e.printStackTrace()
-        } finally {
-            isSendingReply = false
         }
+        isSendingReply = false
     }
 
     if (!isLoading && card == null) {
@@ -256,7 +250,8 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
                                             Button({
                                                 classes(Styles.button)
                                                 onClick {
-                                                    isReplying = stack + (cardConversation?.let(::listOf) ?: emptyList()) + item.let(::listOf)
+                                                    isReplying = stack + (cardConversation?.let(::listOf)
+                                                        ?: emptyList()) + item.let(::listOf)
                                                 }
                                             }) {
                                                 Span({
@@ -267,6 +262,7 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
                                                 Text(" ${item.title}")
                                             }
                                         }
+
                                         else -> {
                                             Button({
                                                 classes(Styles.outlineButton)

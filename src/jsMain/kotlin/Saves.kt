@@ -1,7 +1,3 @@
-import io.ktor.client.call.*
-import io.ktor.client.request.*
-import io.ktor.http.*
-import io.ktor.utils.io.charsets.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
@@ -21,38 +17,18 @@ class Saves {
 
     suspend fun reload() {
         application.bearerToken.first { it != null }
-        try {
-            val result = http.get("$baseUrl/me/saved") {
-                contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                bearerAuth(application.bearer)
-            }.body<List<SaveAndCard>>()
-            cards.emit(result.mapNotNull { it.card }.toSet())
-        } catch (e: Throwable) {
-            e.printStackTrace()
+        api.saved {
+            cards.emit(it.mapNotNull { it.card }.toSet())
         }
     }
 
     suspend fun save(id: String) {
-        try {
-            http.post("$baseUrl/cards/$id/save") {
-                contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                bearerAuth(application.bearer)
-            }
-        } catch (e: Throwable) {
-            e.printStackTrace()
-        }
+        api.save(id)
         reload()
     }
 
     suspend fun unsave(id: String) {
-        try {
-            http.post("$baseUrl/cards/$id/unsave") {
-                contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                bearerAuth(application.bearer)
-            }
-        } catch (e: Throwable) {
-            e.printStackTrace()
-        }
+        api.unsave(id)
         reload()
     }
 }

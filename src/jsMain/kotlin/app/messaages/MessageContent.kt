@@ -6,18 +6,13 @@ import PaddingDefault
 import Story
 import Styles
 import androidx.compose.runtime.*
+import api
 import app.AppStyles
 import app.StickerItem
-import application
 import baseUrl
 import components.CardItem
 import components.LinkifyText
 import ellipsize
-import http
-import io.ktor.client.call.*
-import io.ktor.client.request.*
-import io.ktor.http.*
-import io.ktor.utils.io.charsets.*
 import kotlinx.browser.window
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
@@ -45,13 +40,8 @@ fun MessageContent(message: Message, myMember: MemberAndPerson?, isReply: Boolea
             return@LaunchedEffect
         }
 
-        try {
-            reply = http.get("$baseUrl/messages/${replyAttachment.message!!}") {
-                contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                bearerAuth(application.bearer)
-            }.body()
-        } catch (e: Throwable) {
-            e.printStackTrace()
+        api.message(replyAttachment.message!!) {
+            reply = it
         }
     }
 
@@ -155,14 +145,8 @@ fun MessageContent(message: Message, myMember: MemberAndPerson?, isReply: Boolea
                 }
 
                 LaunchedEffect(Unit) {
-                    story = try {
-                        http.get("$baseUrl/stories/${attachment.story!!}") {
-                            contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                            bearerAuth(application.bearer)
-                        }.body()
-                    } catch (e: Throwable) {
-                        e.printStackTrace()
-                        null
+                    api.story(attachment.story!!) {
+                        story = it
                     }
                 }
 

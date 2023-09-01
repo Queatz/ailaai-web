@@ -5,12 +5,10 @@ import PaddingDefault
 import PersonProfile
 import Styles
 import androidx.compose.runtime.*
+import api
 import app.softwork.routingcompose.Router
 import appString
 import baseUrl
-import http
-import io.ktor.client.call.*
-import io.ktor.client.request.*
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Source
@@ -38,30 +36,44 @@ fun ProfilePage(personId: String? = null, url: String? = null, onProfile: (Perso
 
     LaunchedEffect(Unit) {
         isLoading = true
-        try {
-            profile = if (personId != null) {
-                http.get("$baseUrl/people/$personId/profile").body()
-            } else {
-                http.get("$baseUrl/profile/url/$url").body()
+        if (personId != null) {
+            api.profile(
+                personId!!,
+                onError = {
+                    // todo show not found page
+                    router.navigate("/")
+                }
+            ) {
+                profile = it
+                onProfile(profile!!)
+
+                if (personId == null) {
+                    personId = profile!!.person.id
+                }
             }
-            if (personId == null) {
-                personId = profile!!.person.id
+        } else {
+            api.profileByUrl(
+                url!!,
+                onError = {
+                    // todo show not found page
+                    router.navigate("/")
+                }
+            ) {
+                profile = it
+                onProfile(profile!!)
+
+                if (personId == null) {
+                    personId = profile!!.person.id
+                }
             }
-            onProfile(profile!!)
-        } catch (e: Throwable) {
-            e.printStackTrace()
-            router.navigate("/")
-        } finally {
-            isLoading = false
         }
+        isLoading = false
     }
 
     LaunchedEffect(personId) {
         if (personId != null) {
-            try {
-                cards = http.get("$baseUrl/people/$personId/profile/cards").body()
-            } catch (e: Throwable) {
-                e.printStackTrace()
+            api.profileCards(personId!!) {
+                cards = it
             }
         }
     }
@@ -141,7 +153,7 @@ fun ProfilePage(personId: String? = null, url: String? = null, onProfile: (Perso
                                         videoElement = videoEl
                                         it
                                     }
-                                    onDispose {  }
+                                    onDispose { }
                                 }
                             }) {
                                 Source({

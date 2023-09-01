@@ -1,25 +1,19 @@
 package app.page
 
 import Card
-import SaveAndCard
 import Styles
 import androidx.compose.runtime.*
+import api
 import app.FullPageLayout
 import app.PageTopBar
 import app.menu.Menu
 import app.nav.CardNav
 import app.nav.NavSearchInput
 import application
-import baseUrl
 import components.CardItem
 import components.CardPhotoOrVideo
 import components.Loading
 import components.getConversation
-import http
-import io.ktor.client.call.*
-import io.ktor.client.request.*
-import io.ktor.http.*
-import io.ktor.utils.io.charsets.*
 import json
 import kotlinx.browser.window
 import kotlinx.coroutines.launch
@@ -53,25 +47,14 @@ fun CardsPage(nav: CardNav, onCard: (CardNav) -> Unit, onCardUpdated: (Card) -> 
 
         when (nav) {
             is CardNav.Saved -> {
-                try {
-                    cards = http.get("$baseUrl/me/saved") {
-                        contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                        bearerAuth(application.bearer)
-                    }.body<List<SaveAndCard>>().mapNotNull { it.card }
-                } catch (e: Throwable) {
-                    e.printStackTrace()
+                api.saved {
+                    cards = it.mapNotNull { it.card }
                 }
             }
 
             else -> {
-                try {
-                    cards = http.get("$baseUrl/cards") {
-                        parameter("geo", me?.geo?.joinToString(",") ?: "10.7915858,106.7426523") // todo
-                        contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                        bearerAuth(application.bearer)
-                    }.body()
-                } catch (e: Throwable) {
-                    e.printStackTrace()
+                api.explore(me?.geo ?: listOf(10.7915858, 106.7426523)) {
+                    cards = it
                 }
             }
         }
@@ -135,13 +118,8 @@ fun MyCardPage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Unit
 
     suspend fun reload() {
         if (me == null) return
-        try {
-            cards = http.get("$baseUrl/cards/${card.id!!}/cards") {
-                contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                bearerAuth(application.bearer)
-            }.body()
-        } catch (e: Throwable) {
-            e.printStackTrace()
+        api.cardsOfCard(card.id!!) {
+            cards = it
         }
         isLoading = false
     }
@@ -152,16 +130,9 @@ fun MyCardPage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Unit
 
     fun newSubCard(inCard: Card, name: String) {
         scope.launch {
-            try {
-                val card = http.post("$baseUrl/cards") {
-                    setBody(Card(name = name, parent = inCard.id!!))
-                    contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                    bearerAuth(application.bearer)
-                }.body<Card>()
+            api.newCard(Card(name = name, parent = inCard.id!!)) {
                 reload()
-                onCardUpdated(card)
-            } catch (e: Throwable) {
-                e.printStackTrace()
+                onCardUpdated(it)
             }
         }
     }
@@ -186,15 +157,8 @@ fun MyCardPage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Unit
                         return@launch
                     }
 
-                    try {
-                        val card = http.post("$baseUrl/cards/${card.id!!}") {
-                            setBody(Card(name = name))
-                            contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                            bearerAuth(application.bearer)
-                        }.body<Card>()
-                        onCardUpdated(card)
-                    } catch (e: Throwable) {
-                        e.printStackTrace()
+                    api.updateCard(card.id!!, Card(name = name)) {
+                        onCardUpdated(it)
                     }
                 }
             }
@@ -231,18 +195,10 @@ fun MyCardPage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Unit
         isSaving = true
 
         scope.launch {
-            try {
-                val card = http.post("$baseUrl/cards/${card.id!!}") {
-                    setBody(Card(conversation = conversationString))
-                    contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                    bearerAuth(application.bearer)
-                }.body<Card>()
+            api.updateCard(card.id!!, Card(conversation = conversationString)) {
                 messageChanged = false
                 onCardUpdated(card)
-            } catch (e: Throwable) {
-                e.printStackTrace()
             }
-
             isSaving = false
         }
     }

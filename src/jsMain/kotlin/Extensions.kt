@@ -1,4 +1,5 @@
 import org.w3c.dom.Element
+import kotlin.random.Random
 
 val String.notBlank get() = takeIf { it.isNotBlank() }
 
@@ -13,3 +14,5 @@ val Element.parents get() = let { element ->
         }
     }
 }
+
+fun IntRange.token() = joinToString("") { Random.nextInt(35).toString(36) }

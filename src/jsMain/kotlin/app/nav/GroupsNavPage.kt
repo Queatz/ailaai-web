@@ -1,24 +1,18 @@
 package app.nav
 
-import CreateGroupBody
 import Group
 import GroupExtended
 import Member
 import PaddingDefault
 import Styles
 import androidx.compose.runtime.*
+import api
 import app.AppStyles
 import app.messaages.preview
 import application
-import baseUrl
 import components.GroupPhoto
 import components.IconButton
 import components.Loading
-import http
-import io.ktor.client.call.*
-import io.ktor.client.request.*
-import io.ktor.http.*
-import io.ktor.utils.io.charsets.*
 import kotlinx.browser.window
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
@@ -68,21 +62,17 @@ fun GroupsNavPage(
             groups
         } else {
             groups.filter {
-                (it.group?.name?.contains(search, true) ?: false) || (it.members?.any { it.person?.name?.contains(search, true) ?: false } ?: false)
+                (it.group?.name?.contains(search, true)
+                    ?: false) || (it.members?.any { it.person?.name?.contains(search, true) ?: false } ?: false)
             }
         }
     }
 
     suspend fun reload() {
         application.bearerToken.first { it != null }
-        try {
-            groups = http.get("$baseUrl/groups") {
-                contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                bearerAuth(application.bearer)
-            }.body()
+        api.groups {
+            groups = it
             onGroupSelected(groups.firstOrNull { it.group?.id == selectedGroup?.group?.id })
-        } catch (e: Throwable) {
-            e.printStackTrace()
         }
     }
 
@@ -125,26 +115,12 @@ fun GroupsNavPage(
             scope.launch {
                 val name = window.prompt("Group name")
                 if (name == null) return@launch
-                try {
-                    val group = http.post("$baseUrl/groups") {
-                        setBody(CreateGroupBody(people = emptyList()))
-                        contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                        bearerAuth(application.bearer)
-                    }.body<Group>()
-                    http.post("$baseUrl/groups/${group.id!!}") {
-                        setBody(Group(name = name))
-                        contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                        bearerAuth(application.bearer)
-                    }
+                api.createGroup(emptyList()) { group ->
+                    api.updateGroup(group.id!!, Group(name = name))
                     reload()
-                    onGroupSelected(
-                        http.get("$baseUrl/groups/${group.id!!}") {
-                            contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                            bearerAuth(application.bearer)
-                        }.body<GroupExtended>()
-                    )
-                } catch (e: Throwable) {
-                    e.printStackTrace()
+                    api.group(group.id!!) {
+                        onGroupSelected(it)
+                    }
                 }
             }
         }
@@ -217,10 +193,12 @@ fun GroupsNavPage(
                                 Text("You: ")
                             }
                             Text(
-                                group.latestMessage?.preview() ?: "Created ${formatDistanceToNow(
-                                    Date(group.group!!.createdAt!!),
-                                    js("{ addSuffix: true }")
-                                )}"
+                                group.latestMessage?.preview() ?: "Created ${
+                                    formatDistanceToNow(
+                                        Date(group.group!!.createdAt!!),
+                                        js("{ addSuffix: true }")
+                                    )
+                                }"
                             )
 
                         }

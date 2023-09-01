@@ -1,8 +1,4 @@
 import app.NavPage
-import io.ktor.client.call.*
-import io.ktor.client.request.*
-import io.ktor.http.*
-import io.ktor.utils.io.charsets.*
 import kotlinx.browser.localStorage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.serialization.encodeToString
@@ -70,15 +66,8 @@ class Application {
 
     suspend fun sync() {
         if (me.value != null && bearerToken.value != null) {
-            try {
-                setMe(
-                    http.get("$baseUrl/me") {
-                        contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                        bearerAuth(bearerToken.value!!)
-                    }.body<Person>()
-                )
-            } catch (e: Throwable) {
-                e.printStackTrace()
+            api.me {
+                setMe(it)
             }
         }
     }
