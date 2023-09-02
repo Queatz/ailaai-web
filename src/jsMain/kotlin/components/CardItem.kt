@@ -56,9 +56,9 @@ fun CardItem(
         onClick { event ->
             if (onClick == null) {
                 if (event.ctrlKey || openInNewWindow) {
-                    window.open("/card/${card.id}", target = "_blank")
+                    window.open("/page/${card.id}", target = "_blank")
                 } else {
-                    router.navigate("/card/${card.id}")
+                    router.navigate("/page/${card.id}")
                 }
             } else {
                 onClick(event.ctrlKey || openInNewWindow)

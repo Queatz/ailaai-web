@@ -109,7 +109,7 @@ fun StoriesNavPage(storyUpdates: Flow<Story>, selected: Story?, onSelected: (Sto
             }
         }) {
             if (!showSearch) {
-                NavMenuItem("explore", "Explore nearby", selected = selected == null) {
+                NavMenuItem("distance", "Explore nearby", selected = selected == null) {
                     onSelected(null)
                 }
 //                NavMenuItem("favorite", "Saved") {

@@ -7,7 +7,6 @@ import api
 import app.FullPageLayout
 import app.PageTopBar
 import app.menu.Menu
-import app.nav.CardNav
 import application
 import components.Loading
 import kotlinx.browser.window

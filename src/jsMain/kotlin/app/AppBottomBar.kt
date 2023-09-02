@@ -24,7 +24,7 @@ fun AppBottomBar(nav: NavPage, onNavClick: (NavPage) -> Unit) {
         }) {
             onNavClick(NavPage.Groups)
         }
-        IconButton("event_note", "Reminders", styles = {
+        IconButton("schedule", "Reminders", styles = {
             if (nav == NavPage.Schedule) {
                 backgroundColor(Styles.colors.primary)
                 color(Color.white)
@@ -32,7 +32,7 @@ fun AppBottomBar(nav: NavPage, onNavClick: (NavPage) -> Unit) {
         }) {
             onNavClick(NavPage.Schedule)
         }
-        IconButton("style", "Cards", styles = {
+        IconButton("note", "Pages", styles = {
             if (nav == NavPage.Cards) {
                 backgroundColor(Styles.colors.primary)
                 color(Color.white)
@@ -40,7 +40,7 @@ fun AppBottomBar(nav: NavPage, onNavClick: (NavPage) -> Unit) {
         }) {
             onNavClick(NavPage.Cards)
         }
-        IconButton("feed", "Stories", styles = {
+        IconButton("explore", "Stories", styles = {
             if (nav == NavPage.Stories) {
                 backgroundColor(Styles.colors.primary)
                 color(Color.white)

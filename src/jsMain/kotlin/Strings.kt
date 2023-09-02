@@ -39,18 +39,18 @@ object Strings {
         "Вернуться"
     )
     val inlineCard = Translation(
-        "card",
-        "thẻ",
-        "карта"
+        "page",
+        "trang",
+//        "карта"
     )
     val inlineCards = Translation(
-        "cards",
-        "thẻ",
-        "карты"
+        "pages",
+        "trang",
+//        "карты"
     )
     val cards = Translation(
-        "Cards",
-        "Thẻ",
+        "Pages",
+        "Trang",
         "Карты"
     )
     val friends = Translation(
@@ -79,9 +79,9 @@ object Strings {
         "История не найдена."
     )
     val cardNotFound = Translation(
-        "Card not found.",
-        "Không tìm được thẻ này.",
-        "Карта не найдена."
+        "Page not found.",
+        "Không tìm được trang này.",
+//        "Карта не найдена."
     )
     val joined = Translation(
         "Joined",
@@ -219,8 +219,8 @@ object Strings {
         "Kết quả tìm kiếm"
     )
     val noCardsFound = Translation(
-        "No cards found.",
-        "Không tìm được thẻ để cho bạn xem."
+        "No pages found.",
+        "Không tìm được trang để cho bạn xem."
     )
     val searchCity = Translation(
         "Search Ho Chi Minh City",

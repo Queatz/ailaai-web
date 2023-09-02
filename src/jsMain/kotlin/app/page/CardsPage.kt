@@ -101,11 +101,11 @@ fun MyCardPage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Unit
         mutableStateOf("")
     }
 
-    var cards by remember(card) {
+    var cards by remember(card.id) {
         mutableStateOf(listOf<Card>())
     }
 
-    var isLoading by remember(card) {
+    var isLoading by remember(card.id) {
         mutableStateOf(true)
     }
 
@@ -121,7 +121,7 @@ fun MyCardPage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Unit
         isLoading = false
     }
 
-    LaunchedEffect(card) {
+    LaunchedEffect(card.id) {
         reload()
     }
 
@@ -138,7 +138,7 @@ fun MyCardPage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Unit
         Menu({ menuTarget = null }, menuTarget!!) {
             val isSaved = saves.cards.value.any { it.id == card.id }
             item("Open", icon = "open_in_new") {
-                window.open("/card/${card.id}", target = "_blank")
+                window.open("/page/${card.id}", target = "_blank")
             }
             item(if (isSaved) "Unsave" else "Save") {
                 scope.launch {
@@ -163,7 +163,7 @@ fun MyCardPage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Unit
                 }
             }
             if (card.parent != null) {
-                item("Open enclosing card") {
+                item("Open enclosing page") {
                     scope.launch {
                         api.card(card.parent!!) {
                             onCard(it)
@@ -179,7 +179,7 @@ fun MyCardPage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Unit
     }
 
     PageTopBar(
-        card.name?.notBlank ?: "New card",
+        card.name?.notBlank ?: "New page",
         card.location,
         actions = {
             Switch(published, { published = it }, {
@@ -191,7 +191,7 @@ fun MyCardPage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Unit
                         onCardUpdated(it)
                     }
                 }
-            }, title = "Card is ${if (published) "published" else "not published"}") {
+            }, title = "Page is ${if (published) "published" else "not published"}") {
                 margin(1.cssRem)
             }
         }
@@ -359,7 +359,7 @@ fun MyCardPage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Unit
             }
         }
 
-        NavSearchInput(newCardTitle, { newCardTitle = it }, placeholder = "New card", autoFocus = false) {
+        NavSearchInput(newCardTitle, { newCardTitle = it }, placeholder = "New page", autoFocus = false) {
             if (newCardTitle.isNotBlank()) {
                 newSubCard(card, it)
                 newCardTitle = ""

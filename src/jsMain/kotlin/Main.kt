@@ -91,7 +91,20 @@ fun main() {
                 route("card") {
                     string { cardId ->
                         AppHeader(appString { explore }, showBack = parentCardId != null, onBack = {
-                            router.navigate("/card/$parentCardId")
+                            router.navigate("/page/$parentCardId")
+                        })
+                        CardPage(cardId, onError = { parentCardId = null }) {
+                            title = it.name
+                            parentCardId = it.parent
+                        }
+                        AppFooter()
+                    }
+                }
+
+                route("page") {
+                    string { cardId ->
+                        AppHeader(appString { explore }, showBack = parentCardId != null, onBack = {
+                            router.navigate("/page/$parentCardId")
                         })
                         CardPage(cardId, onError = { parentCardId = null }) {
                             title = it.name
@@ -122,7 +135,7 @@ fun main() {
                     }
                 }
 
-                route("page") {
+                route("info") {
                     string { page ->
                         AppHeader(appName, showMenu = true, showBack = true) {
                             router.navigate("/")

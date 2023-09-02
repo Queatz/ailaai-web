@@ -31,7 +31,7 @@ fun AppFooter() {
         Div({
             classes(Styles.menuButton)
             onClick {
-                router.navigate("/card/$cardId")
+                router.navigate("/page/$cardId")
             }
         }) {
             appText { introduction }
@@ -40,7 +40,7 @@ fun AppFooter() {
         Span({
             classes(Styles.menuButton)
             onClick {
-                router.navigate("/page/contact")
+                router.navigate("/info/contact")
             }
         }) {
             appText { contact }
@@ -67,7 +67,7 @@ fun AppFooter() {
         Span({
             classes(Styles.menuButton)
             onClick {
-                router.navigate("/page/open-source")
+                router.navigate("/info/open-source")
             }
         }) {
             appText { openSource }

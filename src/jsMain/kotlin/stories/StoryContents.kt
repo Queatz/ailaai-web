@@ -11,7 +11,6 @@ import lib.format
 import lib.isThisYear
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
-import org.jetbrains.compose.web.dom.Style
 import kotlin.js.Date
 
 @Composable

@@ -3,9 +3,7 @@ package app
 import CornerDefault
 import PaddingDefault
 import Styles
-import Styles.card
 import Styles.elevated
-import Styles.style
 import ellipsize
 import org.jetbrains.compose.web.ExperimentalComposeWebApi
 import org.jetbrains.compose.web.css.*

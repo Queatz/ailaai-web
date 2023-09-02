@@ -90,16 +90,16 @@ fun CardsNavPage(cardUpdates: Flow<Card>, nav: CardNav, onSelected: (CardNav) ->
         }
     }
 
-    NavTopBar(me, "Cards") {
+    NavTopBar(me, "Pages") {
         IconButton("search", "Search", styles = {
         }) {
             showSearch = !showSearch
         }
-        IconButton("add", "New card", styles = {
+        IconButton("add", "New page", styles = {
             marginRight(.5.cssRem)
         }) {
             scope.launch {
-                val name = window.prompt("Card title")
+                val name = window.prompt("Page title")
 
                 if (name == null) return@launch
 
@@ -130,7 +130,7 @@ fun CardsNavPage(cardUpdates: Flow<Card>, nav: CardNav, onSelected: (CardNav) ->
             }
         }) {
             if (!showSearch) {
-                NavMenuItem("explore", "Explore nearby", selected = nav == CardNav.Explore) {
+                NavMenuItem("distance", "Explore nearby", selected = nav == CardNav.Explore) {
                     onSelected(CardNav.Explore)
                 }
                 NavMenuItem("favorite", "Saved", selected = nav == CardNav.Saved) {
@@ -178,7 +178,7 @@ fun CardItem(card: Card, selected: Boolean, saved: Boolean, published: Boolean, 
             Div({
                 classes(AppStyles.groupItemName)
             }) {
-                Text(card.name?.notBlank ?: "New card")
+                Text(card.name?.notBlank ?: "New page")
             }
             if (!card.location.isNullOrBlank()) {
                 Div({
@@ -210,14 +210,14 @@ fun CardItem(card: Card, selected: Boolean, saved: Boolean, published: Boolean, 
                 }
             }
             if (saved) {
-                Icon("favorite") {
+                Icon("favorite", title = "Page is saved") {
                     fontSize(18.px)
                     color(Styles.colors.secondary)
                     marginLeft(.5.cssRem)
                 }
             }
             if (published) {
-                Icon("toggle_on") {
+                Icon("toggle_on", title = "Page is published") {
                     fontSize(22.px)
                     color(Styles.colors.primary)
                     marginLeft(.5.cssRem)

@@ -93,7 +93,7 @@ fun <T> T?.inList() = this?.let(::listOf) ?: emptyList<T>()
 fun Message.attachmentText(): String? = when (val attachment = getAttachment()) {
     is CardAttachment -> {
         if (attachment.card != null) {
-            "Sent a card"
+            "Sent a page"
         } else {
             null
         }
