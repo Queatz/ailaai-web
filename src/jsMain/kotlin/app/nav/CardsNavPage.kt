@@ -146,7 +146,7 @@ fun CardsNavPage(cardUpdates: Flow<Card>, nav: CardNav, onSelected: (CardNav) ->
             }
             val selected = (nav as? CardNav.Selected)?.card
             shownCards.forEach {
-                CardItem(it, selected == it, saved.any { save -> save.id == it.id }) {
+                CardItem(it, selected == it, saved.any { save -> save.id == it.id }, it.active == true) {
                     onSelected(CardNav.Selected(it))
                 }
             }
@@ -155,7 +155,7 @@ fun CardsNavPage(cardUpdates: Flow<Card>, nav: CardNav, onSelected: (CardNav) ->
 }
 
 @Composable
-fun CardItem(card: Card, selected: Boolean, saved: Boolean, onSelected: () -> Unit) {
+fun CardItem(card: Card, selected: Boolean, saved: Boolean, published: Boolean, onSelected: () -> Unit) {
     Div({
         classes(
             listOf(AppStyles.groupItem) + if (selected) {
@@ -213,7 +213,13 @@ fun CardItem(card: Card, selected: Boolean, saved: Boolean, onSelected: () -> Un
                 Icon("favorite") {
                     fontSize(18.px)
                     color(Styles.colors.secondary)
-                    opacity(.5)
+                    marginLeft(.5.cssRem)
+                }
+            }
+            if (published) {
+                Icon("toggle_on") {
+                    fontSize(22.px)
+                    color(Styles.colors.primary)
                     marginLeft(.5.cssRem)
                 }
             }

@@ -2,13 +2,13 @@ package app.menu
 
 import androidx.compose.runtime.Composable
 import app.AppStyles
+import components.Icon
 import focusable
 import kotlinx.browser.document
 import kotlinx.browser.window
-import org.jetbrains.compose.web.css.left
-import org.jetbrains.compose.web.css.px
-import org.jetbrains.compose.web.css.top
+import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
+import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text
 import org.w3c.dom.DOMRect
 import org.w3c.dom.HTMLElement
@@ -18,7 +18,7 @@ import parents
 
 class MenuScope {
     @Composable
-    fun item(title: String, onClick: () -> Unit) {
+    fun item(title: String, icon: String? = null, onClick: () -> Unit) {
         Div({
             classes(AppStyles.menuItem)
 
@@ -28,7 +28,16 @@ class MenuScope {
                 onClick()
             }
         }) {
-            Text(title)
+            Span {
+                Text(title)
+            }
+            if (icon != null) {
+                Icon(icon) {
+                    flexShrink(0)
+                    marginLeft(1.cssRem)
+                    opacity(.5)
+                }
+            }
         }
     }
 }

@@ -6,10 +6,12 @@ import components.IconButton
 import ellipsize
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
+import org.jetbrains.compose.web.dom.ElementScope
 import org.jetbrains.compose.web.dom.Text
+import org.w3c.dom.HTMLDivElement
 
 @Composable
-fun PageTopBar(title: String, description: String? = null, onMenu: ((SyntheticMouseEvent) -> Unit)? = null) {
+fun PageTopBar(title: String, description: String? = null, actions: @Composable ElementScope<HTMLDivElement>.() -> Unit = {}, onMenu: ((SyntheticMouseEvent) -> Unit)? = null) {
     Div({
         style {
             display(DisplayStyle.Flex)
@@ -47,6 +49,7 @@ fun PageTopBar(title: String, description: String? = null, onMenu: ((SyntheticMo
                 }
             }
         }
+        actions()
         IconButton("more_vert", "Options", styles = {
             flexShrink(0)
             fontWeight("bold")

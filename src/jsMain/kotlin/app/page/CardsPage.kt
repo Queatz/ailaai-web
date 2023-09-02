@@ -10,10 +10,7 @@ import app.menu.Menu
 import app.nav.CardNav
 import app.nav.NavSearchInput
 import application
-import components.CardItem
-import components.CardPhotoOrVideo
-import components.Loading
-import components.getConversation
+import components.*
 import json
 import kotlinx.browser.window
 import kotlinx.coroutines.launch
@@ -140,6 +137,9 @@ fun MyCardPage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Unit
     if (menuTarget != null) {
         Menu({ menuTarget = null }, menuTarget!!) {
             val isSaved = saves.cards.value.any { it.id == card.id }
+            item("Open", icon = "open_in_new") {
+                window.open("/card/${card.id}", target = "_blank")
+            }
             item(if (isSaved) "Unsave" else "Save") {
                 scope.launch {
                     if (isSaved) {
@@ -174,9 +174,27 @@ fun MyCardPage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Unit
         }
     }
 
+    var published by remember(card) {
+        mutableStateOf(card.active == true)
+    }
+
     PageTopBar(
         card.name?.notBlank ?: "New card",
-        card.location
+        card.location,
+        actions = {
+            Switch(published, { published = it }, {
+                scope.launch {
+                    val previousValue = card.active == true
+                    api.updateCard(card.id!!, Card(active = it), onError = {
+                        published = previousValue
+                    }) {
+                        onCardUpdated(it)
+                    }
+                }
+            }, title = "Card is ${if (published) "published" else "not published"}") {
+                margin(1.cssRem)
+            }
+        }
     ) {
         menuTarget = if (menuTarget == null) (it.target as HTMLElement).getBoundingClientRect() else null
     }

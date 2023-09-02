@@ -33,6 +33,61 @@ object Styles : StyleSheet() {
         }
     }
 
+    val switchSlider by style {
+        position(Position.Absolute)
+        cursor("pointer")
+        property("inset", "0")
+        borderRadius(2.cssRem)
+        backgroundColor(Color("#e4e4e4"))
+        property("transition", ".5s")
+
+        media("(prefers-color-scheme: dark)") {
+            self style {
+                backgroundColor(colors.dark.background)
+            }
+        }
+
+        self + before style {
+            position(Position.Absolute)
+            property("content", "\"\"")
+            height(1.5.cssRem)
+            width(1.5.cssRem)
+            left(.25.cssRem)
+            bottom(.25.cssRem)
+            borderRadius(1.5.cssRem)
+            backgroundColor(Color.white)
+            property("transition", ".5s")
+        }
+    }
+
+    @OptIn(ExperimentalComposeWebApi::class)
+    val switch by style {
+        position(Position.Relative)
+        display(DisplayStyle.InlineBlock)
+        width(3.5.cssRem)
+        height(2.cssRem)
+        minWidth(3.5.cssRem)
+        minHeight(2.cssRem)
+        borderRadius(2.cssRem)
+
+        child(self, selector("input")) style {
+            opacity(0)
+            width(0.cssRem)
+            height(0.cssRem)
+            display(DisplayStyle.None)
+        }
+
+        sibling(child(self, selector("input") + checked), className(switchSlider)) style {
+            backgroundColor(colors.primary)
+        }
+
+        sibling(child(self, selector("input") + checked), (className(switchSlider) + before)) style {
+            transform {
+                translateX(1.5.cssRem)
+            }
+        }
+    }
+
     val dateTimeInput by style {
         borderRadius(1.cssRem)
         property("color", "inherit")

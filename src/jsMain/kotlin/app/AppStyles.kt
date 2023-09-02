@@ -34,9 +34,14 @@ object AppStyles : StyleSheet() {
         padding(1.cssRem)
         cursor("pointer")
         whiteSpace("nowrap")
+        display(DisplayStyle.Flex)
+
+        child(self, selector("span") + firstChild) style {
+            flex(1)
+        }
 
         hover(self) style {
-        backgroundColor(Styles.colors.background)
+            backgroundColor(Styles.colors.background)
         }
 
         media("(prefers-color-scheme: dark)") {
