@@ -1,6 +1,18 @@
+import kotlinx.browser.document
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.await
 import org.jetbrains.compose.web.attributes.AttrsScope
-import org.w3c.dom.Element
-import org.w3c.dom.HTMLElement
+import org.jetbrains.compose.web.dom.Img
+import org.khronos.webgl.Uint8Array
+import org.khronos.webgl.get
+import org.w3c.dom.*
+import org.w3c.files.Blob
+import org.w3c.files.File
+import org.w3c.files.FileReader
+import kotlin.js.Promise
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.round
 import kotlin.random.Random
 
 val String.notBlank get() = takeIf { it.isNotBlank() }
@@ -28,4 +40,99 @@ fun AttrsScope<HTMLElement>.focusable() {
             (it.target as HTMLElement).click()
         }
     }
+}
+
+
+fun pickPhotos(multiple: Boolean = true, block: (List<File>) -> Unit) {
+    val element = document.createElement("input") as HTMLInputElement
+    element.type = "file"
+    element.multiple = multiple
+    element.accept = "image/*"
+    element.addEventListener("change", {
+        if (element.files != null) {
+            block(element.files!!.asList())
+        }
+    })
+    element.click()
+}
+
+// Returns null if scaling is not needed
+suspend fun HTMLImageElement.scaleToBlob(maxSize: Int): Blob? {
+    val canvas = document.createElement("canvas") as HTMLCanvasElement
+
+    if (width < maxSize && height < maxSize) {
+        return null
+    }
+
+    val ratio = min(maxSize.toDouble() / width.toDouble(), maxSize.toDouble() / height.toDouble())
+    val width = round(width * ratio)
+    val height = round(height * ratio)
+
+    canvas.width = width.toInt()
+    canvas.height = height.toInt()
+
+    (canvas.getContext("2d") as CanvasRenderingContext2D).apply {
+        drawImage(this@scaleToBlob, .0, .0, width, height)
+    }
+
+    val  result = CompletableDeferred<Blob>()
+
+    canvas.toBlob({
+        if (it == null) {
+            result.completeExceptionally(Throwable("Failed to convert canvas to blob"))
+        } else {
+            result.complete(it)
+        }
+    }, "image/jpeg", 92)
+
+    return result.await()
+}
+
+suspend fun File.toScaledBlob(maxSize: Int): Blob {
+    val result = CompletableDeferred<HTMLImageElement>()
+    val reader = FileReader()
+    reader.onload = {
+        val img = document.createElement("img") as HTMLImageElement
+        img.onerror = { _, _, _, _, _ ->
+            result.completeExceptionally(Throwable("Error reading image"))
+            Unit
+        }
+        img.onload = {
+            result.complete(img)
+            Unit
+        }
+
+        img.src = reader.result as String // data url
+
+        Unit
+    }
+
+    reader.onerror = {
+        result.completeExceptionally(Throwable("Error reading file"))
+    }
+
+    reader.readAsDataURL(this)
+
+    return result.await().scaleToBlob(maxSize) ?: this
+}
+
+
+suspend fun File.toScaledBytes(maxSize: Int = 1600) =
+    toScaledBlob(maxSize).toBytes()
+
+
+suspend fun Blob.toBytes(): ByteArray {
+    val reader = asDynamic().stream().getReader()
+    var bytes = ByteArray(0)
+    while (true) {
+        val chunk = (reader.read() as Promise<*>).await().asDynamic()
+        val value = chunk.value as? Uint8Array
+        if (value != null) {
+            bytes += ByteArray(value.length) { value[it] }
+        }
+        if (chunk.done == true) {
+            break
+        }
+    }
+    return bytes
 }

@@ -203,6 +203,16 @@ class Api {
         onSuccess = onSuccess
     )
 
+    suspend fun deleteCard(
+        cardId: String,
+        onError: suspend (Throwable) -> Unit = {},
+        onSuccess: suspend (HttpResponse) -> Unit = {}
+    ) = post(
+        url = "cards/$cardId/delete",
+        onError = onError,
+        onSuccess = onSuccess
+    )
+
     suspend fun updateStory(
         storyId: String,
         story: Story,
@@ -223,6 +233,18 @@ class Api {
     ) = post(
         url = "groups/$groupId",
         body = group,
+        onError = onError,
+        onSuccess = onSuccess
+    )
+
+    suspend fun updateMember(
+        memberId: String,
+        member: Member,
+        onError: suspend (Throwable) -> Unit = {},
+        onSuccess: suspend (HttpResponse) -> Unit = {}
+    ) = post(
+        url = "members/$memberId",
+        body = member,
         onError = onError,
         onSuccess = onSuccess
     )
@@ -397,6 +419,19 @@ class Api {
         onSuccess: suspend (HttpResponse) -> Unit = {}
     ) = post(
         url = "groups/$groupId/photos",
+        body = body,
+        contentType = null,
+        onError = onError,
+        onSuccess = onSuccess
+    )
+
+    suspend fun updateCardPhoto(
+        cardId: String,
+        body: MultiPartFormDataContent,
+        onError: suspend (Throwable) -> Unit = {},
+        onSuccess: suspend (HttpResponse) -> Unit = {}
+    ) = post(
+        url = "cards/$cardId/photo",
         body = body,
         contentType = null,
         onError = onError,

@@ -9,6 +9,7 @@ import application
 import components.IconButton
 import components.Loading
 import focusable
+import inputDialog
 import kotlinx.browser.window
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
@@ -83,7 +84,11 @@ fun StoriesNavPage(storyUpdates: Flow<Story>, selected: Story?, onSelected: (Sto
             marginRight(.5.cssRem)
         }) {
             scope.launch {
-                val title = window.prompt("Story title")
+                val title = inputDialog(
+                    "New story",
+                    "Title",
+                    "Create"
+                )
                 if (title == null) return@launch
                 api.newStory(Story(title = title)) {
                     reload()

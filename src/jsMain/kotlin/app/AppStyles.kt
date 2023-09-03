@@ -11,6 +11,21 @@ import org.jetbrains.compose.web.css.*
 
 object AppStyles : StyleSheet() {
 
+    val groupDescription by style {
+        borderRadius(1.cssRem)
+        margin(0.cssRem, 1.cssRem, .5.cssRem, 1.cssRem)
+        padding(.5.cssRem, 1.cssRem)
+        border(1.px, LineStyle.Solid, Styles.colors.secondary)
+        backgroundColor(Styles.colors.background)
+        cursor("pointer")
+
+        media("(prefers-color-scheme: dark)") {
+            self style {
+                backgroundColor(Styles.colors.dark.background)
+            }
+        }
+    }
+
     val menu by style {
         padding(.5.cssRem)
         backgroundColor(Color.white)
@@ -19,6 +34,7 @@ object AppStyles : StyleSheet() {
         position(Position.Absolute)
         property("z-index", "10")
         property("transform", "translateX(-100%)")
+        property("user-select", "none")
 
         media("(prefers-color-scheme: dark)") {
             self style {

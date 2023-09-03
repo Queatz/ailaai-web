@@ -14,6 +14,7 @@ import components.GroupPhoto
 import components.IconButton
 import components.Loading
 import focusable
+import inputDialog
 import kotlinx.browser.window
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
@@ -70,6 +71,7 @@ fun GroupsNavPage(
     }
 
     suspend fun reload() {
+        // todo is next line needed? it was added to wait for the token since groups are the first thing to appear after signing in
         application.bearerToken.first { it != null }
         api.groups {
             groups = it
@@ -103,7 +105,6 @@ fun GroupsNavPage(
         }
     }
 
-
     NavTopBar(me, "Groups") {
         IconButton("search", "Search", styles = {
         }) {
@@ -113,10 +114,16 @@ fun GroupsNavPage(
             marginRight(.5.cssRem)
         }) {
             scope.launch {
-                val name = window.prompt("Group name")
-                if (name == null) return@launch
+                val result = inputDialog(
+                    "New group",
+                    "Name",
+                    "Create"
+                )
+
+                if (result == null) return@launch
+
                 api.createGroup(emptyList()) { group ->
-                    api.updateGroup(group.id!!, Group(name = name))
+                    api.updateGroup(group.id!!, Group(name = result))
                     reload()
                     api.group(group.id!!) {
                         onGroupSelected(it)

@@ -9,6 +9,7 @@ import app.PageTopBar
 import app.menu.Menu
 import application
 import components.Loading
+import inputDialog
 import kotlinx.browser.window
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.css.*
@@ -51,7 +52,12 @@ fun StoriesPage(story: Story?, onStoryUpdated: (Story) -> Unit) {
         Menu({ menuTarget = null }, target) {
             item("Rename") {
                 scope.launch {
-                    val title = window.prompt("Story title", story!!.title ?: "")
+                    val title = inputDialog(
+                        "Story title",
+                        "",
+                        "Update",
+                        defaultValue = story!!.title ?: ""
+                    )
 
                     if (title == null) return@launch
 

@@ -2,6 +2,7 @@ package app.page
 
 import Group
 import GroupExtended
+import Member
 import Message
 import Sticker
 import Styles
@@ -18,17 +19,18 @@ import appString
 import application
 import components.IconButton
 import components.Loading
+import inputDialog
 import io.ktor.client.request.forms.*
 import io.ktor.http.*
 import json
 import kotlinx.browser.document
-import kotlinx.browser.window
 import kotlinx.coroutines.await
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import lib.formatDistanceToNow
+import notBlank
 import org.jetbrains.compose.web.attributes.autoFocus
 import org.jetbrains.compose.web.attributes.placeholder
 import org.jetbrains.compose.web.css.*
@@ -39,12 +41,14 @@ import org.khronos.webgl.Uint8Array
 import org.khronos.webgl.get
 import org.w3c.dom.*
 import org.w3c.files.File
+import pickPhotos
 import push
+import toBytes
 import kotlin.js.Date
 import kotlin.js.Promise
 
 @Composable
-fun GroupPage(group: GroupExtended?, onGroupUpdated: () -> Unit) {
+fun GroupPage(group: GroupExtended?, onGroupUpdated: () -> Unit, onGroupGone: () -> Unit) {
     val me by application.me.collectAsState()
     val scope = rememberCoroutineScope()
     var messageText by remember {
@@ -123,39 +127,27 @@ fun GroupPage(group: GroupExtended?, onGroupUpdated: () -> Unit) {
         isSending = true
         scope.launch {
             try {
-                val photos = files.map {
-                    val reader = it.asDynamic().stream().getReader()
-                    var bytes = ByteArray(0)
-                    while (true) {
-                        val chunk = (reader.read() as Promise<*>).await().asDynamic()
-                        val value = chunk.value as? Uint8Array
-                        if (value != null) {
-                            bytes += ByteArray(value.length) { value[it] }
-                        }
-                        if (chunk.done == true) {
-                            break
-                        }
-                    }
-                    bytes
-                }
+                val photos = files.map { it.toBytes() }
 
                 api.sendPhotos(
                     group!!.group!!.id!!,
-                    MultiPartFormDataContent(formData {
-                        if (message != null) {
-                            append("message", json.encodeToString(message))
+                    MultiPartFormDataContent(
+                        formData {
+                            if (message != null) {
+                                append("message", json.encodeToString(message))
+                            }
+                            photos.forEachIndexed { index, photo ->
+                                append(
+                                    "photo[$index]",
+                                    photo,
+                                    Headers.build {
+                                        append(HttpHeaders.ContentType, "image/jpeg")
+                                        append(HttpHeaders.ContentDisposition, "filename=photo.jpg")
+                                    }
+                                )
+                            }
                         }
-                        photos.forEachIndexed { index, photo ->
-                            append(
-                                "photo[$index]",
-                                photo,
-                                Headers.build {
-                                    append(HttpHeaders.ContentType, "image/jpeg")
-                                    append(HttpHeaders.ContentDisposition, "filename=photo.jpg")
-                                }
-                            )
-                        }
-                    })
+                    )
                 ) {
                     reloadMessages()
                 }
@@ -166,19 +158,6 @@ fun GroupPage(group: GroupExtended?, onGroupUpdated: () -> Unit) {
 
             isSending = false
         }
-    }
-
-    fun pickPhoto() {
-        val element = (document.createElement("input") as HTMLInputElement)
-        element.type = "file"
-        element.multiple = true
-        element.accept = "image/*"
-        element.addEventListener("change", {
-            if (element.files != null) {
-                sendPhotos(element.files!!.asList())
-            }
-        })
-        element.click()
     }
 
     fun sendMessage() {
@@ -274,7 +253,9 @@ fun GroupPage(group: GroupExtended?, onGroupUpdated: () -> Unit) {
 //                        // todo
 //                    }
                     IconButton("image", "Send photo", styles = { marginLeft(1.cssRem) }) {
-                        pickPhoto()
+                        pickPhotos {
+                            sendPhotos(it)
+                        }
                     }
                     IconButton(if (showStickers) "expand_less" else "expand_more", "Stickers", styles = {
                         marginLeft(1.cssRem)
@@ -367,14 +348,16 @@ fun GroupPage(group: GroupExtended?, onGroupUpdated: () -> Unit) {
             }
         }
 
-        GroupTopBar(group) {
-            onGroupUpdated()
-        }
+        GroupTopBar(
+            group,
+            onGroupUpdated = onGroupUpdated,
+            onGroupGone = onGroupGone
+        )
     }
 }
 
 @Composable
-fun GroupTopBar(group: GroupExtended, onGroupUpdated: () -> Unit) {
+fun GroupTopBar(group: GroupExtended, onGroupUpdated: () -> Unit, onGroupGone: () -> Unit) {
     val me by application.me.collectAsState()
     val myMember = group.members?.find { it.person?.id == me?.id }
     val scope = rememberCoroutineScope()
@@ -383,15 +366,40 @@ fun GroupTopBar(group: GroupExtended, onGroupUpdated: () -> Unit) {
         mutableStateOf<DOMRect?>(null)
     }
 
+    var showDescription by remember(group) {
+        mutableStateOf(true)
+    }
+
     fun renameGroup() {
         scope.launch {
-            val name = window.prompt("Group name", group.group?.name ?: "")
+            val name = inputDialog(
+                "Group name",
+                "",
+                "Rename",
+                defaultValue = group.group?.name ?: ""
+            )
 
             if (name == null) return@launch
 
             api.updateGroup(group.group!!.id!!, Group(name = name)) {
                 onGroupUpdated()
+            }
+        }
+    }
 
+    fun updateIntroduction() {
+        scope.launch {
+            val introduction = inputDialog(
+                "Introduction",
+                "",
+                "Update",
+                defaultValue = group.group?.description ?: ""
+            )
+
+            if (introduction == null) return@launch
+
+            api.updateGroup(group.group!!.id!!, Group(description = introduction)) {
+                onGroupUpdated()
             }
         }
     }
@@ -403,6 +411,35 @@ fun GroupTopBar(group: GroupExtended, onGroupUpdated: () -> Unit) {
 //            }
             item("Rename") {
                 renameGroup()
+            }
+            item("Introduction") {
+                updateIntroduction()
+            }
+            item("Hide") {
+                scope.launch {
+                    api.updateMember(
+                        myMember!!.member!!.id!!,
+                        Member(hide = true)
+                    ) {
+                        onGroupGone()
+                    }
+                }
+            }
+        }
+    }
+
+    if (showDescription) {
+        group.group?.description?.notBlank?.let { description ->
+            Div({
+                classes(AppStyles.groupDescription)
+
+                onClick {
+                    showDescription = false
+                }
+
+                title("Click to hide")
+            }) {
+                Text(description)
             }
         }
     }

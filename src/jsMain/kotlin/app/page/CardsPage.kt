@@ -11,6 +11,11 @@ import app.nav.CardNav
 import app.nav.NavSearchInput
 import application
 import components.*
+import dialog
+import inputDialog
+import io.ktor.client.request.forms.*
+import io.ktor.http.*
+import io.ktor.util.*
 import json
 import kotlinx.browser.window
 import kotlinx.coroutines.launch
@@ -26,12 +31,16 @@ import org.jetbrains.compose.web.dom.TextArea
 import org.w3c.dom.DOMRect
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.events.Event
+import pickPhotos
 import saves
+import toScaledBytes
 
 @Composable
 fun CardsPage(nav: CardNav, onCard: (CardNav) -> Unit, onCardUpdated: (Card) -> Unit) {
     Style(CardsPageStyles)
+
     val me by application.me.collectAsState()
+    val scope = rememberCoroutineScope()
     var cards by remember(nav) {
         mutableStateOf(listOf<Card>())
     }
@@ -49,10 +58,14 @@ fun CardsPage(nav: CardNav, onCard: (CardNav) -> Unit, onCardUpdated: (Card) -> 
                 }
             }
 
-            else -> {
+            is CardNav.Explore -> {
                 api.explore(me?.geo ?: listOf(10.7915858, 106.7426523)) {
                     cards = it
                 }
+            }
+
+            is CardNav.Selected -> {
+                // Nothing to load
             }
         }
         isLoading = false
@@ -82,18 +95,36 @@ fun CardsPage(nav: CardNav, onCard: (CardNav) -> Unit, onCardUpdated: (Card) -> 
                     }
                 }
             } else {
-                MyCardPage(nav.card, {
-                    onCard(CardNav.Selected(it))
-                }, onCardUpdated = {
-                    onCardUpdated(it)
-                })
+                MyCardPage(
+                    nav.card,
+                    {
+                        onCard(CardNav.Selected(it))
+                    },
+                    onCardUpdated = {
+                        onCardUpdated(it)
+                    },
+                    onCardDeleted = {
+                        if (it.parent != null) {
+                            scope.launch {
+                                api.card(it.parent!!) {
+                                    onCard(CardNav.Selected(it))
+                                    onCardUpdated(it)
+                                }
+                            }
+                        } else {
+                            onCard(CardNav.Explore)
+                            onCardUpdated(it)
+                        }
+                    }
+                )
             }
         }
     }
 }
 
+@OptIn(InternalAPI::class)
 @Composable
-fun MyCardPage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Unit) {
+fun MyCardPage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Unit, onCardDeleted: (card: Card) -> Unit) {
     val me by application.me.collectAsState()
     val scope = rememberCoroutineScope()
 
@@ -137,7 +168,7 @@ fun MyCardPage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Unit
     if (menuTarget != null) {
         Menu({ menuTarget = null }, menuTarget!!) {
             val isSaved = saves.cards.value.any { it.id == card.id }
-            item("Open", icon = "open_in_new") {
+            item("Open in new tab", icon = "open_in_new") {
                 window.open("/page/${card.id}", target = "_blank")
             }
             item(if (isSaved) "Unsave" else "Save") {
@@ -151,7 +182,12 @@ fun MyCardPage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Unit
             }
             item("Rename") {
                 scope.launch {
-                    val name = window.prompt("Title", card.name ?: "")
+                    val name = inputDialog(
+                        "Page title",
+                        "",
+                        "Rename",
+                        defaultValue = card.name ?: ""
+                    )
 
                     if (name == null) {
                         return@launch
@@ -162,11 +198,53 @@ fun MyCardPage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Unit
                     }
                 }
             }
+            item("Choose photo") {
+                pickPhotos(multiple = false) {
+                    it.singleOrNull()?.let {
+                        scope.launch {
+                            val photo = it.toScaledBytes()
+                            api.updateCardPhoto(
+                                card.id!!,
+                                MultiPartFormDataContent(
+                                    formData {
+                                        append(
+                                            "photo",
+                                            photo,
+                                            Headers.build {
+                                                append(HttpHeaders.ContentType, "image/jpeg")
+                                                append(HttpHeaders.ContentDisposition, "filename=photo.jpg")
+                                            }
+                                        )
+                                    }
+                                )
+                            ) {
+                                onCardUpdated(card)
+                            }
+                        }
+                    }
+                }
+            }
             if (card.parent != null) {
                 item("Open enclosing page") {
                     scope.launch {
                         api.card(card.parent!!) {
                             onCard(it)
+                        }
+                    }
+                }
+            }
+            item("Delete") {
+                scope.launch {
+                    val result = dialog(
+                        "Delete this page?",
+                        "Yes, delete"
+                    ) {
+                        Text("You cannot undo this.")
+                    }
+
+                    if (result == true) {
+                        api.deleteCard(card.id!!) {
+                            onCardDeleted(card)
                         }
                     }
                 }

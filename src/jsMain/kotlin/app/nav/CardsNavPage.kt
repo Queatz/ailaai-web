@@ -11,8 +11,9 @@ import application
 import components.Icon
 import components.IconButton
 import components.Loading
+import dialog
 import focusable
-import kotlinx.browser.window
+import inputDialog
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -31,22 +32,21 @@ sealed class CardNav {
 
 @Composable
 fun CardsNavPage(cardUpdates: Flow<Card>, nav: CardNav, onSelected: (CardNav) -> Unit) {
+    val cardId = (nav as? CardNav.Selected)?.card?.id
+
     val me by application.me.collectAsState()
     val saved by saves.cards.collectAsState()
     val scope = rememberCoroutineScope()
+
+
     var isLoading by remember { mutableStateOf(true) }
 
-    var showSearch by remember {
+    var showSearch by remember(cardId) {
         mutableStateOf(false)
     }
 
-    var searchText by remember {
+    var searchText by remember(cardId) {
         mutableStateOf("")
-    }
-
-    LaunchedEffect(nav) {
-        searchText = ""
-        showSearch = false
     }
 
     var myCards by remember { mutableStateOf(emptyList<Card>()) }
@@ -63,28 +63,27 @@ fun CardsNavPage(cardUpdates: Flow<Card>, nav: CardNav, onSelected: (CardNav) ->
     }
 
     suspend fun reload() {
-        val selectedId = (nav as? CardNav.Selected)?.card?.id
-
         api.myCards {
             myCards = it
+            if (cardId != null) {
+                onSelected(myCards.firstOrNull { it.id == cardId }?.let {
+                    CardNav.Selected(it)
+                } ?: CardNav.Explore)
+            }
         }
 
         isLoading = false
-
-        if (selectedId != null) {
-            onSelected(myCards.firstOrNull { it.id == selectedId }?.let {
-                CardNav.Selected(it)
-            } ?: CardNav.Explore)
-        }
     }
 
-    LaunchedEffect(Unit) {
+    // todo if (selected) is not passed in, then selected is always null in reload()
+    // https://youtrack.jetbrains.com/issue/KT-61632/Kotlin-JS-argument-scope-bug
+    LaunchedEffect(cardId) {
         reload()
     }
 
     // todo if (selected) is not passed in, then selected is always null in reload()
     // https://youtrack.jetbrains.com/issue/KT-61632/Kotlin-JS-argument-scope-bug
-    LaunchedEffect(nav) {
+    LaunchedEffect(cardId) {
         cardUpdates.collectLatest {
             reload()
         }
@@ -95,15 +94,24 @@ fun CardsNavPage(cardUpdates: Flow<Card>, nav: CardNav, onSelected: (CardNav) ->
         }) {
             showSearch = !showSearch
         }
-        IconButton("add", "New page", styles = {
-            marginRight(.5.cssRem)
-        }) {
+
+        IconButton(
+            "add",
+            "New page",
+            styles = {
+                marginRight(.5.cssRem)
+            }
+        ) {
             scope.launch {
-                val name = window.prompt("Page title")
+                val result = inputDialog(
+                    "New page",
+                    "Title",
+                    "Create"
+                )
 
-                if (name == null) return@launch
+                if (result == null) return@launch
 
-                api.newCard(Card(name = name)) {
+                api.newCard(Card(name = result)) {
                     onSelected(CardNav.Selected(it))
                     // todo this reloads old card
                     reload()
@@ -209,17 +217,17 @@ fun CardItem(card: Card, selected: Boolean, saved: Boolean, published: Boolean, 
                     )
                 }
             }
-            if (saved) {
-                Icon("favorite", title = "Page is saved") {
-                    fontSize(18.px)
-                    color(Styles.colors.secondary)
-                    marginLeft(.5.cssRem)
-                }
-            }
             if (published) {
                 Icon("toggle_on", title = "Page is published") {
                     fontSize(22.px)
                     color(Styles.colors.primary)
+                    marginLeft(.5.cssRem)
+                }
+            }
+            if (saved) {
+                Icon("favorite", title = "Page is saved") {
+                    fontSize(18.px)
+                    color(Styles.colors.secondary)
                     marginLeft(.5.cssRem)
                 }
             }

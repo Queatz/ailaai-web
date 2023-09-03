@@ -33,6 +33,50 @@ object Styles : StyleSheet() {
         }
     }
 
+    val modal by style {
+        borderRadius(2.cssRem)
+        padding(1.5.cssRem)
+        boxSizing("border-box")
+        backgroundColor(colors.background)
+        display(DisplayStyle.Flex)
+        flexDirection(FlexDirection.Column)
+        property("max-height", "calc(100vh - 2rem)")
+        property("max-width", "calc(100vw - 2rem)")
+        property("border", "none")
+        property("box-shadow", "2px 2px 8px rgba(0, 0, 0, .25)")
+
+        self + selector("::backdrop") style {
+            backgroundColor(colors.primary)
+            opacity(.5)
+        }
+
+        media("(prefers-color-scheme: dark)") {
+            self style {
+                backgroundColor(colors.dark.background)
+                color(Color.white)
+            }
+        }
+
+        child(self, selector("header")) style {
+            fontSize(24.px)
+        }
+
+        child(self, selector("section")) style {
+            display(DisplayStyle.Flex)
+            flexDirection(FlexDirection.Column)
+            padding(1.cssRem, 0.cssRem)
+        }
+
+        child(self, selector("footer")) style {
+            display(DisplayStyle.Flex)
+            flexDirection(FlexDirection.RowReverse)
+
+            child(self, selector("button")) style {
+                marginLeft(1.cssRem)
+            }
+        }
+    }
+
     val switchSlider by style {
         position(Position.Absolute)
         cursor("pointer")
@@ -335,7 +379,8 @@ object Styles : StyleSheet() {
 
     val textButton by style {
         property("border", "none")
-        padding(0.cssRem)
+        borderRadius(PaddingDefault * 2)
+        padding(0.cssRem, PaddingDefault * 2)
         height(3.cssRem)
         backgroundColor(Color.transparent)
         color(colors.primary)

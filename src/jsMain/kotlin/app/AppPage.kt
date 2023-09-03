@@ -86,9 +86,11 @@ fun AppPage() {
                             group = it
                         }
                     )
+
                     NavPage.Schedule -> ScheduleNavPage(scheduleView) {
                         scheduleView = it
                     }
+
                     NavPage.Cards -> CardsNavPage(cardUpdates, card) { card = it }
                     NavPage.Stories -> StoriesNavPage(storyUpdates, story) { story = it }
                 }
@@ -98,17 +100,27 @@ fun AppPage() {
             classes(AppStyles.mainLayout)
         }) {
             when (nav) {
-                NavPage.Groups -> GroupPage(group) {
-                    scope.launch {
-                        groupUpdates.emit(Unit)
+                NavPage.Groups -> GroupPage(
+                    group,
+                    onGroupUpdated = {
+                        scope.launch {
+                            groupUpdates.emit(Unit)
+                        }
+                    },
+                    onGroupGone = {
+                        scope.launch {
+                            groupUpdates.emit(Unit)
+                        }
                     }
-                }
+                )
+
                 NavPage.Schedule -> SchedulePage(scheduleView)
                 NavPage.Cards -> CardsPage(card, { card = it }) {
                     scope.launch {
                         cardUpdates.emit(it)
                     }
                 }
+
                 NavPage.Stories -> StoriesPage(story) {
                     scope.launch {
                         storyUpdates.emit(it)
