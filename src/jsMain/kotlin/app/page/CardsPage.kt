@@ -96,7 +96,7 @@ fun CardsPage(nav: CardNav, onCard: (CardNav) -> Unit, onCardUpdated: (Card) -> 
                 }
             } else {
                 MyCardPage(
-                    nav.card,
+                    nav.subCard ?: nav.card,
                     {
                         onCard(CardNav.Selected(it))
                     },

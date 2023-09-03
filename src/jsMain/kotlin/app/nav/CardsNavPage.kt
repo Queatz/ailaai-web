@@ -11,7 +11,6 @@ import application
 import components.Icon
 import components.IconButton
 import components.Loading
-import dialog
 import focusable
 import inputDialog
 import kotlinx.coroutines.flow.Flow
@@ -22,12 +21,13 @@ import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text
+import org.w3c.dom.HTMLElement
 import saves
 
 sealed class CardNav {
     data object Explore : CardNav()
     data object Saved : CardNav()
-    data class Selected(val card: Card) : CardNav()
+    data class Selected(val card: Card, val subCard: Card? = null) : CardNav()
 }
 
 @Composable
@@ -51,10 +51,14 @@ fun CardsNavPage(cardUpdates: Flow<Card>, nav: CardNav, onSelected: (CardNav) ->
 
     var myCards by remember { mutableStateOf(emptyList<Card>()) }
 
+    val childCards = remember(myCards, cardId) {
+        myCards.filter { it.parent == cardId }
+    }
+
     val shownCards = remember(myCards, searchText, saved) {
         val search = searchText.trim()
         (if (searchText.isBlank()) {
-            myCards
+            myCards//.filter { it.parent == null }
         } else {
             myCards.filter {
                 (it.name?.contains(search, true) ?: false)
@@ -152,10 +156,34 @@ fun CardsNavPage(cardUpdates: Flow<Card>, nav: CardNav, onSelected: (CardNav) ->
 
                 }
             }
-            val selected = (nav as? CardNav.Selected)?.card
+            val selected = (nav as? CardNav.Selected)?.let { it.subCard ?: it.card }
             shownCards.forEach {
-                CardItem(it, selected == it, saved.any { save -> save.id == it.id }, it.active == true) {
+                CardItem(it, (nav as? CardNav.Selected)?.subCard == null, selected == it, saved.any { save -> save.id == it.id }, it.active == true) { navigate ->
                     onSelected(CardNav.Selected(it))
+                }
+                if (it.id == cardId && childCards.isNotEmpty()) {
+                Div({
+                    style { marginLeft(1.cssRem) }
+                }) {
+//                    val selectedSubCard = (nav as? CardNav.Selected)?.let { it.subCard }
+                        childCards.forEach {
+                            CardItem(
+                                it,
+                                true,
+                                selected == it,
+                                saved.any { save -> save.id == it.id },
+                                it.active == true
+                            ) { navigate ->
+                                val card = (nav as CardNav.Selected).card
+
+                                if (navigate) {
+                                    onSelected(CardNav.Selected(it))
+                                } else {
+                                    onSelected(CardNav.Selected(card, it))
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -163,7 +191,25 @@ fun CardsNavPage(cardUpdates: Flow<Card>, nav: CardNav, onSelected: (CardNav) ->
 }
 
 @Composable
-fun CardItem(card: Card, selected: Boolean, saved: Boolean, published: Boolean, onSelected: () -> Unit) {
+fun CardItem(card: Card, scroll: Boolean, selected: Boolean, saved: Boolean, published: Boolean, onSelected: (Boolean) -> Unit) {
+    var ref by remember {
+        mutableStateOf<HTMLElement?>(null)
+    }
+
+    if (scroll) {
+        LaunchedEffect(card, selected, ref) {
+            if (selected) {
+                ref?.let { ref ->
+                    val rect = ref.getBoundingClientRect()
+                    val parentRect = ref.offsetParent!!.getBoundingClientRect()
+                    if (rect.y > parentRect.y + parentRect.height || rect.y + rect.height < parentRect.y) {
+                        ref.scrollIntoView()
+                    }
+                }
+            }
+        }
+    }
+
     Div({
         classes(
             listOf(AppStyles.groupItem) + if (selected) {
@@ -173,8 +219,20 @@ fun CardItem(card: Card, selected: Boolean, saved: Boolean, published: Boolean, 
             }
         )
         focusable()
+
         onClick {
-            onSelected()
+            onSelected(false)
+        }
+
+        onDoubleClick {
+            onSelected(true)
+        }
+
+        if (scroll) {
+            ref {
+                ref = it
+                onDispose { }
+            }
         }
     }) {
         Div({
