@@ -7,20 +7,20 @@ import PersonProfile
 import Profile
 import androidx.compose.runtime.*
 import api
+import app.components.EditField
 import appString
 import application
 import components.IconButton
+import components.Wbr
 import dialog
 import inputDialog
 import kotlinx.browser.window
 import kotlinx.coroutines.launch
-import kotlinx.serialization.encodeToString
 import notBlank
-import org.jetbrains.compose.web.attributes.disabled
-import org.jetbrains.compose.web.attributes.placeholder
 import org.jetbrains.compose.web.css.*
-import org.jetbrains.compose.web.dom.*
-import org.w3c.dom.events.Event
+import org.jetbrains.compose.web.dom.Div
+import org.jetbrains.compose.web.dom.Img
+import org.jetbrains.compose.web.dom.Text
 import qr
 import webBaseUrl
 
@@ -45,24 +45,14 @@ fun ProfileNavPage(onProfileClick: () -> Unit) {
         }
     }
 
-    var messageText by remember(profile) {
-        mutableStateOf(profile?.profile?.about ?: "")
-    }
-
-    var messageChanged by remember(profile) { mutableStateOf(false) }
-    var isSaving by remember(profile) { mutableStateOf(false) }
-
-
-    fun saveAbout() {
-        isSaving = true
-
-        scope.launch {
-            api.updateProfile(Profile(about = messageText)) {
-                messageChanged = false
-                reload()
-            }
-            isSaving = false
+    suspend fun saveAbout(value: String): Boolean {
+        var success = false
+        api.updateProfile(Profile(about = value)) {
+            success = true
+            reload()
         }
+
+        return success
     }
 
     NavTopBar(me, "Profile", onProfileClick = onProfileClick) {
@@ -133,98 +123,26 @@ fun ProfileNavPage(onProfileClick: () -> Unit) {
         }
 
         if (profile != null) {
-            var onValueChange by remember { mutableStateOf({}) }
-
-            LaunchedEffect(messageText) {
-                onValueChange()
+            EditField(profile?.profile?.about ?: "", placeholder = "Introduce yourself here…", styles = {
+                margin(.5.cssRem)
+            }) {
+                saveAbout(it)
             }
+        }
 
-            TextArea(messageText) {
-                classes(Styles.textarea)
-                style {
-                    margin(.5.cssRem)
-                    height(3.5.cssRem)
-                    maxHeight(18.cssRem)
-                    flexShrink(0)
-                    backgroundColor(Color.transparent)
+        val signOut = appString { signOut }
+        NavMenuItem("logout", signOut) {
+            scope.launch {
+                val result = dialog("Sign out?", signOut) {
+                    Text("You will permanently lose access to this account")
+                    Wbr()
+                    Text(" if you are not currently signed in on another device.")
                 }
 
-                placeholder("Details")
-
-                onKeyDown {
-                    if (it.key == "Enter" && it.ctrlKey) {
-                        it.preventDefault()
-                        it.stopPropagation()
-                        saveAbout()
-                    }
-                }
-
-                onInput {
-                    messageText = it.value
-                    it.target.style.height = "0"
-                    it.target.style.height = "${it.target.scrollHeight + 2}px"
-                    messageChanged = true
-                }
-
-                onChange {
-                    it.target.style.height = "0"
-                    it.target.style.height = "${it.target.scrollHeight + 2}px"
-                }
-
-                ref { element ->
-                    element.style.height = "0"
-                    element.style.height = "${element.scrollHeight + 2}px"
-
-                    onValueChange = { element.dispatchEvent(Event("change")) }
-
-                    onDispose {
-                        onValueChange = {}
-                    }
-                }
-            }
-
-            if (messageChanged) {
-                Div({
-                    style {
-                        margin(.5.cssRem)
-                        flexShrink(0)
-                        display(DisplayStyle.Flex)
-                    }
-                }) {
-                    Button({
-                        classes(Styles.button)
-
-                        style {
-                            marginRight(.5.cssRem)
-                        }
-
-                        onClick {
-                            saveAbout()
-                        }
-
-                        if (isSaving) {
-                            disabled()
-                        }
-                    }) {
-                        Text("Save")
-                    }
-
-                    Button({
-                        classes(Styles.outlineButton)
-                        style {
-                            marginRight(.5.cssRem)
-                        }
-                        onClick {
-                            messageText = profile?.profile?.about ?: ""
-                            messageChanged = false
-                        }
-
-                        if (isSaving) {
-                            disabled()
-                        }
-                    }) {
-                        Text("Discard")
-                    }
+                if (result == true) {
+                    application.signOut()
+                    window.location.pathname = "/"
+                    window.location.reload()
                 }
             }
         }

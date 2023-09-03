@@ -1,10 +1,10 @@
 package app.page
 
 import Card
-import Styles
 import androidx.compose.runtime.*
 import api
 import app.PageTopBar
+import app.components.EditField
 import app.menu.Menu
 import app.nav.NavSearchInput
 import application
@@ -18,13 +18,12 @@ import kotlinx.browser.window
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import notBlank
-import org.jetbrains.compose.web.attributes.disabled
-import org.jetbrains.compose.web.attributes.placeholder
 import org.jetbrains.compose.web.css.*
-import org.jetbrains.compose.web.dom.*
+import org.jetbrains.compose.web.dom.Div
+import org.jetbrains.compose.web.dom.Img
+import org.jetbrains.compose.web.dom.Text
 import org.w3c.dom.DOMRect
 import org.w3c.dom.HTMLElement
-import org.w3c.dom.events.Event
 import pickPhotos
 import qr
 import saves
@@ -226,31 +225,18 @@ fun MyCardPage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Unit
         card.getConversation()
     }
 
-    var messageText by remember(conversation) {
-        mutableStateOf(conversation.message)
-    }
-
-    var messageChanged by remember(card.id) {
-        mutableStateOf(false)
-    }
-
-    var isSaving by remember(card) {
-        mutableStateOf(false)
-    }
-
-    fun saveConversation() {
-        conversation.message = messageText
+    suspend fun saveConversation(value: String): Boolean {
+        conversation.message = value
         val conversationString = json.encodeToString(conversation)
 
-        isSaving = true
+        var success = false
 
-        scope.launch {
-            api.updateCard(card.id!!, Card(conversation = conversationString)) {
-                messageChanged = false
-                onCardUpdated(card)
-            }
-            isSaving = false
+        api.updateCard(card.id!!, Card(conversation = conversationString)) {
+            success = true
+            onCardUpdated(card)
         }
+
+        return success
     }
 
     Div({
@@ -287,99 +273,11 @@ fun MyCardPage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Unit
 //                }
 //            }
 
-        var onValueChange by remember { mutableStateOf({}) }
-
-        LaunchedEffect(messageText) {
-            onValueChange()
-        }
-
-        TextArea(messageText) {
-            classes(Styles.textarea)
-            style {
-                margin(.5.cssRem, 1.cssRem)
-                height(3.5.cssRem)
-                maxHeight(50.vh)
-                flexShrink(0)
-                backgroundColor(Color.transparent)
-            }
-
-            placeholder("Details")
-
-            onKeyDown {
-                if (it.key == "Enter" && it.ctrlKey) {
-                    it.preventDefault()
-                    it.stopPropagation()
-                    saveConversation()
-                }
-            }
-
-            onInput {
-                messageText = it.value
-                it.target.style.height = "0"
-                it.target.style.height = "${it.target.scrollHeight + 2}px"
-                messageChanged = true
-            }
-
-            onChange {
-                it.target.style.height = "0"
-                it.target.style.height = "${it.target.scrollHeight + 2}px"
-            }
-
-            ref { element ->
-                element.style.height = "0"
-                element.style.height = "${element.scrollHeight + 2}px"
-
-                onValueChange = { element.dispatchEvent(Event("change")) }
-
-                onDispose {
-                    onValueChange = {}
-                }
-            }
-        }
-
-        if (messageChanged) {
-            Div({
-                style {
-                    margin(.5.cssRem, 1.cssRem)
-                    flexShrink(0)
-                    display(DisplayStyle.Flex)
-                }
-            }) {
-                Button({
-                    classes(Styles.button)
-
-                    style {
-                        marginRight(.5.cssRem)
-                    }
-
-                    onClick {
-                        saveConversation()
-                    }
-
-                    if (isSaving) {
-                        disabled()
-                    }
-                }) {
-                    Text("Save")
-                }
-
-                Button({
-                    classes(Styles.outlineButton)
-                    style {
-                        marginRight(.5.cssRem)
-                    }
-                    onClick {
-                        messageText = conversation.message
-                        messageChanged = false
-                    }
-
-                    if (isSaving) {
-                        disabled()
-                    }
-                }) {
-                    Text("Discard")
-                }
-            }
+        EditField(conversation.message, placeholder = "Details", styles = {
+            margin(.5.cssRem, 1.cssRem)
+            maxHeight(50.vh)
+        }) {
+            saveConversation(it)
         }
 
         NavSearchInput(newCardTitle, { newCardTitle = it }, placeholder = "New page", autoFocus = false) {

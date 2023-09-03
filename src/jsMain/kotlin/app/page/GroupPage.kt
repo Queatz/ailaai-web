@@ -475,6 +475,19 @@ fun GroupTopBar(group: GroupExtended, onGroupUpdated: () -> Unit, onGroupGone: (
                     }
                 }
             }
+            item("Leave") {
+                scope.launch {
+                    val result = dialog("Leave this group?", "Leave")
+
+                    if (result == true) {
+                        api.removeMember(
+                            myMember!!.member!!.id!!
+                        ) {
+                            onGroupGone()
+                        }
+                    }
+                }
+            }
         }
     }
 

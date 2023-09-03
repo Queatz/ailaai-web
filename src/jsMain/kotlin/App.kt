@@ -11,7 +11,6 @@ class Application {
     val me = MutableStateFlow<Person?>(null)
     val bearerToken = MutableStateFlow<String?>(null)
 
-    val bearer: String get() = bearerToken.value!!
     var navPage: NavPage = NavPage.Groups
         private set
 
@@ -62,6 +61,12 @@ class Application {
         } else {
             localStorage.removeItem("bearer")
         }
+    }
+
+    fun signOut() {
+        setToken(null)
+        setMe(null)
+        setNavPage(null)
     }
 
     suspend fun sync() {

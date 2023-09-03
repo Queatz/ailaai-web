@@ -103,7 +103,7 @@ fun StoriesPage(story: Story?, onStoryUpdated: (Story) -> Unit) {
                     padding(1.cssRem)
                 }
             }) {
-                StoryContents(storyContent)
+                StoryContents(storyContent, openInNewWindow = true)
             }
         }
         story?.let { story ->

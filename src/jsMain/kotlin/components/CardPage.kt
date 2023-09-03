@@ -101,7 +101,6 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
                 window.alert(didntWorkString)
             }
         ) {
-
             replyMessage = ""
             isReplying = null
             window.alert(sentString)

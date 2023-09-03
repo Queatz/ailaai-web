@@ -24,6 +24,12 @@ fun CardsPage(nav: CardNav, onCard: (CardNav) -> Unit, onCardUpdated: (Card) -> 
         mutableStateOf(nav !is CardNav.Selected)
     }
 
+    LaunchedEffect(nav) {
+        if (nav !is CardNav.Selected) {
+            isLoading = true
+        }
+    }
+
     suspend fun reload() {
         if (me == null) return
 
@@ -56,18 +62,36 @@ fun CardsPage(nav: CardNav, onCard: (CardNav) -> Unit, onCardUpdated: (Card) -> 
     } else {
         FullPageLayout(maxWidth = null) {
             if (nav !is CardNav.Selected) {
-                Div(
-                    {
-                        classes(CardsPageStyles.layout)
-
+                if (cards.isEmpty()) {
+                    Div({
                         style {
-                            overflowX("hidden")
-                            overflowY("auto")
+                            height(100.percent)
+                            display(DisplayStyle.Flex)
+                            alignItems(AlignItems.Center)
+                            justifyContent(JustifyContent.Center)
+                            opacity(.5)
+                        }
+                    }) {
+                        when (nav) {
+                            is CardNav.Explore -> Text("No pages nearby")
+                            is CardNav.Saved -> Text("No saved pages")
+                            else -> {}
                         }
                     }
-                ) {
-                    cards.forEach {
-                        CardItem(it, openInNewWindow = true)
+                } else {
+                    Div(
+                        {
+                            classes(CardsPageStyles.layout)
+
+                            style {
+                                overflowX("hidden")
+                                overflowY("auto")
+                            }
+                        }
+                    ) {
+                        cards.forEach {
+                            CardItem(it, openInNewWindow = true)
+                        }
                     }
                 }
             } else {

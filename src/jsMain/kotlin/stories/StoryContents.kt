@@ -9,6 +9,8 @@ import components.Icon
 import components.LinkifyText
 import lib.format
 import lib.isThisYear
+import org.jetbrains.compose.web.attributes.ATarget
+import org.jetbrains.compose.web.attributes.target
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
 import kotlin.js.Date
@@ -17,7 +19,7 @@ import kotlin.js.Date
 fun storyStatus(publishDate: String?) = publishDate?.let { Date(it) }?.let { format(it, "MMMM do${if (isThisYear(it)) "" else ", yyyy"}") } ?: appString { draft }
 
 @Composable
-fun StoryContents(storyContent: List<StoryContent>) {
+fun StoryContents(storyContent: List<StoryContent>, openInNewWindow: Boolean = false) {
     Style(StoryStyles)
     storyContent.forEach { part ->
         when (part) {
@@ -40,7 +42,13 @@ fun StoryContents(storyContent: List<StoryContent>) {
                             if (index > 0) {
                                 Text(", ")
                             }
-                            A(href = "/profile/${person.id}") {
+                            val str = appString { viewProfile }
+                            A(href = "/profile/${person.id}", {
+                                if (openInNewWindow) {
+                                    target(ATarget.Blank)
+                                }
+                                title(str)
+                            }) {
                                 Text(person.name ?: appString { someone })
                             }
                         }

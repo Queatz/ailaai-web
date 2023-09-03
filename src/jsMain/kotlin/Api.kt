@@ -83,7 +83,7 @@ class Api {
         token: String,
         onError: suspend (Throwable) -> Unit = {},
         onSuccess: suspend (LinkDeviceToken) -> Unit = {}
-    ) = post(
+    ) = get(
         url = "link-device/$token",
         onError = onError,
         onSuccess = onSuccess
@@ -267,6 +267,16 @@ class Api {
     ) = post(
         url = "members/$memberId",
         body = member,
+        onError = onError,
+        onSuccess = onSuccess
+    )
+
+    suspend fun removeMember(
+        memberId: String,
+        onError: suspend (Throwable) -> Unit = {},
+        onSuccess: suspend (HttpResponse) -> Unit = {}
+    ) = post(
+        url = "members/$memberId/delete",
         onError = onError,
         onSuccess = onSuccess
     )

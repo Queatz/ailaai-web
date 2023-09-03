@@ -254,6 +254,10 @@ object Strings {
         "Sign up",
         "Đăng ký"
     )
+    val signOut = Translation(
+        "Sign out",
+        "Đăng xuất"
+    )
     val profile = Translation(
         "Profile",
         "Trang cá nhân"
