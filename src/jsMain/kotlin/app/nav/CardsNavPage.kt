@@ -31,7 +31,7 @@ sealed class CardNav {
 }
 
 @Composable
-fun CardsNavPage(cardUpdates: Flow<Card>, nav: CardNav, onSelected: (CardNav) -> Unit) {
+fun CardsNavPage(cardUpdates: Flow<Card>, nav: CardNav, onSelected: (CardNav) -> Unit, onProfileClick: () -> Unit) {
     val cardId = (nav as? CardNav.Selected)?.card?.id
     val subCardId = (nav as? CardNav.Selected)?.subCard?.id
 
@@ -95,7 +95,7 @@ fun CardsNavPage(cardUpdates: Flow<Card>, nav: CardNav, onSelected: (CardNav) ->
         }
     }
 
-    NavTopBar(me, "Pages") {
+    NavTopBar(me, "Pages", onProfileClick = onProfileClick) {
         IconButton("search", "Search", styles = {
         }) {
             showSearch = !showSearch

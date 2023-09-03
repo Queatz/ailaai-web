@@ -33,6 +33,9 @@ object Styles : StyleSheet() {
         }
     }
 
+    val textIcon by style {
+        fontSize(24.px)
+    }
     val modal by style {
         borderRadius(2.cssRem)
         padding(1.5.cssRem)

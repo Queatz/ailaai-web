@@ -19,7 +19,7 @@ import org.w3c.dom.HTMLTextAreaElement
 import kotlin.js.Date
 
 @Composable
-fun ScheduleNavPage(view: ScheduleView, onViewClick: (ScheduleView) -> Unit) {
+fun ScheduleNavPage(view: ScheduleView, onViewClick: (ScheduleView) -> Unit, onProfileClick: () -> Unit) {
     val me by application.me.collectAsState()
     val scope = rememberCoroutineScope()
 
@@ -27,7 +27,7 @@ fun ScheduleNavPage(view: ScheduleView, onViewClick: (ScheduleView) -> Unit) {
         mutableStateOf("")
     }
 
-    NavTopBar(me, "Reminders") {
+    NavTopBar(me, "Reminders", onProfileClick) {
         IconButton("search", "Search", styles = {
             marginRight(.5.cssRem)
         }) {

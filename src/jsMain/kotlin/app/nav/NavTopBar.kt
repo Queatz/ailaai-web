@@ -12,7 +12,7 @@ import org.jetbrains.compose.web.dom.Text
 import org.w3c.dom.HTMLDivElement
 
 @Composable
-fun NavTopBar(me: Person?, title: String, actions: @Composable ElementScope<HTMLDivElement>.() -> Unit = {}) {
+fun NavTopBar(me: Person?, title: String, onProfileClick: () -> Unit, actions: @Composable ElementScope<HTMLDivElement>.() -> Unit = {}) {
     Div({
         style {
             display(DisplayStyle.Flex)
@@ -33,7 +33,7 @@ fun NavTopBar(me: Person?, title: String, actions: @Composable ElementScope<HTML
         actions()
         me?.let { me ->
             ProfilePhoto(me, title = appString { profile }, onClick = {
-                window.open("/profile/${me.id}", "_blank")
+                onProfileClick()
             })
         }
     }

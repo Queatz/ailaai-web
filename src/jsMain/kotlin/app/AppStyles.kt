@@ -4,6 +4,7 @@ import CornerDefault
 import PaddingDefault
 import Styles
 import Styles.elevated
+import Styles.textIcon
 import ellipsize
 import org.jetbrains.compose.web.ExperimentalComposeWebApi
 import org.jetbrains.compose.web.css.*
@@ -213,6 +214,10 @@ object AppStyles : StyleSheet() {
         }
 
         child(self, className("material-symbols-outlined")) style {
+            marginRight(1.cssRem)
+        }
+
+        child(self, className(textIcon)) style {
             marginRight(1.cssRem)
         }
     }

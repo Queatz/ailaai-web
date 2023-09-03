@@ -91,6 +91,7 @@ suspend fun inputDialog(
     confirmButton: String = "Okay",
     cancelButton: String? = "Cancel",
     defaultValue: String = "",
+    singleLine: Boolean = true
 ): String? {
     var text: String = defaultValue
     val result = dialog(

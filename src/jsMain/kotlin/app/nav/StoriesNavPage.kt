@@ -21,7 +21,7 @@ import stories.storyStatus
 import stories.textContent
 
 @Composable
-fun StoriesNavPage(storyUpdates: Flow<Story>, selected: Story?, onSelected: (Story?) -> Unit) {
+fun StoriesNavPage(storyUpdates: Flow<Story>, selected: Story?, onSelected: (Story?) -> Unit, onProfileClick: () -> Unit) {
     val me by application.me.collectAsState()
     val scope = rememberCoroutineScope()
 
@@ -75,7 +75,7 @@ fun StoriesNavPage(storyUpdates: Flow<Story>, selected: Story?, onSelected: (Sto
         }
     }
 
-    NavTopBar(me, "Stories") {
+    NavTopBar(me, "Stories", onProfileClick) {
         IconButton("search", "Search", styles = {
         }) {
             showSearch = !showSearch

@@ -33,7 +33,8 @@ import kotlin.js.Date
 fun GroupsNavPage(
     groupUpdates: Flow<Unit>,
     selectedGroup: GroupExtended?,
-    onGroupSelected: (GroupExtended?) -> Unit
+    onGroupSelected: (GroupExtended?) -> Unit,
+    onProfileClick: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val me by application.me.collectAsState()
@@ -105,7 +106,7 @@ fun GroupsNavPage(
         }
     }
 
-    NavTopBar(me, "Groups") {
+    NavTopBar(me, "Groups", onProfileClick = onProfileClick) {
         IconButton("search", "Search", styles = {
         }) {
             showSearch = !showSearch

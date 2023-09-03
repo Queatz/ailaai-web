@@ -107,6 +107,17 @@ class Api {
         onSuccess = onSuccess
     )
 
+    suspend fun updateMe(
+        person: Person,
+        onError: suspend (Throwable) -> Unit = {},
+        onSuccess: suspend (Person) -> Unit
+    ) = post(
+        url = "me",
+        body = person,
+        onError = onError,
+        onSuccess = onSuccess
+    )
+
     suspend fun createGroup(
         people: List<String>,
         onError: suspend (Throwable) -> Unit = {},
@@ -187,6 +198,17 @@ class Api {
         onSuccess: suspend (List<Card>) -> Unit
     ) = get(
         url = "people/$personId/profile/cards",
+        onError = onError,
+        onSuccess = onSuccess
+    )
+
+    suspend fun updateProfile(
+        profile: Profile,
+        onError: suspend (Throwable) -> Unit = {},
+        onSuccess: suspend (Profile) -> Unit
+    ) = post(
+        url = "me/profile",
+        body = profile,
         onError = onError,
         onSuccess = onSuccess
     )

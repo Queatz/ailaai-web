@@ -18,7 +18,8 @@ enum class NavPage {
     Groups,
     Schedule,
     Cards,
-    Stories
+    Stories,
+    Profile
 }
 
 @Composable
@@ -84,15 +85,25 @@ fun AppPage() {
                         group,
                         onGroupSelected = {
                             group = it
+                        },
+                        onProfileClick = {
+                            nav = NavPage.Profile
                         }
                     )
 
-                    NavPage.Schedule -> ScheduleNavPage(scheduleView) {
+                    NavPage.Schedule -> ScheduleNavPage(scheduleView, {
                         scheduleView = it
-                    }
+                    }, {
+                        nav = NavPage.Profile
+                    })
 
-                    NavPage.Cards -> CardsNavPage(cardUpdates, card) { card = it }
-                    NavPage.Stories -> StoriesNavPage(storyUpdates, story) { story = it }
+                    NavPage.Cards -> CardsNavPage(cardUpdates, card, { card = it }, {
+                        nav = NavPage.Profile
+                    })
+                    NavPage.Stories -> StoriesNavPage(storyUpdates, story, { story = it }, { nav = NavPage.Profile })
+                    NavPage.Profile -> ProfileNavPage {
+                        nav = NavPage.Groups
+                    }
                 }
             }
         }
@@ -125,6 +136,9 @@ fun AppPage() {
                     scope.launch {
                         storyUpdates.emit(it)
                     }
+                }
+                NavPage.Profile -> {
+
                 }
             }
         }
