@@ -1,6 +1,7 @@
 import androidx.compose.runtime.*
 import app.nav.NavSearchInput
 import kotlinx.browser.document
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.margin
@@ -71,8 +72,14 @@ suspend fun dialog(
 
     dialog.showModal()
 
-    return result.await().also {
+    return try {
+        result.await().also {
+            dialog.close()
+        }
+    } catch (e: CancellationException) {
+        e.printStackTrace()
         dialog.close()
+        null
     }
 }
 

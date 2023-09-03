@@ -19,12 +19,14 @@ import appString
 import application
 import components.IconButton
 import components.Loading
+import components.ProfilePhoto
+import dialog
+import focusable
 import inputDialog
 import io.ktor.client.request.forms.*
 import io.ktor.http.*
 import json
-import kotlinx.browser.document
-import kotlinx.coroutines.await
+import kotlinx.browser.window
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -37,15 +39,12 @@ import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Text
 import org.jetbrains.compose.web.dom.TextArea
-import org.khronos.webgl.Uint8Array
-import org.khronos.webgl.get
 import org.w3c.dom.*
 import org.w3c.files.File
 import pickPhotos
 import push
 import toBytes
 import kotlin.js.Date
-import kotlin.js.Promise
 
 @Composable
 fun GroupPage(group: GroupExtended?, onGroupUpdated: () -> Unit, onGroupGone: () -> Unit) {
@@ -409,6 +408,57 @@ fun GroupTopBar(group: GroupExtended, onGroupUpdated: () -> Unit, onGroupGone: (
 //            item("Pin") {
 //
 //            }
+            item("Members") {
+                scope.launch {
+                    dialog("Members (${group.members?.size ?: 0})", cancelButton = null) {
+                        Div({
+                            style {
+                                display(DisplayStyle.Flex)
+                                flexDirection(FlexDirection.Column)
+                            }
+                        }) {
+                            group.members?.forEach { member ->
+                                Div({
+                                    classes(
+                                        listOf(AppStyles.groupItem)
+                                    )
+                                    onClick {
+                                        window.open("/profile/${member.person!!.id}", "_blank")
+                                    }
+
+                                    focusable()
+                                }) {
+                                    ProfilePhoto(member.person!!)
+                                    Div({
+                                        style {
+                                            marginLeft(1.cssRem)
+                                        }
+                                    }) {
+                                        Div({
+                                            classes(AppStyles.groupItemName)
+                                        }) {
+                                            Text(member.person?.name ?: "Someone")
+                                        }
+                                        Div({
+                                            classes(AppStyles.groupItemMessage)
+                                        }) {
+                                            Text(
+                                                "Active ${
+                                                    formatDistanceToNow(
+                                                        Date(member.person!!.seen ?: member.person!!.createdAt!!),
+                                                        js("{ addSuffix: true }")
+                                                    )
+                                                }"
+                                            )
+
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             item("Rename") {
                 renameGroup()
             }

@@ -306,7 +306,7 @@ fun MyCardPage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Unit
         mutableStateOf(conversation.message)
     }
 
-    var messageChanged by remember(card) {
+    var messageChanged by remember(card.id) {
         mutableStateOf(false)
     }
 
