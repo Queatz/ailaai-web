@@ -417,10 +417,10 @@ fun GroupTopBar(group: GroupExtended, onGroupUpdated: () -> Unit, onGroupGone: (
                                 flexDirection(FlexDirection.Column)
                             }
                         }) {
-                            group.members?.forEach { member ->
+                            group.members?.sortedByDescending { it.person?.seen?.let { Date(it).getTime() } ?: 0.0 }?.forEach { member ->
                                 Div({
                                     classes(
-                                        listOf(AppStyles.groupItem)
+                                        listOf(AppStyles.groupItem, AppStyles.groupItemOnSurface)
                                     )
                                     onClick {
                                         window.open("/profile/${member.person!!.id}", "_blank")

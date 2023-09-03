@@ -3,6 +3,7 @@ package app.page
 import androidx.compose.runtime.*
 import app.FullPageLayout
 import components.IconButton
+import focusable
 import lib.*
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
@@ -87,6 +88,8 @@ fun EventRow(view: ScheduleView, text: String) {
         onClick {
             done = !done
         }
+
+        focusable()
     }
     ) {
         Div({
@@ -97,10 +100,11 @@ fun EventRow(view: ScheduleView, text: String) {
             }
         }) {
             Div({
+                classes(SchedulePageStyles.rowText)
                 style {
                     if (done) {
-                        textDecoration("line-through")
                         opacity(.5)
+                        textDecoration("line-through")
                     }
                 }
             }) {

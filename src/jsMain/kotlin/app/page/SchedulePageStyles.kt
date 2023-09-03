@@ -1,6 +1,7 @@
 package app.page
 
 import Styles.elevated
+import org.jetbrains.compose.web.ExperimentalComposeWebApi
 import org.jetbrains.compose.web.css.*
 
 object SchedulePageStyles : StyleSheet() {
@@ -31,6 +32,11 @@ object SchedulePageStyles : StyleSheet() {
     val rowActions by style {
         opacity(0)
         lineHeight("0")
+        color(Styles.colors.primary)
+    }
+
+    val rowText by style {
+
     }
 
     val row by style {
@@ -39,18 +45,35 @@ object SchedulePageStyles : StyleSheet() {
         borderRadius(.5.cssRem)
         cursor("pointer")
         alignItems(AlignItems.Center)
+        opacity(1)
 
-        hover(self) style {
+        self + hover style {
             backgroundColor(Styles.colors.background)
 
             child(self, className(rowActions)) style {
-                opacity(.5)
+                opacity(1)
+            }
+        }
+
+        self + focus style {
+            backgroundColor(Styles.colors.background)
+
+            child(self, className(rowActions)) style {
+                opacity(1)
             }
         }
 
         media("(prefers-color-scheme: dark)") {
-            hover(self) style {
+            self + hover style {
                 backgroundColor(Color.black)
+            }
+
+            self + focus style {
+                backgroundColor(Color.black)
+            }
+
+            child(self, className(rowActions)) style {
+                color(Color.white)
             }
         }
     }

@@ -54,12 +54,12 @@ object AppStyles : StyleSheet() {
             flex(1)
         }
 
-        hover(self) style {
+        self + hover style {
             backgroundColor(Styles.colors.background)
         }
 
         media("(prefers-color-scheme: dark)") {
-            hover(self) style {
+            self + hover style {
                 backgroundColor(Color.black)
             }
         }
@@ -142,6 +142,10 @@ object AppStyles : StyleSheet() {
         alignItems(AlignItems.Center)
     }
 
+    val groupItemOnSurface by style {
+
+    }
+
     val groupItem by style {
         padding(.5.cssRem, 1.cssRem)
         borderRadius(1.cssRem)
@@ -149,13 +153,25 @@ object AppStyles : StyleSheet() {
         display(DisplayStyle.Flex)
         alignItems(AlignItems.Center)
 
-        hover(self) style {
+        self + hover style {
             backgroundColor(Styles.colors.background)
+        }
+
+        self + className(groupItemOnSurface) style {
+            self + hover style {
+                backgroundColor(Color("rgb(255 255 255 / 50%)"))
+            }
         }
 
         media("(prefers-color-scheme: dark)") {
             self style {
-                hover(self) style {
+                self + hover style {
+                    backgroundColor(Color.black)
+                }
+            }
+
+            self + className(groupItemOnSurface) style {
+                self + hover style {
                     backgroundColor(Color.black)
                 }
             }
@@ -287,6 +303,7 @@ object AppStyles : StyleSheet() {
     val iconButton by style {
         padding(.5.cssRem)
         borderRadius(2.cssRem)
+        property("user-select", "none")
     }
 
     val tray by style {

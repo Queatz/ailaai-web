@@ -33,6 +33,7 @@ sealed class CardNav {
 @Composable
 fun CardsNavPage(cardUpdates: Flow<Card>, nav: CardNav, onSelected: (CardNav) -> Unit) {
     val cardId = (nav as? CardNav.Selected)?.card?.id
+    val subCardId = (nav as? CardNav.Selected)?.subCard?.id
 
     val me by application.me.collectAsState()
     val saved by saves.cards.collectAsState()
@@ -70,8 +71,9 @@ fun CardsNavPage(cardUpdates: Flow<Card>, nav: CardNav, onSelected: (CardNav) ->
         api.myCards {
             myCards = it
             if (cardId != null) {
+                val subCard = myCards.firstOrNull { it.id == subCardId }
                 onSelected(myCards.firstOrNull { it.id == cardId }?.let {
-                    CardNav.Selected(it)
+                    CardNav.Selected(it, subCard)
                 } ?: CardNav.Explore)
             }
         }
@@ -81,13 +83,13 @@ fun CardsNavPage(cardUpdates: Flow<Card>, nav: CardNav, onSelected: (CardNav) ->
 
     // todo if (selected) is not passed in, then selected is always null in reload()
     // https://youtrack.jetbrains.com/issue/KT-61632/Kotlin-JS-argument-scope-bug
-    LaunchedEffect(cardId) {
+    LaunchedEffect(cardId, subCardId) {
         reload()
     }
 
     // todo if (selected) is not passed in, then selected is always null in reload()
     // https://youtrack.jetbrains.com/issue/KT-61632/Kotlin-JS-argument-scope-bug
-    LaunchedEffect(cardId) {
+    LaunchedEffect(cardId, subCardId) {
         cardUpdates.collectLatest {
             reload()
         }

@@ -40,8 +40,10 @@ suspend fun dialog(
     }
     document.body?.appendChild(dialog)
     renderComposable(dialog) {
-        Header {
-            Text(title)
+        if (title.isNotBlank()) {
+            Header {
+                Text(title)
+            }
         }
         Section {
             content {

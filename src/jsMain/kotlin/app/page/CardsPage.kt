@@ -24,16 +24,15 @@ import notBlank
 import org.jetbrains.compose.web.attributes.disabled
 import org.jetbrains.compose.web.attributes.placeholder
 import org.jetbrains.compose.web.css.*
-import org.jetbrains.compose.web.dom.Button
-import org.jetbrains.compose.web.dom.Div
-import org.jetbrains.compose.web.dom.Text
-import org.jetbrains.compose.web.dom.TextArea
+import org.jetbrains.compose.web.dom.*
 import org.w3c.dom.DOMRect
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.events.Event
 import pickPhotos
+import qr
 import saves
 import toScaledBytes
+import webBaseUrl
 
 @Composable
 fun CardsPage(nav: CardNav, onCard: (CardNav) -> Unit, onCardUpdated: (Card) -> Unit) {
@@ -254,6 +253,22 @@ fun MyCardPage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Unit
                     }
                 }
             }
+
+            item("QR code") {
+                scope.launch {
+                    dialog("", cancelButton = null) {
+                        val qrCode = remember {
+                            "$webBaseUrl/card/${card.id!!}".qr
+                        }
+                        Img(src = qrCode) {
+                            style {
+                                borderRadius(1.cssRem)
+                            }
+                        }
+                    }
+                }
+            }
+
             item("Delete") {
                 scope.launch {
                     val result = dialog(
@@ -477,7 +492,7 @@ fun MyCardPage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Unit
                 }
             ) {
                 cards.forEach { card ->
-                    CardItem(card) {
+                    CardItem(card, showTapToOpen = false) {
                         onCard(card)
                     }
                 }

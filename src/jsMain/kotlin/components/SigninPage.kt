@@ -11,6 +11,7 @@ import application
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
+import lib.Qr
 import org.jetbrains.compose.web.attributes.InputType
 import org.jetbrains.compose.web.attributes.autoFocus
 import org.jetbrains.compose.web.attributes.placeholder
@@ -23,16 +24,10 @@ import org.khronos.webgl.Uint8Array
 import org.w3c.dom.url.URL
 import org.w3c.files.Blob
 import org.w3c.files.BlobPropertyBag
+import qr
 import webBaseUrl
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
-
-@JsModule("@paulmillr/qr")
-@JsNonModule
-external object Qr {
-    @JsName("default")
-    fun createQR(text: String, output: String = definedExternally, opts: dynamic = definedExternally): Uint8Array
-}
 
 @Composable
 fun SigninPage() {
@@ -61,9 +56,8 @@ fun SigninPage() {
             return@LaunchedEffect
         }
 
-        val bytes = Qr.createQR("$webBaseUrl/link-device/$linkDeviceToken", "gif", js("{ scale: 5 }"))
-        val blob = Blob(arrayOf(bytes), BlobPropertyBag("image/gif"))
-        qrCode = URL.createObjectURL(blob)
+        qrCode = "$webBaseUrl/link-device/$linkDeviceToken".qr
+
         withTimeoutOrNull(5.minutes) {
             while (!qrCodeLinked) {
                 delay(2.seconds)

@@ -20,7 +20,7 @@ import org.w3c.dom.HTMLDivElement
 import kotlin.math.roundToInt
 
 @Composable
-fun CardItem(cardId: String, openInNewWindow: Boolean = false, styles: (StyleScope.() -> Unit)? = null) {
+fun CardItem(cardId: String, openInNewWindow: Boolean = false, showTapToOpen: Boolean = true, styles: (StyleScope.() -> Unit)? = null) {
     var card by remember { mutableStateOf<Card?>(null) }
     LaunchedEffect(Unit) {
         api.card(cardId) {
@@ -28,7 +28,7 @@ fun CardItem(cardId: String, openInNewWindow: Boolean = false, styles: (StyleSco
         }
     }
     card?.let { card ->
-        CardItem(card, openInNewWindow, styles)
+        CardItem(card, openInNewWindow, styles = styles)
     }
 }
 
@@ -36,6 +36,7 @@ fun CardItem(cardId: String, openInNewWindow: Boolean = false, styles: (StyleSco
 fun CardItem(
     card: Card,
     openInNewWindow: Boolean = false,
+    showTapToOpen: Boolean = true,
     styles: (StyleScope.() -> Unit)? = null,
     onClick: ((openInNewWindow: Boolean) -> Unit)? = null
 ) {
@@ -107,19 +108,27 @@ fun CardItem(
             }
         }
         (card.cardCount?.takeIf { it > 0 } ?: 0).let { numberOfCards ->
-            Div({
-                style {
-                    backgroundColor(rgba(255, 255, 255, .95))
-                    borderRadius(CornerDefault * 2)
-                    padding(PaddingDefault / 2, PaddingDefault)
-                    color(Color.black)
-                    position(Position.Absolute)
-                    top(PaddingDefault)
-                    right(PaddingDefault)
-                    property("z-index", "1")
+            if (numberOfCards > 0 || showTapToOpen) {
+                Div({
+                    style {
+                        backgroundColor(rgba(255, 255, 255, .95))
+                        borderRadius(CornerDefault * 2)
+                        padding(PaddingDefault / 2, PaddingDefault)
+                        color(Color.black)
+                        position(Position.Absolute)
+                        top(PaddingDefault)
+                        right(PaddingDefault)
+                        property("z-index", "1")
+                    }
+                }) {
+                    if (showTapToOpen) {
+                        Text("${appString { tapToOpen }}${if (numberOfCards > 0) " • $numberOfCards ${if (numberOfCards == 1) appString { inlineCard } else appString { inlineCards }}" else ""}")
+                    } else {
+                        if (numberOfCards > 0) {
+                            Text("$numberOfCards ${if (numberOfCards == 1) appString { inlineCard } else appString { inlineCards }}")
+                        }
+                    }
                 }
-            }) {
-                Text("${appString { tapToOpen }}${if (numberOfCards > 0) " • $numberOfCards ${if (numberOfCards == 1) appString { inlineCard } else appString { inlineCards }}" else ""}")
             }
         }
         Div({

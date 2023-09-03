@@ -1,19 +1,26 @@
 import kotlinx.browser.document
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.await
+import lib.Qr
 import org.jetbrains.compose.web.attributes.AttrsScope
-import org.jetbrains.compose.web.dom.Img
 import org.khronos.webgl.Uint8Array
 import org.khronos.webgl.get
 import org.w3c.dom.*
+import org.w3c.dom.url.URL
 import org.w3c.files.Blob
+import org.w3c.files.BlobPropertyBag
 import org.w3c.files.File
 import org.w3c.files.FileReader
 import kotlin.js.Promise
-import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.round
 import kotlin.random.Random
+
+val String.qr: String get() {
+    val bytes = Qr.createQR(this, "gif", js("{ scale: 5 }"))
+    val blob = Blob(arrayOf(bytes), BlobPropertyBag("image/gif"))
+    return URL.createObjectURL(blob)
+}
 
 val String.notBlank get() = takeIf { it.isNotBlank() }
 

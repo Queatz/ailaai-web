@@ -272,7 +272,7 @@ fun ScheduleNavPage(view: ScheduleView, onViewClick: (ScheduleView) -> Unit) {
             NavMenuItem("routine", "Daily", selected = view == ScheduleView.Daily) { onViewClick(ScheduleView.Daily) }
             NavMenuItem("calendar_view_week", "Weekly", selected = view == ScheduleView.Weekly) { onViewClick(ScheduleView.Weekly) }
             NavMenuItem("calendar_month", "Monthly", selected = view == ScheduleView.Monthly) { onViewClick(ScheduleView.Monthly) }
-            NavMenuItem("rotate_right", "Yearly", selected = view == ScheduleView.Yearly) { onViewClick(ScheduleView.Yearly) }
+            NavMenuItem("auto_mode", "Yearly", selected = view == ScheduleView.Yearly) { onViewClick(ScheduleView.Yearly) }
         }
         Div({ style { height(1.cssRem) } })
         ReminderItem("Pet Mochi", selected = false) {}

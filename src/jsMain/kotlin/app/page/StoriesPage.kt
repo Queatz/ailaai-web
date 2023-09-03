@@ -9,16 +9,20 @@ import app.PageTopBar
 import app.menu.Menu
 import application
 import components.Loading
+import dialog
 import inputDialog
 import kotlinx.browser.window
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
+import org.jetbrains.compose.web.dom.Img
 import org.w3c.dom.DOMRect
 import org.w3c.dom.HTMLElement
+import qr
 import stories.StoryContent
 import stories.StoryContents
 import stories.full
+import webBaseUrl
 
 @Composable
 fun StoriesPage(story: Story?, onStoryUpdated: (Story) -> Unit) {
@@ -66,6 +70,21 @@ fun StoriesPage(story: Story?, onStoryUpdated: (Story) -> Unit) {
                         Story(title = title)
                     ) {
                         onStoryUpdated(it)
+                    }
+                }
+            }
+
+            item("QR code") {
+                scope.launch {
+                    dialog("", cancelButton = null) {
+                        val qrCode = remember {
+                            "$webBaseUrl/story/${story!!.id!!}".qr
+                        }
+                        Img(src = qrCode) {
+                            style {
+                                borderRadius(1.cssRem)
+                            }
+                        }
                     }
                 }
             }

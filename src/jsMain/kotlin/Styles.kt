@@ -59,12 +59,13 @@ object Styles : StyleSheet() {
 
         child(self, selector("header")) style {
             fontSize(24.px)
+            marginBottom(1.cssRem)
         }
 
         child(self, selector("section")) style {
             display(DisplayStyle.Flex)
             flexDirection(FlexDirection.Column)
-            padding(1.cssRem, 0.cssRem)
+            marginBottom(1.cssRem)
         }
 
         child(self, selector("footer")) style {
@@ -154,7 +155,7 @@ object Styles : StyleSheet() {
     val menuButton by style {
         cursor("pointer")
 
-        hover(self) style {
+        self + hover style {
             textDecoration("underline")
         }
     }

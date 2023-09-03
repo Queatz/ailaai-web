@@ -14,6 +14,7 @@ import components.CardItem
 import components.LinkifyText
 import ellipsize
 import kotlinx.browser.window
+import lib.formatDistanceToNow
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
 import stories.textContent
@@ -55,7 +56,9 @@ fun MessageContent(message: Message, myMember: MemberAndPerson?, isReply: Boolea
                 alignItems(AlignItems.FlexStart)
             }
         }
-        title(message.createdAt?.let { Date(it) }.toString())
+        title(
+            "${message.createdAt?.let { formatDistanceToNow(Date(it), js("{ addSuffix: true }")) }}\n${message.createdAt?.let { Date(it) }.toString()}"
+        )
     }) {
         reply?.let { reply ->
             Div({
