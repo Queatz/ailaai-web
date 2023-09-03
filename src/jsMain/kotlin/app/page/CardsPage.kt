@@ -180,6 +180,7 @@ fun MyCardPage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Unit
                     }
                 }
             }
+
             item("Rename") {
                 scope.launch {
                     val name = inputDialog(
@@ -198,6 +199,26 @@ fun MyCardPage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Unit
                     }
                 }
             }
+
+            item("Hint") {
+                scope.launch {
+                    val hint = inputDialog(
+                        "Page hint",
+                        "",
+                        "Update",
+                        defaultValue = card.location ?: ""
+                    )
+
+                    if (hint == null) {
+                        return@launch
+                    }
+
+                    api.updateCard(card.id!!, Card(location = hint)) {
+                        onCardUpdated(it)
+                    }
+                }
+            }
+
             item("Choose photo") {
                 pickPhotos(multiple = false) {
                     it.singleOrNull()?.let {

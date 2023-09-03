@@ -20,7 +20,7 @@ object Styles : StyleSheet() {
     }
 
     fun CSSBuilder.elevated() {
-        property("box-shadow", "1px 1px 4px, rgba(0, 0, 0, 0.125)")
+        property("box-shadow", "1px 1px 4px rgba(0, 0, 0, 0.125)")
         backgroundColor(Color.white)
         borderRadius(CornerDefault)
     }
@@ -347,6 +347,7 @@ object Styles : StyleSheet() {
         cursor("pointer")
         display(DisplayStyle.Flex)
         alignItems(AlignItems.Center)
+        fontWeight("bold")
 
         selector(".material-symbols-outlined") style {
             marginRight(.5.cssRem)
@@ -367,6 +368,7 @@ object Styles : StyleSheet() {
         cursor("pointer")
         display(DisplayStyle.Flex)
         alignItems(AlignItems.Center)
+        fontWeight("bold")
 
         selector(".material-symbols-outlined") style {
             marginRight(.5.cssRem)
@@ -387,7 +389,7 @@ object Styles : StyleSheet() {
         cursor("pointer")
         display(DisplayStyle.Flex)
         alignItems(AlignItems.Center)
-        fontWeight(500)
+        fontWeight("bold")
         property("font-size", "inherit")
         selector(".material-symbols-outlined") style {
             marginRight(.5.cssRem)
