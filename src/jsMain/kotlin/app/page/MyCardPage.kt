@@ -152,6 +152,19 @@ fun MyCardPage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Unit
                     }
                 }
             }
+
+            if (card.photo == null && card.video == null) {
+                item("Generate photo") {
+                    scope.launch {
+                        api.generateCardPhoto(card.id!!) {
+                            dialog("Generating", cancelButton = null) {
+                                Text("The card will be updated when the image is generated.")
+                            }
+                        }
+                    }
+                }
+            }
+
             if (card.parent != null) {
                 item("Open enclosing page") {
                     scope.launch {

@@ -470,6 +470,16 @@ class Api {
         onSuccess = onSuccess
     )
 
+    suspend fun generateCardPhoto(
+        cardId: String,
+        onError: suspend (Throwable) -> Unit = {},
+        onSuccess: suspend (HttpResponse) -> Unit = {}
+    ) = post(
+        url = "cards/$cardId/photo/generate",
+        onError = onError,
+        onSuccess = onSuccess
+    )
+
     private suspend inline fun <reified T> get(
         url: String,
         contentType: ContentType? = DefaultContentType,
