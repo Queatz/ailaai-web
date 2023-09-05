@@ -1,7 +1,6 @@
 package app.nav
 
 import Card
-import PaddingDefault
 import Styles
 import androidx.compose.runtime.*
 import api
@@ -22,6 +21,7 @@ import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text
 import org.w3c.dom.HTMLElement
+import r
 import saves
 
 sealed class CardNav {
@@ -105,7 +105,7 @@ fun CardsNavPage(cardUpdates: Flow<Card>, nav: CardNav, onSelected: (CardNav) ->
             "add",
             "New page",
             styles = {
-                marginRight(.5.cssRem)
+                marginRight(.5.r)
             }
         ) {
             scope.launch {
@@ -119,8 +119,6 @@ fun CardsNavPage(cardUpdates: Flow<Card>, nav: CardNav, onSelected: (CardNav) ->
 
                 api.newCard(Card(name = result)) {
                     onSelected(CardNav.Selected(it))
-                    // todo this reloads old card
-                    reload()
                 }
             }
         }
@@ -140,7 +138,7 @@ fun CardsNavPage(cardUpdates: Flow<Card>, nav: CardNav, onSelected: (CardNav) ->
             style {
                 overflowY("auto")
                 overflowX("hidden")
-                padding(PaddingDefault / 2)
+                padding(1.r / 2)
             }
         }) {
             if (!showSearch) {
@@ -152,7 +150,7 @@ fun CardsNavPage(cardUpdates: Flow<Card>, nav: CardNav, onSelected: (CardNav) ->
                 }
                 Div({
                     style {
-                        height(1.cssRem)
+                        height(1.r)
                     }
                 }) {
 
@@ -165,7 +163,7 @@ fun CardsNavPage(cardUpdates: Flow<Card>, nav: CardNav, onSelected: (CardNav) ->
                 }
                 if (it.id == cardId && childCards.isNotEmpty()) {
                 Div({
-                    style { marginLeft(1.cssRem) }
+                    style { marginLeft(1.r) }
                 }) {
 //                    val selectedSubCard = (nav as? CardNav.Selected)?.let { it.subCard }
                         childCards.forEach {
@@ -258,7 +256,7 @@ fun CardItem(card: Card, scroll: Boolean, selected: Boolean, saved: Boolean, pub
         }
         Div({
             style {
-                marginLeft(.5.cssRem)
+                marginLeft(.5.r)
                 flexShrink(0)
                 display(DisplayStyle.Flex)
                 alignItems(AlignItems.Center)
@@ -281,14 +279,14 @@ fun CardItem(card: Card, scroll: Boolean, selected: Boolean, saved: Boolean, pub
                 Icon("toggle_on", title = "Page is published") {
                     fontSize(22.px)
                     color(Styles.colors.primary)
-                    marginLeft(.5.cssRem)
+                    marginLeft(.5.r)
                 }
             }
             if (saved) {
                 Icon("favorite", title = "Page is saved") {
                     fontSize(18.px)
                     color(Styles.colors.secondary)
-                    marginLeft(.5.cssRem)
+                    marginLeft(.5.r)
                 }
             }
         }

@@ -9,14 +9,15 @@ import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.ElementScope
 import org.jetbrains.compose.web.dom.Text
 import org.w3c.dom.HTMLDivElement
+import r
 
 @Composable
 fun PageTopBar(title: String, description: String? = null, actions: @Composable ElementScope<HTMLDivElement>.() -> Unit = {}, onMenu: ((SyntheticMouseEvent) -> Unit)? = null) {
     Div({
         style {
             display(DisplayStyle.Flex)
-            padding(.5.cssRem)
-            margin(1.cssRem, 1.cssRem, .5.cssRem, 1.cssRem)
+            padding(.5.r)
+            margin(1.r, 1.r, .5.r, 1.r)
             alignItems(AlignItems.Center)
             overflow("hidden")
             flexShrink(0)

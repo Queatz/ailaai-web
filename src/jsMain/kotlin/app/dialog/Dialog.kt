@@ -3,7 +3,7 @@ import app.nav.NavSearchInput
 import kotlinx.browser.document
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
-import org.jetbrains.compose.web.css.cssRem
+import org.jetbrains.compose.web.attributes.autoFocus
 import org.jetbrains.compose.web.css.margin
 import org.jetbrains.compose.web.dom.*
 import org.jetbrains.compose.web.renderComposable
@@ -55,6 +55,15 @@ suspend fun dialog(
                 classes(Styles.button)
                 onClick {
                     result.complete(true)
+                }
+
+                if (cancelButton == null) {
+                    autoFocus()
+
+                    ref {
+                        it.focus()
+                        onDispose {  }
+                    }
                 }
             }) {
                 Text(confirmButton)
@@ -112,7 +121,7 @@ suspend fun inputDialog(
             placeholder = placeholder,
             selectAll = true,
             styles = {
-                margin(0.cssRem)
+                margin(0.r)
             }
         ) {
             resolve(true)

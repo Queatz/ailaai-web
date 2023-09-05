@@ -1,9 +1,8 @@
 package profile
-
-import PaddingDefault
 import Styles
 import ellipsize
 import org.jetbrains.compose.web.css.*
+import r
 
 object ProfileStyles : StyleSheet() {
     val mainContent by style {
@@ -39,7 +38,7 @@ object ProfileStyles : StyleSheet() {
         media(mediaMinWidth(641.px)) {
             self style {
                 property("transform", "translateY(calc(-128px - -1rem))")
-                margin(PaddingDefault * 1.5f, 0.cssRem, PaddingDefault * 1.5f, PaddingDefault * 1.5f)
+                margin(1.r * 1.5f, 0.r, 1.r * 1.5f, 1.r * 1.5f)
                 property("margin-bottom", "calc(-128px + 2.5rem)")
             }
         }
@@ -49,13 +48,13 @@ object ProfileStyles : StyleSheet() {
 
             media(mediaMinWidth(641.px)) {
                 self style {
-                    margin(1.5.cssRem, 0.cssRem, 1.5.cssRem, 1.5.cssRem)
+                    margin(1.5.r, 0.r, 1.5.r, 1.5.r)
                 }
             }
 
             media(mediaMaxWidth(640.px)) {
                 self style {
-                    margin(1.5.cssRem, 0.cssRem, 0.cssRem, 0.cssRem)
+                    margin(1.5.r, 0.r, 0.r, 0.r)
                 }
             }
         }
@@ -87,9 +86,9 @@ object ProfileStyles : StyleSheet() {
     }
 
     val infoCard by style {
-        padding(1.cssRem)
+        padding(1.r)
         border(1.px, LineStyle.Solid, Styles.colors.background)
-        borderRadius(1.cssRem)
+        borderRadius(1.r)
         overflow("hidden")
         display(DisplayStyle.Flex)
         flexDirection(FlexDirection.Column)
@@ -101,7 +100,7 @@ object ProfileStyles : StyleSheet() {
         }
 
         self + not(lastChild) style {
-            marginRight(1.cssRem)
+            marginRight(1.r)
         }
 
         media(mediaMaxWidth(640.px)) {
@@ -113,7 +112,7 @@ object ProfileStyles : StyleSheet() {
 
         media(mediaMinWidth(641.px)) {
             self style {
-                width(4.cssRem)
+                width(4.r)
             }
         }
     }

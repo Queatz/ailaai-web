@@ -1,6 +1,4 @@
 package app.nav
-
-import PaddingDefault
 import Story
 import androidx.compose.runtime.*
 import api
@@ -17,6 +15,7 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Text
+import r
 import stories.storyStatus
 import stories.textContent
 
@@ -81,7 +80,7 @@ fun StoriesNavPage(storyUpdates: Flow<Story>, selected: Story?, onSelected: (Sto
             showSearch = !showSearch
         }
         IconButton("add", "New story", styles = {
-            marginRight(.5.cssRem)
+            marginRight(.5.r)
         }) {
             scope.launch {
                 val title = inputDialog(
@@ -110,7 +109,7 @@ fun StoriesNavPage(storyUpdates: Flow<Story>, selected: Story?, onSelected: (Sto
             style {
                 overflowY("auto")
                 overflowX("hidden")
-                padding(PaddingDefault / 2)
+                padding(1.r / 2)
             }
         }) {
             if (!showSearch) {
@@ -122,7 +121,7 @@ fun StoriesNavPage(storyUpdates: Flow<Story>, selected: Story?, onSelected: (Sto
 //                }
                 Div({
                     style {
-                        height(1.cssRem)
+                        height(1.r)
                     }
                 }) {
 

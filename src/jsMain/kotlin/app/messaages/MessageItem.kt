@@ -8,6 +8,7 @@ import components.ProfilePhoto
 import kotlinx.browser.window
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
+import r
 
 @Composable
 fun MessageItem(message: Message, previousMessage: Message?, member: MemberAndPerson?, myMember: MemberAndPerson?) {
@@ -28,7 +29,7 @@ fun MessageItem(message: Message, previousMessage: Message?, member: MemberAndPe
                     style {
                         width(36.px)
                         height(36.px)
-                        marginRight(.5.cssRem)
+                        marginRight(.5.r)
                         flexShrink(0)
                     }
                 })
@@ -36,7 +37,7 @@ fun MessageItem(message: Message, previousMessage: Message?, member: MemberAndPe
                 ProfilePhoto(member.person!!, onClick = {
                     window.open("/profile/${member.person!!.id!!}")
                 }) {
-                    marginRight(.5.cssRem)
+                    marginRight(.5.r)
                 }
             }
         }

@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Text
+import r
 
 @Composable
 fun BasicInfoPage(title: String, about: String) {
@@ -14,7 +15,7 @@ fun BasicInfoPage(title: String, about: String) {
     }) {
         Div({
             style {
-                marginBottom(.5.cssRem)
+                marginBottom(.5.r)
                 fontSize(32.px)
             }
         }) {

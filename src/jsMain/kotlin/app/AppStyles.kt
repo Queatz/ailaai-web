@@ -1,21 +1,19 @@
 package app
-
-import CornerDefault
-import PaddingDefault
 import Styles
 import Styles.elevated
 import Styles.textIcon
 import ellipsize
 import org.jetbrains.compose.web.ExperimentalComposeWebApi
 import org.jetbrains.compose.web.css.*
+import r
 
 
 object AppStyles : StyleSheet() {
 
     val groupDescription by style {
-        borderRadius(1.cssRem)
-        margin(0.cssRem, 1.cssRem, .5.cssRem, 1.cssRem)
-        padding(.5.cssRem, 1.cssRem)
+        borderRadius(1.r)
+        margin(0.r, 1.r, .5.r, 1.r)
+        padding(.5.r, 1.r)
         border(1.px, LineStyle.Solid, Styles.colors.secondary)
         backgroundColor(Styles.colors.background)
         cursor("pointer")
@@ -28,9 +26,9 @@ object AppStyles : StyleSheet() {
     }
 
     val menu by style {
-        padding(.5.cssRem)
+        padding(.5.r)
         backgroundColor(Color.white)
-        borderRadius(1.cssRem)
+        borderRadius(1.r)
         property("box-shadow", "2px 2px 16px rgba(0, 0, 0, 0.125)")
         position(Position.Absolute)
         property("z-index", "10")
@@ -45,8 +43,8 @@ object AppStyles : StyleSheet() {
     }
 
     val menuItem by style {
-        borderRadius(.5.cssRem)
-        padding(1.cssRem)
+        borderRadius(.5.r)
+        padding(1.r)
         cursor("pointer")
         whiteSpace("nowrap")
         display(DisplayStyle.Flex)
@@ -80,14 +78,14 @@ object AppStyles : StyleSheet() {
         }
     }
     val sideLayout by style {
-        width(24.cssRem)
+        width(24.r)
         overflow("hidden")
         flexShrink(0)
         display(DisplayStyle.Flex)
         flexDirection(FlexDirection.ColumnReverse)
-        marginTop(1.cssRem)
-        marginLeft(1.cssRem)
-        marginBottom(1.cssRem)
+        marginTop(1.r)
+        marginLeft(1.r)
+        marginBottom(1.r)
         property("z-index", "1")
         elevated()
 
@@ -113,9 +111,9 @@ object AppStyles : StyleSheet() {
             display(DisplayStyle.Flex)
             alignItems(AlignItems.Center)
             justifyContent(JustifyContent.Center)
-            padding(.5.cssRem)
-            margin(.5.cssRem)
-            borderRadius(4.cssRem)
+            padding(.5.r)
+            margin(.5.r)
+            borderRadius(4.r)
 
             transitions {
                 "color" {
@@ -138,7 +136,7 @@ object AppStyles : StyleSheet() {
     val messageBar by style {
         flexShrink(0)
         display(DisplayStyle.Flex)
-        margin(1.cssRem)
+        margin(1.r)
         flexDirection(FlexDirection.RowReverse)
         alignItems(AlignItems.Center)
     }
@@ -148,8 +146,8 @@ object AppStyles : StyleSheet() {
     }
 
     val groupItem by style {
-        padding(.5.cssRem, 1.cssRem)
-        borderRadius(1.cssRem)
+        padding(.5.r, 1.r)
+        borderRadius(1.r)
         cursor("pointer")
         display(DisplayStyle.Flex)
         alignItems(AlignItems.Center)
@@ -210,15 +208,15 @@ object AppStyles : StyleSheet() {
 
     val navMenuItem by style {
         self + className(groupItem) style {
-            padding(1.cssRem)
+            padding(1.r)
         }
 
         child(self, className("material-symbols-outlined")) style {
-            marginRight(1.cssRem)
+            marginRight(1.r)
         }
 
         child(self, className(textIcon)) style {
-            marginRight(1.cssRem)
+            marginRight(1.r)
         }
     }
 
@@ -232,18 +230,18 @@ object AppStyles : StyleSheet() {
 
     val messageLayout by style {
         display(DisplayStyle.Flex)
-        margin(.5.cssRem, 6.cssRem, 0.cssRem, 1.cssRem)
+        margin(.5.r, 6.r, 0.r, 1.r)
 
         self + className(myMessageLayout) style {
-            margin(1.cssRem, 1.cssRem, 0.cssRem, 6.cssRem)
+            margin(1.r, 1.r, 0.r, 6.r)
             justifyContent(JustifyContent.FlexEnd)
         }
     }
 
     val messageItem by style {
-        padding(1.cssRem)
+        padding(1.r)
         backgroundColor(Color.white)
-        borderRadius(1.cssRem)
+        borderRadius(1.r)
         border(1.px, LineStyle.Solid, Styles.colors.background)
         whiteSpace("pre-wrap")
 
@@ -274,14 +272,14 @@ object AppStyles : StyleSheet() {
 
     val messageReply by style {
         display(DisplayStyle.Flex)
-        padding(PaddingDefault)
+        padding(1.r)
         position(Position.Relative)
-        marginBottom(PaddingDefault / 2)
+        marginBottom(1.r / 2)
         borderRadius(
-            CornerDefault / 2,
-            CornerDefault,
-            CornerDefault,
-            CornerDefault / 2,
+            1.r / 2,
+            1.r,
+            1.r,
+            1.r / 2,
         )
         backgroundColor(Color("#fafafa"))
         property("border-left", "4px solid ${Styles.colors.background}")
@@ -289,10 +287,10 @@ object AppStyles : StyleSheet() {
         self + className(myMessageReply) style {
             flexDirection(FlexDirection.RowReverse)
             borderRadius(
-                CornerDefault,
-                CornerDefault / 2,
-                CornerDefault / 2,
-                CornerDefault,
+                1.r,
+                1.r / 2,
+                1.r / 2,
+                1.r,
             )
             property("border-left", "none")
             property("border-right", "4px solid ${Styles.colors.background}")
@@ -301,26 +299,31 @@ object AppStyles : StyleSheet() {
         media("(prefers-color-scheme: dark)") {
             self style {
                 backgroundColor(Styles.colors.dark.background)
+                property("border-left", "4px solid ${Color("#444")}")
+            }
+
+            self + className(myMessageReply) style {
+                property("border-right", "4px solid ${Color("#444")}")
             }
         }
     }
 
     val iconButton by style {
-        padding(.5.cssRem)
-        borderRadius(2.cssRem)
+        padding(.5.r)
+        borderRadius(2.r)
         property("user-select", "none")
     }
 
     val tray by style {
         display(DisplayStyle.Flex)
-        height(18.cssRem)
+        height(18.r)
         maxHeight(50.vh)
         overflowX("hidden")
         overflowY("auto")
         flexDirection(FlexDirection.Column)
         backgroundColor(Color("#fafafa"))
         border(1.px, LineStyle.Solid, Color("#e4e4e4"))
-        borderRadius(CornerDefault)
+        borderRadius(1.r)
 
         media("(prefers-color-scheme: dark)") {
             self style {
@@ -335,7 +338,7 @@ object AppStyles : StyleSheet() {
         height(320.px)
         maxHeight(100.vw)
         maxWidth(100.percent)
-        borderRadius(CornerDefault)
+        borderRadius(1.r)
         border(3.px, LineStyle.Solid, Color.white)
         cursor("pointer")
         property("object-fit", "cover")
@@ -349,9 +352,9 @@ object AppStyles : StyleSheet() {
     }
 
     val stickerMessage by style {
-        borderRadius(4.cssRem)
+        borderRadius(4.r)
         backgroundColor(Color.white)
-        padding(PaddingDefault / 2, PaddingDefault)
+        padding(1.r / 2, 1.r)
         whiteSpace("nowrap")
         property("z-index", "1")
 
@@ -364,13 +367,13 @@ object AppStyles : StyleSheet() {
     }
 
     val messageItemStory by style {
-        borderRadius(CornerDefault)
+        borderRadius(1.r)
         backgroundColor(Color.white)
         property("box-shadow", "1px 1px 4px rgba(0, 0, 0, 0.125)")
-        padding(PaddingDefault)
+        padding(1.r)
         cursor("pointer")
         overflow("hidden")
-        maxWidth(36.cssRem)
+        maxWidth(36.r)
 
         media("(prefers-color-scheme: dark)") {
             self style {

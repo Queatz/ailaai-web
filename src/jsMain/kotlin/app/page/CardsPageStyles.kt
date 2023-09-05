@@ -2,6 +2,7 @@ package app.page
 
 import Styles.card
 import org.jetbrains.compose.web.css.*
+import r
 
 
 object CardsPageStyles : StyleSheet() {
@@ -14,8 +15,8 @@ object CardsPageStyles : StyleSheet() {
         child(self, className(card)) style {
             self style {
                 width(320.px)
-                marginTop(1.cssRem)
-                marginLeft(1.cssRem)
+                marginTop(1.r)
+                marginLeft(1.r)
             }
         }
     }

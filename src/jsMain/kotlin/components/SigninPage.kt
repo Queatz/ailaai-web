@@ -11,7 +11,6 @@ import application
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
-import lib.Qr
 import org.jetbrains.compose.web.attributes.InputType
 import org.jetbrains.compose.web.attributes.autoFocus
 import org.jetbrains.compose.web.attributes.placeholder
@@ -20,11 +19,8 @@ import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Img
 import org.jetbrains.compose.web.dom.Input
 import org.jetbrains.compose.web.dom.Text
-import org.khronos.webgl.Uint8Array
-import org.w3c.dom.url.URL
-import org.w3c.files.Blob
-import org.w3c.files.BlobPropertyBag
 import qr
+import r
 import webBaseUrl
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
@@ -135,13 +131,13 @@ fun SigninPage() {
                 width(1200.px)
                 flexShrink(1f)
                 alignSelf(AlignSelf.Center)
-                marginBottom(1.cssRem)
+                marginBottom(1.r)
             }
         }) {
             Div({
                 classes(Styles.navContent)
                 style {
-                    padding(1.cssRem)
+                    padding(1.r)
                     alignItems(AlignItems.Center)
                 }
             }) {
@@ -152,7 +148,7 @@ fun SigninPage() {
                 Div({
                     style {
                         color(Styles.colors.secondary)
-                        paddingBottom(1.cssRem)
+                        paddingBottom(1.r)
                     }
                 }) {
                     Text(status ?: "Use your phone to scan the QR code.")
@@ -162,7 +158,7 @@ fun SigninPage() {
                     classes(Styles.textarea)
                     style {
                         width(100.percent)
-                        maxWidth(36.cssRem)
+                        maxWidth(36.r)
                     }
 
                     placeholder("Or enter a transfer code here")
@@ -181,7 +177,7 @@ fun SigninPage() {
                     style {
                         color(Styles.colors.primary)
                         fontWeight("bold")
-                        margin(1.cssRem)
+                        margin(1.r)
                         cursor("pointer")
                     }
 

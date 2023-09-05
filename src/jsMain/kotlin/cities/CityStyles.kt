@@ -1,7 +1,6 @@
 package cities
-
-import PaddingDefault
 import org.jetbrains.compose.web.css.*
+import r
 
 object CityStyles : StyleSheet() {
     val cities by style {
@@ -27,16 +26,16 @@ object CityStyles : StyleSheet() {
         display(DisplayStyle.Flex)
         flexDirection(FlexDirection.Column)
         alignItems(AlignItems.Stretch)
-        padding(PaddingDefault)
+        padding(1.r)
         backgroundPosition("center")
         backgroundSize("cover")
-        borderRadius(2.cssRem)
+        borderRadius(2.r)
         property("aspect-ratio", "1.5")
         property("box-shadow", "2px 2px 8px rgba(0, 0, 0, .25)")
         backgroundColor(Styles.colors.background)
         overflow("hidden")
         cursor("pointer")
-        marginBottom(1.cssRem)
+        marginBottom(1.r)
         width(100.percent)
         boxSizing("border-box")
         justifyContent(JustifyContent.End)

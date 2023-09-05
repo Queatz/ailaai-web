@@ -19,6 +19,7 @@ import org.jetbrains.compose.web.dom.Img
 import org.w3c.dom.DOMRect
 import org.w3c.dom.HTMLElement
 import qr
+import r
 import stories.StoryContent
 import stories.StoryContents
 import stories.full
@@ -82,7 +83,7 @@ fun StoriesPage(story: Story?, onStoryUpdated: (Story) -> Unit) {
                         }
                         Img(src = qrCode) {
                             style {
-                                borderRadius(1.cssRem)
+                                borderRadius(1.r)
                             }
                         }
                     }
@@ -100,7 +101,7 @@ fun StoriesPage(story: Story?, onStoryUpdated: (Story) -> Unit) {
                 style {
                     display(DisplayStyle.Flex)
                     flexDirection(FlexDirection.Column)
-                    padding(1.cssRem)
+                    padding(1.r)
                 }
             }) {
                 StoryContents(storyContent, openInNewWindow = true)

@@ -19,6 +19,7 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import notBlank
 import org.jetbrains.compose.web.css.*
+import org.jetbrains.compose.web.dom.Br
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Img
 import org.jetbrains.compose.web.dom.Text
@@ -26,6 +27,7 @@ import org.w3c.dom.DOMRect
 import org.w3c.dom.HTMLElement
 import pickPhotos
 import qr
+import r
 import saves
 import toScaledBytes
 import webBaseUrl
@@ -153,12 +155,17 @@ fun MyCardPage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Unit
                 }
             }
 
-            if (card.photo == null && card.video == null) {
-                item("Generate photo") {
+            if (card.video == null) {
+                item(if (card.photo == null) "Generate photo" else "Regenerate photo") {
                     scope.launch {
                         api.generateCardPhoto(card.id!!) {
                             dialog("Generating", cancelButton = null) {
-                                Text("The card will be updated when the image is generated.")
+                                Div {
+                                    Text("The page will be updated when the photo is generated.")
+                                    Br()
+                                    Br()
+                                    Text("Page title, hint, and details are shared with stability.ai.")
+                                }
                             }
                         }
                     }
@@ -183,7 +190,7 @@ fun MyCardPage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Unit
                         }
                         Img(src = qrCode) {
                             style {
-                                borderRadius(1.cssRem)
+                                borderRadius(1.r)
                             }
                         }
                     }
@@ -227,7 +234,7 @@ fun MyCardPage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Unit
                     }
                 }
             }, title = "Page is ${if (published) "published" else "not published"}") {
-                margin(1.cssRem)
+                margin(1.r)
             }
         }
     ) {
@@ -264,11 +271,11 @@ fun MyCardPage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Unit
         if (card.photo != null || card.video != null) {
             Div({
                 style {
-                    margin(1.cssRem, 1.cssRem, .5.cssRem, 1.cssRem)
+                    margin(1.r, 1.r, .5.r, 1.r)
                 }
             }) {
                 CardPhotoOrVideo(card) {
-                    borderRadius(1.cssRem)
+                    borderRadius(1.r)
                 }
             }
         }
@@ -278,7 +285,7 @@ fun MyCardPage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Unit
 //            if (conversation.message.isNotBlank()) {
 //                Div({
 //                    style {
-//                        padding(1.cssRem)
+//                        padding(1.r)
 //                        whiteSpace("pre-wrap")
 //                    }
 //                }) {
@@ -287,7 +294,7 @@ fun MyCardPage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Unit
 //            }
 
         EditField(conversation.message, placeholder = "Details", styles = {
-            margin(.5.cssRem, 1.cssRem)
+            margin(.5.r, 1.r)
             maxHeight(50.vh)
         }) {
             saveConversation(it)
@@ -307,7 +314,7 @@ fun MyCardPage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Unit
                 {
                     classes(CardsPageStyles.layout)
                     style {
-                        paddingBottom(1.cssRem)
+                        paddingBottom(1.r)
                     }
                 }
             ) {

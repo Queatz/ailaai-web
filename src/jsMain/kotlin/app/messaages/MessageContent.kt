@@ -2,7 +2,6 @@ package app.messaages
 
 import MemberAndPerson
 import Message
-import PaddingDefault
 import Story
 import Styles
 import androidx.compose.runtime.*
@@ -17,6 +16,7 @@ import kotlinx.browser.window
 import lib.formatDistanceToNow
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
+import r
 import stories.textContent
 import kotlin.js.Date
 
@@ -28,7 +28,7 @@ fun MessageContent(message: Message, myMember: MemberAndPerson?, isReply: Boolea
         message.getAttachment()
     }
 
-    var reply by remember {
+    var reply by remember(message) {
         mutableStateOf<Message?>(null)
     }
 
@@ -75,11 +75,11 @@ fun MessageContent(message: Message, myMember: MemberAndPerson?, isReply: Boolea
                     style {
                         position(Position.Absolute)
                         if (isMe) {
-                            top(PaddingDefault / 4)
-                            right(PaddingDefault / 4)
+                            top(1.r / 4)
+                            right(1.r / 4)
                         } else {
-                            top(PaddingDefault / 4)
-                            left(PaddingDefault / 4)
+                            top(1.r / 4)
+                            left(1.r / 4)
                         }
                         opacity(.75)
                         fontSize(12.px)
@@ -118,7 +118,7 @@ fun MessageContent(message: Message, myMember: MemberAndPerson?, isReply: Boolea
                 Audio({
                     attr("controls", "")
                     style {
-                        borderRadius(1.cssRem)
+                        borderRadius(1.r)
                     }
                 }) {
                     Source({
@@ -143,7 +143,7 @@ fun MessageContent(message: Message, myMember: MemberAndPerson?, isReply: Boolea
             }
 
             is StoryAttachment -> {
-                var story by remember {
+                var story by remember(message) {
                     mutableStateOf<Story?>(null)
                 }
 
@@ -163,7 +163,7 @@ fun MessageContent(message: Message, myMember: MemberAndPerson?, isReply: Boolea
                     }) {
                         Div({
                             style {
-                                marginBottom(.5.cssRem)
+                                marginBottom(.5.r)
                                 fontSize(24.px)
                             }
                         }) {
@@ -171,7 +171,7 @@ fun MessageContent(message: Message, myMember: MemberAndPerson?, isReply: Boolea
                         }
                         Div({
                             style {
-                                marginBottom(.5.cssRem)
+                                marginBottom(.5.r)
                                 color(Styles.colors.secondary)
                                 fontSize(16.px)
                             }
@@ -180,7 +180,7 @@ fun MessageContent(message: Message, myMember: MemberAndPerson?, isReply: Boolea
                         }
                         Div({
                             style {
-                                marginBottom(.5.cssRem)
+                                marginBottom(.5.r)
                                 ellipsize()
                             }
                         }) {

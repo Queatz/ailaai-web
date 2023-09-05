@@ -1,7 +1,6 @@
 package components
 
 import Card
-import PaddingDefault
 import Styles
 import androidx.compose.runtime.*
 import api
@@ -10,14 +9,15 @@ import appText
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
+import r
 
 @Composable
 fun HomePage() {
     Div({
         style {
-            property("margin", "$PaddingDefault auto")
+            property("margin", "$1.r auto")
             maxWidth(1200.px)
-            padding(0.cssRem, 1.cssRem, 1.cssRem, 1.cssRem)
+            padding(0.r, 1.r, 1.r, 1.r)
             fontSize(22.px)
             lineHeight("1.5")
             minHeight(100.vh)
@@ -43,7 +43,7 @@ fun HomePage() {
         var searchResults by remember { mutableStateOf(listOf<Card>()) }
 
         SearchField(searchText, appString { searchCity }, modifier = {
-            marginTop(2.cssRem)
+            marginTop(2.r)
         }) {
             searchText = it
         }
@@ -106,11 +106,11 @@ fun HomePage() {
                     cards.forEach { card ->
                         when (card) {
                             is String -> CardItem(card) {
-                                margin(PaddingDefault)
+                                margin(1.r)
                             }
 
                             is Card -> CardItem(card, styles = {
-                                margin(PaddingDefault)
+                                margin(1.r)
                             })
                         }
                     }

@@ -1,6 +1,4 @@
 package app.nav
-
-import PaddingDefault
 import androidx.compose.runtime.*
 import app.AppStyles
 import app.page.ScheduleView
@@ -16,6 +14,7 @@ import org.jetbrains.compose.web.attributes.selected
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
 import org.w3c.dom.HTMLTextAreaElement
+import r
 import kotlin.js.Date
 
 @Composable
@@ -29,7 +28,7 @@ fun ScheduleNavPage(view: ScheduleView, onViewClick: (ScheduleView) -> Unit, onP
 
     NavTopBar(me, "Reminders", onProfileClick) {
         IconButton("search", "Search", styles = {
-            marginRight(.5.cssRem)
+            marginRight(.5.r)
         }) {
 
         }
@@ -39,7 +38,7 @@ fun ScheduleNavPage(view: ScheduleView, onViewClick: (ScheduleView) -> Unit, onP
         style {
             overflowY("auto")
             overflowX("hidden")
-            padding(PaddingDefault / 2)
+            padding(1.r / 2)
             display(DisplayStyle.Flex)
             flexDirection(FlexDirection.Column)
         }
@@ -47,9 +46,9 @@ fun ScheduleNavPage(view: ScheduleView, onViewClick: (ScheduleView) -> Unit, onP
         TextArea(note) {
             classes(Styles.textarea)
             style {
-                margin(0.cssRem, .5.cssRem, .5.cssRem, .5.cssRem)
-                height(3.5.cssRem)
-                maxHeight(6.5.cssRem)
+                margin(0.r, .5.r, .5.r, .5.r)
+                height(3.5.r)
+                maxHeight(6.5.r)
             }
 
             onKeyDown {
@@ -94,7 +93,7 @@ fun ScheduleNavPage(view: ScheduleView, onViewClick: (ScheduleView) -> Unit, onP
         if (note.isNotBlank()) {
             Div({
                 style {
-                    padding(.5.cssRem, .5.cssRem, 1.cssRem, .5.cssRem)
+                    padding(.5.r, .5.r, 1.r, .5.r)
                     display(DisplayStyle.Flex)
                 }
             }) {
@@ -102,8 +101,8 @@ fun ScheduleNavPage(view: ScheduleView, onViewClick: (ScheduleView) -> Unit, onP
                     classes(Styles.dateTimeInput)
 
                     style {
-                        marginRight(1.cssRem)
-                        padding(1.cssRem)
+                        marginRight(1.r)
+                        padding(1.r)
                         flex(1)
                     }
 
@@ -116,7 +115,7 @@ fun ScheduleNavPage(view: ScheduleView, onViewClick: (ScheduleView) -> Unit, onP
                     classes(Styles.dateTimeInput)
 
                     style {
-                        padding(1.cssRem)
+                        padding(1.r)
                     }
 
                     onChange {
@@ -126,7 +125,7 @@ fun ScheduleNavPage(view: ScheduleView, onViewClick: (ScheduleView) -> Unit, onP
             }
             Label(attrs = {
                 style {
-                    padding(0.cssRem, .5.cssRem, 1.cssRem, .5.cssRem)
+                    padding(0.r, .5.r, 1.r, .5.r)
                 }
             }) {
                 CheckboxInput(reoccurs) {
@@ -139,7 +138,7 @@ fun ScheduleNavPage(view: ScheduleView, onViewClick: (ScheduleView) -> Unit, onP
             if (reoccurs) {
                 Div({
                     style {
-                        padding(0.cssRem, .5.cssRem)
+                        padding(0.r, .5.r)
                         display(DisplayStyle.Flex)
                         flexDirection(FlexDirection.Column)
                     }
@@ -156,7 +155,7 @@ fun ScheduleNavPage(view: ScheduleView, onViewClick: (ScheduleView) -> Unit, onP
                     Select({
                         classes(Styles.dateTimeInput)
                         style {
-                            marginTop(1.cssRem)
+                            marginTop(1.r)
                         }
                     }, multiple = true) {
                         Option("Every day", { selected() }) { Text("Every day") }
@@ -174,7 +173,7 @@ fun ScheduleNavPage(view: ScheduleView, onViewClick: (ScheduleView) -> Unit, onP
                     Select({
                         classes(Styles.dateTimeInput)
                         style {
-                            marginTop(1.cssRem)
+                            marginTop(1.r)
                         }
                     }, multiple = true) {
                         Option("Every week", { selected() }) { Text("Every week") }
@@ -187,7 +186,7 @@ fun ScheduleNavPage(view: ScheduleView, onViewClick: (ScheduleView) -> Unit, onP
                     Select({
                         classes(Styles.dateTimeInput)
                         style {
-                            marginTop(1.cssRem)
+                            marginTop(1.r)
                         }
                     }, multiple = true) {
                         Option("Every month", { selected() }) { Text("Every month") }
@@ -199,7 +198,7 @@ fun ScheduleNavPage(view: ScheduleView, onViewClick: (ScheduleView) -> Unit, onP
 
                     Label(attrs = {
                         style {
-                            padding(1.cssRem, .5.cssRem, 1.cssRem, .5.cssRem)
+                            padding(1.r, .5.r, 1.r, .5.r)
                         }
                     }) {
                         CheckboxInput(until) {
@@ -214,15 +213,15 @@ fun ScheduleNavPage(view: ScheduleView, onViewClick: (ScheduleView) -> Unit, onP
                         Div({
                             style {
                                 display(DisplayStyle.Flex)
-                                marginBottom(1.cssRem)
+                                marginBottom(1.r)
                             }
                         }) {
                             DateInput(date) {
                                 classes(Styles.dateTimeInput)
 
                                 style {
-                                    marginRight(1.cssRem)
-                                    padding(1.cssRem)
+                                    marginRight(1.r)
+                                    padding(1.r)
                                     flex(1)
                                 }
 
@@ -235,7 +234,7 @@ fun ScheduleNavPage(view: ScheduleView, onViewClick: (ScheduleView) -> Unit, onP
                                 classes(Styles.dateTimeInput)
 
                                 style {
-                                    padding(1.cssRem)
+                                    padding(1.r)
                                 }
 
                                 onChange {
@@ -251,8 +250,8 @@ fun ScheduleNavPage(view: ScheduleView, onViewClick: (ScheduleView) -> Unit, onP
                 classes(Styles.button)
 
                 style {
-                    padding(.5.cssRem, 1.cssRem)
-                    margin(0.cssRem, .5.cssRem, 1.cssRem, .5.cssRem)
+                    padding(.5.r, 1.r)
+                    margin(0.r, .5.r, 1.r, .5.r)
                     justifyContent(JustifyContent.Center)
                     flexShrink(0)
                     fontWeight("bold")
@@ -274,7 +273,7 @@ fun ScheduleNavPage(view: ScheduleView, onViewClick: (ScheduleView) -> Unit, onP
             NavMenuItem("calendar_month", "Monthly", selected = view == ScheduleView.Monthly) { onViewClick(ScheduleView.Monthly) }
             NavMenuItem("auto_mode", "Yearly", selected = view == ScheduleView.Yearly) { onViewClick(ScheduleView.Yearly) }
         }
-        Div({ style { height(1.cssRem) } })
+        Div({ style { height(1.r) } })
         ReminderItem("Pet Mochi", selected = false) {}
     }
 }

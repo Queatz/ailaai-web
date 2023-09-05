@@ -1,8 +1,6 @@
 package components
 
 import Card
-import CornerDefault
-import PaddingDefault
 import Styles
 import androidx.compose.runtime.*
 import api
@@ -17,6 +15,7 @@ import org.jetbrains.compose.web.dom.Source
 import org.jetbrains.compose.web.dom.Text
 import org.jetbrains.compose.web.dom.Video
 import org.w3c.dom.HTMLDivElement
+import r
 import kotlin.math.roundToInt
 
 @Composable
@@ -112,12 +111,12 @@ fun CardItem(
                 Div({
                     style {
                         backgroundColor(rgba(255, 255, 255, .95))
-                        borderRadius(CornerDefault * 2)
-                        padding(PaddingDefault / 2, PaddingDefault)
+                        borderRadius(1.r * 2)
+                        padding(1.r / 2, 1.r)
                         color(Color.black)
                         position(Position.Absolute)
-                        top(PaddingDefault)
-                        right(PaddingDefault)
+                        top(1.r)
+                        right(1.r)
                         property("z-index", "1")
                     }
                 }) {
@@ -139,7 +138,7 @@ fun CardItem(
         }) {
             Div({
                 style {
-                    marginBottom(PaddingDefault)
+                    marginBottom(1.r)
                 }
             }) {
                 NameAndLocation(card.name, card.location)
@@ -147,7 +146,7 @@ fun CardItem(
                     Div({
                         classes(Styles.category)
                         style {
-                            marginBottom(PaddingDefault)
+                            marginBottom(1.r)
                         }
                     }) {
                         Text(category)

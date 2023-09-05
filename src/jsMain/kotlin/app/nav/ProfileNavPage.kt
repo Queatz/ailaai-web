@@ -1,7 +1,6 @@
 package app.nav
 
 import LocalConfiguration
-import PaddingDefault
 import Person
 import PersonProfile
 import Profile
@@ -22,6 +21,7 @@ import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Img
 import org.jetbrains.compose.web.dom.Text
 import qr
+import r
 import webBaseUrl
 
 @Composable
@@ -65,7 +65,7 @@ fun ProfileNavPage(onProfileClick: () -> Unit) {
                     }
                     Img(src = qrCode) {
                         style {
-                            borderRadius(1.cssRem)
+                            borderRadius(1.r)
                         }
                     }
                 }
@@ -73,7 +73,7 @@ fun ProfileNavPage(onProfileClick: () -> Unit) {
         }
 
         IconButton("open_in_new", appString { viewProfile }, styles = {
-            marginRight(.5.cssRem)
+            marginRight(.5.r)
         }) {
             window.open("/profile/${me!!.id!!}", "_blank")
         }
@@ -83,7 +83,7 @@ fun ProfileNavPage(onProfileClick: () -> Unit) {
         style {
             overflowY("auto")
             overflowX("hidden")
-            padding(PaddingDefault / 2)
+            padding(1.r / 2)
             display(DisplayStyle.Flex)
             flexDirection(FlexDirection.Column)
         }
@@ -124,7 +124,7 @@ fun ProfileNavPage(onProfileClick: () -> Unit) {
 
         if (profile != null) {
             EditField(profile?.profile?.about ?: "", placeholder = "Introduce yourself here…", styles = {
-                margin(.5.cssRem)
+                margin(.5.r)
             }) {
                 saveAbout(it)
             }

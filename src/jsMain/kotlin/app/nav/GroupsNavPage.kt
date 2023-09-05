@@ -3,7 +3,6 @@ package app.nav
 import Group
 import GroupExtended
 import Member
-import PaddingDefault
 import Styles
 import androidx.compose.runtime.*
 import api
@@ -27,6 +26,7 @@ import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text
 import push
+import r
 import kotlin.js.Date
 
 @Composable
@@ -112,7 +112,7 @@ fun GroupsNavPage(
             showSearch = !showSearch
         }
         IconButton("add", "New group", styles = {
-            marginRight(.5.cssRem)
+            marginRight(.5.r)
         }) {
             scope.launch {
                 val result = inputDialog(
@@ -159,7 +159,7 @@ fun GroupsNavPage(
             style {
                 overflowY("auto")
                 overflowX("hidden")
-                padding(PaddingDefault / 2)
+                padding(1.r / 2)
             }
         }) {
             shownGroups.forEach { group ->
@@ -216,7 +216,7 @@ fun GroupsNavPage(
                     if (group.latestMessage != null) {
                         Div({
                             style {
-                                marginLeft(.5.cssRem)
+                                marginLeft(.5.r)
                                 flexShrink(0)
                             }
                         }) {

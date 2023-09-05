@@ -1,6 +1,4 @@
 package components
-
-import PaddingDefault
 import Story
 import Styles
 import androidx.compose.runtime.*
@@ -10,6 +8,7 @@ import appString
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Text
+import r
 import stories.StoryContent
 import stories.StoryContents
 import stories.full
@@ -45,7 +44,7 @@ fun StoryPage(storyUrl: String, onStoryLoaded: (Story) -> Unit) {
                 minHeight(100.vh)
                 width(100.percent)
                 flexDirection(FlexDirection.Column)
-                padding(PaddingDefault * 2)
+                padding(1.r * 2)
                 alignItems(AlignItems.Center)
                 justifyContent(JustifyContent.FlexStart)
             }
@@ -62,7 +61,7 @@ fun StoryPage(storyUrl: String, onStoryLoaded: (Story) -> Unit) {
                     style {
                         maxWidth(960.px)
                         alignSelf(AlignSelf.Center)
-                        marginBottom(1.cssRem)
+                        marginBottom(1.r)
                     }
                 }) {
                     Div({

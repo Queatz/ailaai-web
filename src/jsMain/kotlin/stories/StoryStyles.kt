@@ -1,9 +1,7 @@
 package stories
-
-import CornerDefault
-import PaddingDefault
 import Styles
 import org.jetbrains.compose.web.css.*
+import r
 
 object StoryStyles : StyleSheet() {
     val contentTitle by style {
@@ -61,8 +59,8 @@ object StoryStyles : StyleSheet() {
         child(self, className(Styles.card)) style {
             self style {
                 width(320.px)
-                marginRight(1.cssRem)
-                marginBottom(1.cssRem)
+                marginRight(1.r)
+                marginBottom(1.r)
             }
         }
     }
@@ -72,27 +70,27 @@ object StoryStyles : StyleSheet() {
         justifyContent(JustifyContent.Center)
         alignItems(AlignItems.Center)
         alignSelf(AlignSelf.Stretch)
-        padding(1.cssRem)
+        padding(1.r)
     }
 
     val contentPhotosPhoto by style {
         backgroundPosition("center")
         backgroundSize("cover")
-        borderRadius(CornerDefault)
+        borderRadius(1.r)
         height(480.px)
         maxHeight(100.vh)
-        marginRight(PaddingDefault)
-        marginBottom(PaddingDefault)
+        marginRight(1.r)
+        marginBottom(1.r)
 
         media(mediaMaxWidth(640.px)) {
             self style {
                 width(100.percent)
-                property("max-width", "calc(100vw - ${PaddingDefault * 4})")
+                property("max-width", "calc(100vw - ${1.r * 4})")
             }
         }
     }
 
     val contentAudio by style {
-        borderRadius(1.cssRem)
+        borderRadius(1.r)
     }
 }

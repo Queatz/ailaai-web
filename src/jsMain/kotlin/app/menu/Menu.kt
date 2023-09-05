@@ -15,6 +15,7 @@ import org.w3c.dom.HTMLElement
 import org.w3c.dom.events.EventListener
 import org.w3c.dom.events.MouseEvent
 import parents
+import r
 
 class MenuScope {
     @Composable
@@ -34,7 +35,7 @@ class MenuScope {
             if (icon != null) {
                 Icon(icon) {
                     flexShrink(0)
-                    marginLeft(1.cssRem)
+                    marginLeft(1.r)
                     opacity(.5)
                 }
             }

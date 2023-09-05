@@ -3,18 +3,19 @@ package app.page
 import Styles.elevated
 import org.jetbrains.compose.web.ExperimentalComposeWebApi
 import org.jetbrains.compose.web.css.*
+import r
 
 object SchedulePageStyles : StyleSheet() {
     val title by style {
-        marginBottom(.5.cssRem)
+        marginBottom(.5.r)
         fontSize(18.px)
         display(DisplayStyle.Flex)
     }
 
     val section by style {
-        borderRadius(1.cssRem)
-        padding(.5.cssRem)
-        marginBottom(1.cssRem)
+        borderRadius(1.r)
+        padding(.5.r)
+        marginBottom(1.r)
         backgroundColor(Color.white)
         display(DisplayStyle.Flex)
         flexDirection(FlexDirection.Column)
@@ -41,8 +42,8 @@ object SchedulePageStyles : StyleSheet() {
 
     val row by style {
         display(DisplayStyle.Flex)
-        padding(.5.cssRem)
-        borderRadius(.5.cssRem)
+        padding(.5.r)
+        borderRadius(.5.r)
         cursor("pointer")
         alignItems(AlignItems.Center)
         opacity(1)

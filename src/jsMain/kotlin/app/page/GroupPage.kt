@@ -43,6 +43,7 @@ import org.w3c.dom.*
 import org.w3c.files.File
 import pickPhotos
 import push
+import r
 import toBytes
 import kotlin.js.Date
 
@@ -227,9 +228,9 @@ fun GroupPage(group: GroupExtended?, onGroupUpdated: () -> Unit, onGroupGone: ()
             Div({
                 classes(AppStyles.tray)
                 style {
-                    marginLeft(1.cssRem)
-                    marginRight(1.cssRem)
-                    marginBottom(1.cssRem)
+                    marginLeft(1.r)
+                    marginRight(1.r)
+                    marginBottom(1.r)
                 }
             }) {
                 StickersTray {
@@ -248,22 +249,22 @@ fun GroupPage(group: GroupExtended?, onGroupUpdated: () -> Unit, onGroupGone: ()
                 }
             }) {
                 if (messageText.isBlank()) {
-//                    IconButton("mic", "Record audio", styles = { marginLeft(1.cssRem) }) {
+//                    IconButton("mic", "Record audio", styles = { marginLeft(1.r) }) {
 //                        // todo
 //                    }
-                    IconButton("image", "Send photo", styles = { marginLeft(1.cssRem) }) {
+                    IconButton("image", "Send photo", styles = { marginLeft(1.r) }) {
                         pickPhotos {
                             sendPhotos(it)
                         }
                     }
                     IconButton(if (showStickers) "expand_less" else "expand_more", "Stickers", styles = {
-                        marginLeft(1.cssRem)
-                        marginRight(1.cssRem)
+                        marginLeft(1.r)
+                        marginRight(1.r)
                     }) {
                         showStickers = !showStickers
                     }
                 } else {
-                    IconButton("send", "Send message", styles = { marginLeft(1.cssRem) }) {
+                    IconButton("send", "Send message", styles = { marginLeft(1.r) }) {
                         // todo
                     }
                 }
@@ -273,8 +274,8 @@ fun GroupPage(group: GroupExtended?, onGroupUpdated: () -> Unit, onGroupGone: ()
                 classes(Styles.textarea)
                 style {
                     width(100.percent)
-                    height(3.5.cssRem)
-                    maxHeight(6.5.cssRem)
+                    height(3.5.r)
+                    maxHeight(6.5.r)
                 }
 
                 placeholder(messageString)
@@ -431,7 +432,7 @@ fun GroupTopBar(group: GroupExtended, onGroupUpdated: () -> Unit, onGroupGone: (
                                     ProfilePhoto(member.person!!)
                                     Div({
                                         style {
-                                            marginLeft(1.cssRem)
+                                            marginLeft(1.r)
                                         }
                                     }) {
                                         Div({

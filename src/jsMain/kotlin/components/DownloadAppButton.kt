@@ -1,6 +1,4 @@
 package components
-
-import PaddingDefault
 import androidx.compose.runtime.Composable
 import appString
 import org.jetbrains.compose.web.css.*
@@ -8,17 +6,18 @@ import org.jetbrains.compose.web.dom.A
 import org.jetbrains.compose.web.dom.Br
 import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text
+import r
 
 @Composable
 fun DownloadAppButton() {
     A("/ailaai.apk", {
         style {
             display(DisplayStyle.InlineBlock)
-            padding(1.cssRem, 2.cssRem)
-            marginTop(PaddingDefault * 2)
+            padding(1.r, 2.r)
+            marginTop(1.r * 2)
             fontWeight(700)
             fontSize(18.px)
-            borderRadius(2.cssRem)
+            borderRadius(2.r)
             color(Color.white)
             textDecoration("none")
             textAlign("center")

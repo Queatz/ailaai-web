@@ -3,6 +3,7 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.await
 import lib.Qr
 import org.jetbrains.compose.web.attributes.AttrsScope
+import org.jetbrains.compose.web.css.cssRem
 import org.khronos.webgl.Uint8Array
 import org.khronos.webgl.get
 import org.w3c.dom.*
@@ -15,6 +16,11 @@ import kotlin.js.Promise
 import kotlin.math.min
 import kotlin.math.round
 import kotlin.random.Random
+
+/**
+ * Default spacing unit = 1.cssRem
+ */
+val Number.r inline get() = cssRem
 
 val String.qr: String get() {
     val bytes = Qr.createQR(this, "gif", js("{ scale: 5 }"))

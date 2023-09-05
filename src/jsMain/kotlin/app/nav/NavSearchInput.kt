@@ -4,9 +4,9 @@ import androidx.compose.runtime.Composable
 import org.jetbrains.compose.web.attributes.autoFocus
 import org.jetbrains.compose.web.attributes.placeholder
 import org.jetbrains.compose.web.css.StyleScope
-import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.margin
 import org.jetbrains.compose.web.dom.TextInput
+import r
 
 @Composable
 fun NavSearchInput(
@@ -22,7 +22,7 @@ fun NavSearchInput(
     TextInput(value) {
         classes(Styles.textarea)
         style {
-            margin(.5.cssRem, 1.cssRem, 0.cssRem, 1.cssRem)
+            margin(.5.r, 1.r, 0.r, 1.r)
             styles()
         }
         onKeyDown {

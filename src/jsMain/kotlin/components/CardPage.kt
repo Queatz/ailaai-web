@@ -1,7 +1,6 @@
 package components
 
 import Card
-import PaddingDefault
 import Styles
 import androidx.compose.runtime.*
 import api
@@ -17,6 +16,7 @@ import org.jetbrains.compose.web.attributes.disabled
 import org.jetbrains.compose.web.attributes.placeholder
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
+import r
 
 @Serializable
 data class WildReplyBody(
@@ -116,7 +116,7 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
                 minHeight(100.vh)
                 width(100.percent)
                 flexDirection(FlexDirection.Column)
-                padding(PaddingDefault * 2)
+                padding(1.r * 2)
                 alignItems(AlignItems.Center)
                 justifyContent(JustifyContent.FlexStart)
             }
@@ -150,7 +150,7 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
                                         style {
                                             cursor("pointer")
                                             opacity(.5f)
-                                            marginLeft(.25.cssRem)
+                                            marginLeft(.25.r)
                                             property("vertical-align", "text-bottom")
                                         }
                                         onClick { event ->
@@ -190,8 +190,8 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
                                     classes(Styles.textarea)
                                     style {
                                         width(100.percent)
-                                        height(8.cssRem)
-                                        marginBottom(1.cssRem)
+                                        height(8.r)
+                                        marginBottom(1.r)
                                     }
 
                                     placeholder(includeContactString)
@@ -211,13 +211,13 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
                                 Div({
                                     style {
                                         display(DisplayStyle.Flex)
-                                        marginBottom(0.cssRem)
+                                        marginBottom(0.r)
                                     }
                                 }) {
                                     Button({
                                         classes(Styles.button)
                                         style {
-                                            marginRight(1.cssRem)
+                                            marginRight(1.r)
                                         }
                                         onClick {
                                             scope.launch {
@@ -310,7 +310,7 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
             }) {
                 cards.forEach { card ->
                     CardItem(card, styles = {
-                        margin(PaddingDefault)
+                        margin(1.r)
                     })
                 }
             }

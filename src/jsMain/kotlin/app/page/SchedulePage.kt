@@ -8,6 +8,7 @@ import lib.*
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Text
+import r
 import kotlin.js.Date
 
 enum class ScheduleView {
@@ -25,7 +26,7 @@ fun SchedulePage(view: ScheduleView) {
             style {
                 display(DisplayStyle.Flex)
                 flexDirection(FlexDirection.Column)
-                padding(1.5.cssRem, 1.cssRem, 0.cssRem, 1.cssRem)
+                padding(1.5.r, 1.r, 0.r, 1.r)
             }
         }) {
             var today = Date()

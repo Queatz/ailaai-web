@@ -1,6 +1,4 @@
 package components
-
-import PaddingDefault
 import androidx.compose.runtime.*
 import app.softwork.routingcompose.Router
 import appString
@@ -9,6 +7,7 @@ import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text
+import r
 
 @Composable
 fun CitiesPage() {
@@ -18,9 +17,9 @@ fun CitiesPage() {
 
     Div({
         style {
-            property("margin", "$PaddingDefault auto")
+            property("margin", "$1.r auto")
             maxWidth(1200.px)
-            padding(0.cssRem, 1.cssRem, 1.cssRem, 1.cssRem)
+            padding(0.r, 1.r, 1.r, 1.r)
             fontSize(22.px)
             lineHeight("1.5")
             minHeight(100.vh)
@@ -28,8 +27,8 @@ fun CitiesPage() {
     }) {
         var searchText by remember { mutableStateOf("") }
         SearchField(searchText, appString { search }, modifier = {
-            marginTop(1.cssRem)
-            marginBottom(1.cssRem)
+            marginTop(1.r)
+            marginBottom(1.r)
         }) {
             searchText = it
         }
@@ -56,9 +55,9 @@ fun CitiesPage() {
                     }) {  }
                     Div({
                         style {
-//                            borderRadius(1.cssRem)
+//                            borderRadius(1.r)
 //                            background("rgba(0, 0, 0, .333)")
-                            padding(1.cssRem)
+                            padding(1.r)
                             property("z-index", "1")
                         }
                     }) {
@@ -75,7 +74,7 @@ fun CitiesPage() {
                             style {
                                 fontSize(16.px)
                                 opacity(.75f)
-                                marginTop(.5.cssRem)
+                                marginTop(.5.r)
                                 color(Styles.colors.tertiary)
                             }
                         }) {

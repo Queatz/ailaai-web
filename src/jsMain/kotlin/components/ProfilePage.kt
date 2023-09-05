@@ -1,7 +1,6 @@
 package components
 
 import Card
-import PaddingDefault
 import PersonProfile
 import Styles
 import androidx.compose.runtime.*
@@ -16,6 +15,7 @@ import org.jetbrains.compose.web.dom.Text
 import org.jetbrains.compose.web.dom.Video
 import org.w3c.dom.HTMLVideoElement
 import profile.ProfileStyles
+import r
 import kotlin.js.Date
 
 @Composable
@@ -86,7 +86,7 @@ fun ProfilePage(personId: String? = null, url: String? = null, onProfile: (Perso
                 minHeight(100.vh)
                 width(100.percent)
                 flexDirection(FlexDirection.Column)
-                padding(PaddingDefault * 2)
+                padding(1.r * 2)
                 alignItems(AlignItems.Center)
                 justifyContent(JustifyContent.FlexStart)
             }
@@ -233,7 +233,7 @@ fun ProfilePage(personId: String? = null, url: String? = null, onProfile: (Perso
                 }) {
                     cards.forEach { card ->
                         CardItem(card, styles = {
-                            margin(PaddingDefault)
+                            margin(1.r)
                         })
                     }
                 }

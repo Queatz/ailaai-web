@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import app.softwork.routingcompose.Router
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
+import r
 
 @Composable fun InfoPage(page: String) {
     Div({
@@ -16,13 +17,13 @@ import org.jetbrains.compose.web.dom.Div
                 width(1200.px)
                 flexShrink(1f)
                 alignSelf(AlignSelf.Center)
-                marginBottom(1.cssRem)
+                marginBottom(1.r)
             }
         }) {
             Div({
                 classes(Styles.navContent)
                 style {
-                    padding(1.cssRem)
+                    padding(1.r)
                 }
             }) {
                 when (page) {

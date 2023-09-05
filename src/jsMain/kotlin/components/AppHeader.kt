@@ -1,7 +1,6 @@
 package components
 
 import LocalConfiguration
-import PaddingDefault
 import Styles
 import androidx.compose.runtime.*
 import app.softwork.routingcompose.Router
@@ -11,6 +10,7 @@ import application
 import ellipsize
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
+import r
 
 @Composable
 fun AppHeader(
@@ -29,7 +29,7 @@ fun AppHeader(
             Button({
                 classes(Styles.textButton)
                 style {
-                    marginLeft(.5.cssRem)
+                    marginLeft(.5.r)
                 }
                 onClick {
                     onBack()
@@ -55,10 +55,10 @@ fun AppHeader(
             }
             Span({
                 style {
-                    paddingLeft(PaddingDefault)
+                    paddingLeft(1.r)
                     fontSize(24.px)
                     ellipsize()
-                    marginRight(.5.cssRem)
+                    marginRight(.5.r)
                 }
             }) {
                 Text(title)
@@ -103,7 +103,7 @@ fun AppHeader(
         val configuration = LocalConfiguration.current
         Span({
             style {
-                padding(.5.cssRem, 1.cssRem)
+                padding(.5.r, 1.r)
                 fontSize(32.px)
                 property("user-select", "none")
                 cursor("pointer")
@@ -138,7 +138,7 @@ fun AppHeader(
                 Button({
                     classes(Styles.textButton)
                     style {
-                        marginRight(.5.cssRem)
+                        marginRight(.5.r)
                     }
                     onClick {
                         router.navigate("/signin")
@@ -157,7 +157,7 @@ fun AppHeader(
 fun Bullet() {
     Span({
         style {
-            padding(0.cssRem, .5.cssRem)
+            padding(0.r, .5.r)
             color(Styles.colors.primary)
             opacity(.75f)
         }

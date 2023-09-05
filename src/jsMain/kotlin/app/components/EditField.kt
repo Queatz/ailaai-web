@@ -11,6 +11,7 @@ import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Text
 import org.jetbrains.compose.web.dom.TextArea
 import org.w3c.dom.events.Event
+import r
 
 @Composable
 fun EditField(value: String, placeholder: String = "", styles: StyleScope.() -> Unit, onSave: suspend (String) -> Boolean) {
@@ -46,8 +47,8 @@ fun EditField(value: String, placeholder: String = "", styles: StyleScope.() -> 
     TextArea(messageText) {
         classes(Styles.textarea)
         style {
-            height(3.5.cssRem)
-            maxHeight(18.cssRem)
+            height(3.5.r)
+            maxHeight(18.r)
             flexShrink(0)
             backgroundColor(Color.transparent)
             styles()
@@ -90,7 +91,7 @@ fun EditField(value: String, placeholder: String = "", styles: StyleScope.() -> 
     if (messageChanged) {
         Div({
             style {
-                margin(.5.cssRem)
+                margin(.5.r)
                 flexShrink(0)
                 display(DisplayStyle.Flex)
             }
@@ -99,7 +100,7 @@ fun EditField(value: String, placeholder: String = "", styles: StyleScope.() -> 
                 classes(Styles.button)
 
                 style {
-                    marginRight(.5.cssRem)
+                    marginRight(.5.r)
                 }
 
                 onClick {
@@ -116,7 +117,7 @@ fun EditField(value: String, placeholder: String = "", styles: StyleScope.() -> 
             Button({
                 classes(Styles.outlineButton)
                 style {
-                    marginRight(.5.cssRem)
+                    marginRight(.5.r)
                 }
                 onClick {
                     messageText = value

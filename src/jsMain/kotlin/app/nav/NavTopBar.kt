@@ -10,6 +10,7 @@ import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.ElementScope
 import org.jetbrains.compose.web.dom.Text
 import org.w3c.dom.HTMLDivElement
+import r
 
 @Composable
 fun NavTopBar(me: Person?, title: String, onProfileClick: () -> Unit, actions: @Composable ElementScope<HTMLDivElement>.() -> Unit = {}) {
@@ -18,13 +19,13 @@ fun NavTopBar(me: Person?, title: String, onProfileClick: () -> Unit, actions: @
             display(DisplayStyle.Flex)
             justifyContent(JustifyContent.FlexEnd)
             alignItems(AlignItems.Center)
-            padding(1.cssRem, 1.cssRem, .5.cssRem, 1.cssRem)
+            padding(1.r, 1.r, .5.r, 1.r)
         }
     }) {
         Div({
             style {
                 flex(1)
-                marginRight(1.cssRem)
+                marginRight(1.r)
                 fontSize(24.px)
             }
         }) {

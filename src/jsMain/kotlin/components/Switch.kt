@@ -8,7 +8,13 @@ import org.jetbrains.compose.web.dom.Label
 import org.jetbrains.compose.web.dom.Span
 
 @Composable
-fun Switch(value: Boolean, onValue: (Boolean) -> Unit, onChange: (Boolean) -> Unit, title: String? = null, styles: StyleScope.() -> Unit = {}) {
+fun Switch(
+    value: Boolean,
+    onValue: (Boolean) -> Unit,
+    onChange: (Boolean) -> Unit,
+    title: String? = null,
+    styles: StyleScope.() -> Unit = {}
+) {
     Label(attrs = {
         classes(Styles.switch)
         focusable()

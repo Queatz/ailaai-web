@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Text
+import r
 
 val allStickerPacks = MutableStateFlow<List<StickerPack>>(emptyList())
 
@@ -27,14 +28,14 @@ fun StickersTray(onSticker: (Sticker) -> Unit) {
     if (stickerPacks.isNotEmpty()) {
         Div({
             style {
-                padding(1.cssRem)
+                padding(1.r)
             }
         }) {
             stickerPacks.forEach { stickerPack ->
                 Div({
                     style {
                         fontWeight("bold")
-                        marginBottom(.5.cssRem)
+                        marginBottom(.5.r)
                     }
                 }) {
                     Text(stickerPack.name ?: "Stickers")
@@ -42,7 +43,7 @@ fun StickersTray(onSticker: (Sticker) -> Unit) {
                 Div({
                     style {
                         display(DisplayStyle.Flex)
-                        marginBottom(1.cssRem)
+                        marginBottom(1.r)
                         overflowX("auto")
                         property("scrollbar-width", "none")
                     }
