@@ -17,7 +17,7 @@ fun PageTopBar(title: String, description: String? = null, actions: @Composable 
         style {
             display(DisplayStyle.Flex)
             padding(.5.r)
-            margin(1.r, 1.r, .5.r, 1.r)
+            margin(1.r, .5.r, .5.r, .5.r)
             alignItems(AlignItems.Center)
             overflow("hidden")
             flexShrink(0)

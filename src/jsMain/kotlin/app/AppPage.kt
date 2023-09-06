@@ -4,6 +4,7 @@ import Card
 import GroupExtended
 import Story
 import androidx.compose.runtime.*
+import app.cards.CardsPage
 import app.nav.*
 import app.page.*
 import application
@@ -38,6 +39,10 @@ fun AppPage() {
 
     var card by remember {
         mutableStateOf<CardNav>(CardNav.Explore)
+    }
+
+    var reminder by remember {
+        mutableStateOf<String?>(null)
     }
 
     val cardUpdates = remember {
@@ -91,7 +96,7 @@ fun AppPage() {
                         }
                     )
 
-                    NavPage.Schedule -> ScheduleNavPage(scheduleView, {
+                    NavPage.Schedule -> ScheduleNavPage(reminder, { reminder = it }, scheduleView, {
                         scheduleView = it
                     }, {
                         nav = NavPage.Profile
@@ -125,7 +130,7 @@ fun AppPage() {
                     }
                 )
 
-                NavPage.Schedule -> SchedulePage(scheduleView)
+                NavPage.Schedule -> SchedulePage(scheduleView, reminder, { reminder = it })
                 NavPage.Cards -> CardsPage(card, { card = it }) {
                     scope.launch {
                         cardUpdates.emit(it)

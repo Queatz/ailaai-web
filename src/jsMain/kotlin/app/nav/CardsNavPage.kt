@@ -5,6 +5,7 @@ import Styles
 import androidx.compose.runtime.*
 import api
 import app.AppStyles
+import app.menu.Menu
 import appString
 import application
 import components.Icon
@@ -20,6 +21,7 @@ import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text
+import org.w3c.dom.DOMRect
 import org.w3c.dom.HTMLElement
 import r
 import saves
@@ -28,6 +30,12 @@ sealed class CardNav {
     data object Explore : CardNav()
     data object Saved : CardNav()
     data class Selected(val card: Card, val subCard: Card? = null) : CardNav()
+}
+
+enum class CardFilter {
+    Published,
+    NotPublished,
+    NoParent
 }
 
 @Composable
@@ -39,7 +47,9 @@ fun CardsNavPage(cardUpdates: Flow<Card>, nav: CardNav, onSelected: (CardNav) ->
     val saved by saves.cards.collectAsState()
     val scope = rememberCoroutineScope()
 
-
+    var filterMenuTarget by remember {
+        mutableStateOf<DOMRect?>(null)
+    }
     var isLoading by remember { mutableStateOf(true) }
 
     var showSearch by remember(cardId) {
@@ -50,13 +60,17 @@ fun CardsNavPage(cardUpdates: Flow<Card>, nav: CardNav, onSelected: (CardNav) ->
         mutableStateOf("")
     }
 
+    var filters by remember {
+        mutableStateOf(emptySet<CardFilter>())
+    }
+
     var myCards by remember { mutableStateOf(emptyList<Card>()) }
 
     val childCards = remember(myCards, cardId) {
         myCards.filter { it.parent == cardId }
     }
 
-    val shownCards = remember(myCards, searchText, saved) {
+    val shownCards = remember(myCards, searchText, saved, filters) {
         val search = searchText.trim()
         (if (searchText.isBlank()) {
             myCards//.filter { it.parent == null }
@@ -64,7 +78,22 @@ fun CardsNavPage(cardUpdates: Flow<Card>, nav: CardNav, onSelected: (CardNav) ->
             myCards.filter {
                 (it.name?.contains(search, true) ?: false)
             }
-        }).sortedByDescending { saved.any { save -> it.id == save.id } }
+        }).sortedByDescending { saved.any { save -> it.id == save.id } }.let {
+            if (filters.isNotEmpty()) {
+                it.filter {  card ->
+                    filters.none {
+                        when (it) {
+                            CardFilter.Published -> card.active != true
+                            CardFilter.NotPublished -> card.active == true
+                            CardFilter.NoParent -> card.parent != null
+                            else -> false
+                        }
+                    }
+                }
+            } else {
+                it
+            }
+        }
     }
 
     suspend fun reload() {
@@ -95,10 +124,47 @@ fun CardsNavPage(cardUpdates: Flow<Card>, nav: CardNav, onSelected: (CardNav) ->
         }
     }
 
+    if (filterMenuTarget != null) {
+        Menu(
+            {
+            filterMenuTarget = null
+        },
+            filterMenuTarget!!
+        ) {
+            item("Published", icon = if (CardFilter.Published in filters) "check" else null) {
+                if (CardFilter.Published in filters) {
+                    filters -= CardFilter.Published
+                } else {
+                    filters -= CardFilter.NotPublished
+                    filters += CardFilter.Published
+                }
+            }
+            item("Not published", icon = if (CardFilter.NotPublished in filters) "check" else null) {
+                if (CardFilter.NotPublished in filters) {
+                    filters -= CardFilter.NotPublished
+                } else {
+                    filters -= CardFilter.Published
+                    filters += CardFilter.NotPublished
+                }
+            }
+            item("Root pages", icon = if (CardFilter.NoParent in filters) "check" else null) {
+                if (CardFilter.NoParent in filters) {
+                    filters -= CardFilter.NoParent
+                } else {
+                    filters += CardFilter.NoParent
+                }
+            }
+        }
+    }
+
     NavTopBar(me, "Pages", onProfileClick = onProfileClick) {
         IconButton("search", "Search", styles = {
         }) {
             showSearch = !showSearch
+        }
+        IconButton("filter_list", "Filter", count = filters.size, styles = {
+        }) {
+            filterMenuTarget = if (filterMenuTarget == null) (it.target as HTMLElement).getBoundingClientRect() else null
         }
 
         IconButton(

@@ -1,4 +1,4 @@
-package app.page
+package app.cards
 
 import Styles.card
 import org.jetbrains.compose.web.css.*

@@ -34,6 +34,7 @@ object SchedulePageStyles : StyleSheet() {
         opacity(0)
         lineHeight("0")
         color(Styles.colors.primary)
+        display(DisplayStyle.Flex)
     }
 
     val rowText by style {

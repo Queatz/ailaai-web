@@ -311,7 +311,33 @@ object AppStyles : StyleSheet() {
     val iconButton by style {
         padding(.5.r)
         borderRadius(2.r)
+        cursor("pointer")
+        display(DisplayStyle.Flex)
+        alignItems(AlignItems.Center)
+        justifyContent(JustifyContent.Center)
+        position(Position.Relative)
         property("user-select", "none")
+    }
+
+    val iconButtonCount by style {
+        position(Position.Absolute)
+        fontSize(12.px)
+        width(18.px)
+        height(18.px)
+        display(DisplayStyle.Flex)
+        alignItems(AlignItems.Center)
+        justifyContent(JustifyContent.Center)
+        borderRadius(100.percent)
+        backgroundColor(Styles.colors.background)
+        fontWeight("bold")
+        property("transform", "translate(9px, -9px)")
+
+        media("(prefers-color-scheme: dark)") {
+            self style {
+                backgroundColor(Color.black)
+
+            }
+        }
     }
 
     val tray by style {

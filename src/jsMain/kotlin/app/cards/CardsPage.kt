@@ -1,4 +1,4 @@
-package app.page
+package app.cards
 
 import Card
 import androidx.compose.runtime.*

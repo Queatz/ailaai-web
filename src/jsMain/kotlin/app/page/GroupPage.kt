@@ -246,6 +246,7 @@ fun GroupPage(group: GroupExtended?, onGroupUpdated: () -> Unit, onGroupGone: ()
             Div({
                 style {
                     flexShrink(0)
+                    display(DisplayStyle.Flex)
                 }
             }) {
                 if (messageText.isBlank()) {

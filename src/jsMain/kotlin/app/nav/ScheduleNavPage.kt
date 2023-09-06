@@ -18,7 +18,7 @@ import r
 import kotlin.js.Date
 
 @Composable
-fun ScheduleNavPage(view: ScheduleView, onViewClick: (ScheduleView) -> Unit, onProfileClick: () -> Unit) {
+fun ScheduleNavPage(reminder: String?, onReminder: (String) -> Unit, view: ScheduleView, onViewClick: (ScheduleView) -> Unit, onProfileClick: () -> Unit) {
     val me by application.me.collectAsState()
     val scope = rememberCoroutineScope()
 
@@ -274,7 +274,9 @@ fun ScheduleNavPage(view: ScheduleView, onViewClick: (ScheduleView) -> Unit, onP
             NavMenuItem("auto_mode", "Yearly", selected = view == ScheduleView.Yearly) { onViewClick(ScheduleView.Yearly) }
         }
         Div({ style { height(1.r) } })
-        ReminderItem("Pet Mochi", selected = false) {}
+        ReminderItem("Pet Mochi", selected = reminder != null) {
+            onReminder("1")
+        }
     }
 }
 
