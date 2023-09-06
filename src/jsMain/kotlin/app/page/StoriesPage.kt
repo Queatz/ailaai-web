@@ -55,6 +55,9 @@ fun StoriesPage(story: Story?, onStoryUpdated: (Story) -> Unit) {
 
     menuTarget?.let { target ->
         Menu({ menuTarget = null }, target) {
+            item("Open in new tab", icon = "open_in_new") {
+                window.open("/story/${story!!.id}", target = "_blank")
+            }
             item("Rename") {
                 scope.launch {
                     val title = inputDialog(

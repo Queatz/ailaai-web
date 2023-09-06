@@ -130,6 +130,57 @@ class StickerPack(
 ) : Model()
 
 @Serializable
+class Reminder(
+    var person: String? = null,
+    var groups: List<String>? = null,
+    var attachment: String? = null,
+    var title: String? = null,
+    var note: String? = null,
+    var start: String? = null,
+    var end: String? = null,
+    var schedule: ReminderSchedule? = null
+) : Model()
+
+@Serializable
+class ReminderOccurrence(
+    var reminder: String? = null,
+    var occurrence: String? = null,
+    var date: String? = null,
+    var note: String? = null,
+    var done: String? = null,
+    var gone: Boolean? = null,
+) : Model()
+
+@Serializable
+class ReminderSchedule(
+    /**
+     * 0 - 23 = hour of day
+     */
+    val hours: List<Int>? = null,
+    /**
+     * 1 - 31 = day of month
+     * -1 - -31 = last days of month
+     */
+    val days: List<Int>? = null,
+    /**
+     * 1 - 7 = day of week
+     */
+    val weekdays: List<Int>? = null,
+    /**
+     * 1 - 5 = week of month
+     */
+    val weeks: List<Int>? = null,
+    /**
+     * 1 - 12 = month of year
+     */
+    val months: List<Int>? = null,
+    /**
+     * year
+     */
+    val years: List<Int>? = null,
+)
+
+@Serializable
 open class Model {
     var id: String? = null
     var createdAt: String? = null

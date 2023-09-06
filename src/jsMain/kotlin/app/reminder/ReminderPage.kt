@@ -1,8 +1,13 @@
 package app.reminder
 
+import Reminder
 import androidx.compose.runtime.*
+import api
+import apis.deleteReminder
+import apis.reminders
 import app.PageTopBar
 import app.menu.Menu
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Text
@@ -11,7 +16,9 @@ import org.w3c.dom.HTMLElement
 import r
 
 @Composable
-fun ReminderPage(onDelete: () -> Unit) {
+fun ReminderPage(reminder: Reminder, onDelete: (Reminder) -> Unit) {
+    val scope = rememberCoroutineScope()
+
     var menuTarget by remember {
         mutableStateOf<DOMRect?>(null)
     }
@@ -23,7 +30,11 @@ fun ReminderPage(onDelete: () -> Unit) {
             }
 
             item("Delete") {
-                onDelete()
+                scope.launch {
+                    api.deleteReminder(reminder.id!!) {
+                        onDelete(reminder)
+                    }
+                }
             }
         }
     }
@@ -46,7 +57,7 @@ fun ReminderPage(onDelete: () -> Unit) {
         }
     }
     PageTopBar(
-        "Pet Mochi",
+        reminder.title ?: "new reminder",
         "⏰ Every Sunday at 1pm and 9pm until January 1st, 2024"
     ) {
         menuTarget = if (menuTarget == null) (it.target as HTMLElement).getBoundingClientRect() else null

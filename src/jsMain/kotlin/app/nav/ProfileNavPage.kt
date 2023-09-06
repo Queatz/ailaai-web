@@ -98,6 +98,14 @@ fun ProfileNavPage(onProfileClick: () -> Unit) {
             }
         }
 
+        if (profile != null) {
+            EditField(profile?.profile?.about ?: "", placeholder = "Introduce yourself here…", styles = {
+                margin(.5.r)
+            }) {
+                saveAbout(it)
+            }
+        }
+
         val configuration = LocalConfiguration.current
 
         NavMenuItem(
@@ -120,14 +128,6 @@ fun ProfileNavPage(onProfileClick: () -> Unit) {
                     else -> "en"
                 }
             )
-        }
-
-        if (profile != null) {
-            EditField(profile?.profile?.about ?: "", placeholder = "Introduce yourself here…", styles = {
-                margin(.5.r)
-            }) {
-                saveAbout(it)
-            }
         }
 
         val signOut = appString { signOut }

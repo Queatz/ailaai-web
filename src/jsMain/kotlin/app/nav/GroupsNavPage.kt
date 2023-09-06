@@ -133,6 +133,7 @@ fun GroupsNavPage(
             }
         }
     }
+
     if (showSearch) {
         NavSearchInput(searchText, { searchText = it }, onDismissRequest = {
             searchText = ""

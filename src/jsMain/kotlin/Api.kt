@@ -480,7 +480,7 @@ class Api {
         onSuccess = onSuccess
     )
 
-    private suspend inline fun <reified T> get(
+    internal suspend inline fun <reified T> get(
         url: String,
         contentType: ContentType? = DefaultContentType,
         parameters: Map<String, String?>? = null,
@@ -507,7 +507,7 @@ class Api {
         }
     }
 
-    private suspend inline fun <reified T> post(
+    internal suspend inline fun <reified T> post(
         url: String,
         contentType: ContentType? = DefaultContentType,
         parameters: Map<String, String>? = null,
@@ -524,7 +524,7 @@ class Api {
         )
     }
 
-    private suspend inline fun <reified T, reified B : Any> post(
+    internal suspend inline fun <reified T, reified B : Any> post(
         url: String,
         contentType: ContentType? = DefaultContentType,
         body: B? = null,

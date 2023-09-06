@@ -2,6 +2,7 @@ package app
 
 import Card
 import GroupExtended
+import Reminder
 import Story
 import androidx.compose.runtime.*
 import app.cards.CardsPage
@@ -42,7 +43,7 @@ fun AppPage() {
     }
 
     var reminder by remember {
-        mutableStateOf<String?>(null)
+        mutableStateOf<Reminder?>(null)
     }
 
     val cardUpdates = remember {
@@ -55,6 +56,10 @@ fun AppPage() {
 
     val storyUpdates = remember {
         MutableSharedFlow<Story>()
+    }
+
+    val reminderUpdates = remember {
+        MutableSharedFlow<Reminder>()
     }
 
     var story by remember {
@@ -96,7 +101,8 @@ fun AppPage() {
                         }
                     )
 
-                    NavPage.Schedule -> ScheduleNavPage(reminder, { reminder = it }, scheduleView, {
+                    NavPage.Schedule -> ScheduleNavPage(reminderUpdates, reminder, { reminder = it }, scheduleView, {
+                        reminder = null
                         scheduleView = it
                     }, {
                         nav = NavPage.Profile
@@ -130,7 +136,11 @@ fun AppPage() {
                     }
                 )
 
-                NavPage.Schedule -> SchedulePage(scheduleView, reminder, { reminder = it })
+                NavPage.Schedule -> SchedulePage(scheduleView, reminder, { reminder = it }) {
+                    scope.launch {
+                        reminderUpdates.emit(it)
+                    }
+                }
                 NavPage.Cards -> CardsPage(card, { card = it }) {
                     scope.launch {
                         cardUpdates.emit(it)

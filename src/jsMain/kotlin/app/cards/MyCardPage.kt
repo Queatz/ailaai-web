@@ -74,6 +74,21 @@ fun MyCardPage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Unit
         }
     }
 
+    fun generatePhoto() {
+        scope.launch {
+            api.generateCardPhoto(card.id!!) {
+                dialog("Generating", cancelButton = null) {
+                    Div {
+                        Text("The page will be updated when the photo is generated.")
+                        Br()
+                        Br()
+                        Text("Page title, hint, and details are shared with stability.ai.")
+                    }
+                }
+            }
+        }
+    }
+
     if (menuTarget != null) {
         Menu({ menuTarget = null }, menuTarget!!) {
             val isSaved = saves.cards.value.any { it.id == card.id }
@@ -157,15 +172,16 @@ fun MyCardPage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Unit
 
             if (card.video == null) {
                 item(if (card.photo == null) "Generate photo" else "Regenerate photo") {
-                    scope.launch {
-                        api.generateCardPhoto(card.id!!) {
-                            dialog("Generating", cancelButton = null) {
-                                Div {
-                                    Text("The page will be updated when the photo is generated.")
-                                    Br()
-                                    Br()
-                                    Text("Page title, hint, and details are shared with stability.ai.")
-                                }
+                    if (card.photo == null) {
+                        generatePhoto()
+                    } else {
+                        scope.launch {
+                            val result = dialog("Generate a new photo?") {
+                                Text("This will replace the current photo.")
+                            }
+
+                            if (result == true) {
+                                generatePhoto()
                             }
                         }
                     }

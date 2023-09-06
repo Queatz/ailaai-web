@@ -1,5 +1,6 @@
 package app.page
 
+import Reminder
 import androidx.compose.runtime.*
 import app.FullPageLayout
 import app.reminder.EventRow
@@ -19,12 +20,18 @@ enum class ScheduleView {
 }
 
 @Composable
-fun SchedulePage(view: ScheduleView, reminder: String?, onReminder: (String?) -> Unit) {
+fun SchedulePage(
+    view: ScheduleView,
+    reminder: Reminder?,
+    onReminder: (Reminder?) -> Unit,
+    onDelete: (Reminder) -> Unit
+) {
     Style(SchedulePageStyles)
 
     if (reminder != null) {
         ReminderPage(
-            onDelete = { onReminder(null) }
+            reminder,
+            onDelete = { onDelete(it) }
         )
         return
     }
