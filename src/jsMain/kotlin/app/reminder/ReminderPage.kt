@@ -7,6 +7,7 @@ import apis.deleteReminder
 import apis.reminders
 import app.PageTopBar
 import app.menu.Menu
+import dialog
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
@@ -31,6 +32,12 @@ fun ReminderPage(reminder: Reminder, onDelete: (Reminder) -> Unit) {
 
             item("Delete") {
                 scope.launch {
+                    val result = dialog("Delete this reminder?", confirmButton = "Yes, delete") {
+                        Text("You cannot undo this.")
+                    }
+
+                    if (result != true) return@launch
+
                     api.deleteReminder(reminder.id!!) {
                         onDelete(reminder)
                     }
@@ -58,7 +65,7 @@ fun ReminderPage(reminder: Reminder, onDelete: (Reminder) -> Unit) {
     }
     PageTopBar(
         reminder.title ?: "new reminder",
-        "⏰ Every Sunday at 1pm and 9pm until January 1st, 2024"
+        reminder.scheduleText
     ) {
         menuTarget = if (menuTarget == null) (it.target as HTMLElement).getBoundingClientRect() else null
     }

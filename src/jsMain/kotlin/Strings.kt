@@ -262,6 +262,10 @@ object Strings {
         "Profile",
         "Trang cá nhân"
     )
+    val and = Translation(
+        "and",
+        "và"
+    )
 }
 
 @Composable

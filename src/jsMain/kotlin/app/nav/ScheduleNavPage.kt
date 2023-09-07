@@ -1,10 +1,12 @@
 package app.nav
 
 import Reminder
+import ReminderSchedule
 import androidx.compose.runtime.*
 import api
 import apis.newReminder
 import apis.reminders
+import app.components.MultiSelect
 import app.page.ScheduleView
 import app.reminder.ReminderItem
 import application
@@ -17,10 +19,10 @@ import lib.*
 import org.jetbrains.compose.web.attributes.autoFocus
 import org.jetbrains.compose.web.attributes.disabled
 import org.jetbrains.compose.web.attributes.placeholder
-import org.jetbrains.compose.web.attributes.selected
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
 import org.w3c.dom.events.Event
+import parseDateTime
 import r
 import kotlin.js.Date
 
@@ -78,6 +80,32 @@ fun ScheduleNavPage(
 
     var onValueChange by remember { mutableStateOf({}) }
 
+    var reoccurs by remember(newReminderTitle == "") { mutableStateOf(false) }
+    var date by remember(newReminderTitle == "") { mutableStateOf(format(Date(), "yyyy-MM-dd")) }
+    var time by remember(newReminderTitle == "") { mutableStateOf(format(Date(), "HH:mm")) }
+    var until by remember(newReminderTitle == "") { mutableStateOf(false) }
+    var untilDate by remember(newReminderTitle == "") { mutableStateOf(format(Date(), "yyyy-MM-dd")) }
+    var untilTime by remember(newReminderTitle == "") { mutableStateOf(format(Date(), "HH:mm")) }
+    var reoccurringHours by remember(newReminderTitle == "", reoccurs) { mutableStateOf(listOf(time.split(":").first().toInt().toString())) }
+    var reoccurringDays by remember(newReminderTitle == "") { mutableStateOf(emptyList<String>()) }
+    var reoccurringWeeks by remember(newReminderTitle == "") { mutableStateOf(emptyList<String>()) }
+    var reoccurringMonths by remember(newReminderTitle == "") { mutableStateOf(emptyList<String>()) }
+
+    val t = setMinutes(startOfDay(Date()), getMinutes(parse(time, "HH:mm", Date())))
+
+    LaunchedEffect(reoccurringHours) {
+        if (reoccurringHours.isEmpty()) reoccurringHours = listOf("${t.getHours()}")
+    }
+    LaunchedEffect(reoccurringDays) {
+        if (reoccurringDays.isEmpty()) reoccurringDays = listOf("-") else if (reoccurringDays.size > 1 && "-" in reoccurringDays) reoccurringDays -= "-"
+    }
+    LaunchedEffect(reoccurringWeeks) {
+        if (reoccurringWeeks.isEmpty()) reoccurringWeeks = listOf("-") else if (reoccurringWeeks.size > 1 && "-" in reoccurringWeeks) reoccurringWeeks -= "-"
+    }
+    LaunchedEffect(reoccurringMonths) {
+        if (reoccurringMonths.isEmpty()) reoccurringMonths = listOf("-") else if (reoccurringMonths.size > 1 && "-" in reoccurringMonths) reoccurringMonths -= "-"
+    }
+
     LaunchedEffect(newReminderTitle) {
         onValueChange()
     }
@@ -92,12 +120,29 @@ fun ScheduleNavPage(
     }
 
     fun addReminder() {
+        if (newReminderTitle.isBlank()) {
+            return
+        }
+
         scope.launch {
             isSavingReminder = true
 
             api.newReminder(
                 Reminder(
-                    title = newReminderTitle
+                    title = newReminderTitle,
+                    start = parseDateTime(date, time).toISOString(),
+                    end = if (until) parseDateTime(date, time).toISOString() else null,
+                    schedule = if (reoccurs) {
+                        ReminderSchedule(
+                            hours = reoccurringHours.filter { it != "-" }.map { it.toInt() },
+                            days = reoccurringDays.filter { it != "-" }.mapNotNull { it.split(":").let { if (it[0] == "day") it[1] else null } }.map { it.toInt() },
+                            weekdays = reoccurringDays.filter { it != "-" }.mapNotNull { it.split(":").let { if (it[0] == "weekday") it[1] else null } }.map { it.toInt() },
+                            weeks = reoccurringWeeks.filter { it != "-" }.map { it.toInt() },
+                            months = reoccurringMonths.filter { it != "-" }.map { it.toInt() },
+                        )
+                    } else {
+                        null
+                    }
                 )
             ) {
                 newReminderTitle = ""
@@ -193,11 +238,6 @@ fun ScheduleNavPage(
                 }
             }
 
-            var until by remember(newReminderTitle == "") { mutableStateOf(false) }
-            var reoccurs by remember(newReminderTitle == "") { mutableStateOf(false) }
-            var date by remember(newReminderTitle == "") { mutableStateOf(format(Date(), "yyyy-MM-dd")) }
-            var time by remember(newReminderTitle == "") { mutableStateOf(format(Date(), "HH:mm")) }
-
             if (newReminderTitle.isNotBlank()) {
                 Div({
                     style {
@@ -264,21 +304,17 @@ fun ScheduleNavPage(
                             flexDirection(FlexDirection.Column)
                         }
                     }) {
-                        Select({
-                            classes(Styles.dateTimeInput)
-
+                        MultiSelect(reoccurringHours, { reoccurringHours = it }, {
                             if (isSavingReminder) {
                                 disabled()
                             }
-                        }, multiple = true) {
-                            val t = setMinutes(startOfDay(Date()), getMinutes(parse(time, "HH:mm", Date())))
+                        }) {
                             (0..23).forEach {
-                                Option("$it") { Text(format(addHours(t, it.toDouble()), "h:mm a")) }
+                                option("$it", format(addHours(t, it.toDouble()), "h:mm a"))
                             }
                         }
 
-                        Select({
-                            classes(Styles.dateTimeInput)
+                        MultiSelect(reoccurringDays, { reoccurringDays = it }, {
                             style {
                                 marginTop(1.r)
                             }
@@ -286,21 +322,19 @@ fun ScheduleNavPage(
                             if (isSavingReminder) {
                                 disabled()
                             }
-                        }, multiple = true) {
-                            Option("Every day", { selected() }) { Text("Every day") }
+                        }) {
+                            option("-", "Every day")
                             (1..7).forEach {
                                 val n = enUS.localize.day(it - 1).toString()
-                                Option("weekday:$it") { Text("$n") }
+                                option("weekday:$it", n)
                             }
                             (1..31).forEach {
-                                val n = enUS.localize.ordinalNumber(it).toString()
-                                Option("day:$it") { Text("$n of the month") }
+                                option("day:$it", "${enUS.localize.ordinalNumber(it)} of the month")
                             }
-                            Option("-1") { Text("Last day of the month") }
+                            option("day:-1", "Last day of the month")
                         }
 
-                        Select({
-                            classes(Styles.dateTimeInput)
+                        MultiSelect(reoccurringWeeks, { reoccurringWeeks = it }, {
                             style {
                                 marginTop(1.r)
                             }
@@ -308,16 +342,14 @@ fun ScheduleNavPage(
                             if (isSavingReminder) {
                                 disabled()
                             }
-                        }, multiple = true) {
-                            Option("Every week", { selected() }) { Text("Every week") }
+                        }) {
+                            option("-", "Every week")
                             (1..5).forEach {
-                                val n = enUS.localize.ordinalNumber(it).toString()
-                                Option("$it") { Text("$n week") }
+                                option("$it", "${enUS.localize.ordinalNumber(it)} week")
                             }
                         }
 
-                        Select({
-                            classes(Styles.dateTimeInput)
+                        MultiSelect(reoccurringMonths, { reoccurringMonths = it }, {
                             style {
                                 marginTop(1.r)
                             }
@@ -325,11 +357,10 @@ fun ScheduleNavPage(
                             if (isSavingReminder) {
                                 disabled()
                             }
-                        }, multiple = true) {
-                            Option("Every month", { selected() }) { Text("Every month") }
+                        }) {
+                            option("-", "Every month")
                             (1..12).forEach {
-                                val n = enUS.localize.month(it - 1).toString()
-                                Option(n) { Text(n) }
+                                option("$it", enUS.localize.month(it - 1).toString())
                             }
                         }
                     }
@@ -360,7 +391,7 @@ fun ScheduleNavPage(
                             padding(0.r, .5.r)
                         }
                     }) {
-                        DateInput(date) {
+                        DateInput(untilDate) {
                             classes(Styles.dateTimeInput)
 
                             style {
@@ -370,7 +401,7 @@ fun ScheduleNavPage(
                             }
 
                             onChange {
-                                date = it.value
+                                untilDate = it.value
                             }
 
                             if (isSavingReminder) {
@@ -378,7 +409,7 @@ fun ScheduleNavPage(
                             }
                         }
 
-                        TimeInput(time) {
+                        TimeInput(untilTime) {
                             classes(Styles.dateTimeInput)
 
                             style {
@@ -386,7 +417,7 @@ fun ScheduleNavPage(
                             }
 
                             onChange {
-                                time = it.value
+                                untilTime = it.value
                             }
 
                             if (isSavingReminder) {

@@ -151,6 +151,7 @@ object AppStyles : StyleSheet() {
         cursor("pointer")
         display(DisplayStyle.Flex)
         alignItems(AlignItems.Center)
+        property("word-break", "break-word")
 
         self + hover style {
             backgroundColor(Styles.colors.background)

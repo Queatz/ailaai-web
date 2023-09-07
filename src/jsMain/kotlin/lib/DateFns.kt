@@ -5,6 +5,8 @@ package lib
 
 import kotlin.js.Date
 
+external fun intlFormat(date: Date, formatOptions: dynamic = definedExternally, localeOptions: dynamic = definedExternally): String
+
 external fun formatDistanceToNow(date: Date, options: dynamic = definedExternally): String
 
 external fun format(date: Date, format: String, options: dynamic = definedExternally): String

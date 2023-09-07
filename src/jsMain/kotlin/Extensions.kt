@@ -1,7 +1,10 @@
+import androidx.compose.runtime.Composable
+import androidx.compose.web.attributes.SelectAttrsScope
 import kotlinx.browser.document
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.await
 import lib.Qr
+import lib.parse
 import org.jetbrains.compose.web.attributes.AttrsScope
 import org.jetbrains.compose.web.css.cssRem
 import org.khronos.webgl.Uint8Array
@@ -12,10 +15,35 @@ import org.w3c.files.Blob
 import org.w3c.files.BlobPropertyBag
 import org.w3c.files.File
 import org.w3c.files.FileReader
+import kotlin.js.Date
 import kotlin.js.Promise
 import kotlin.math.min
 import kotlin.math.round
 import kotlin.random.Random
+
+@Composable
+fun <T> List<T>.asNaturalList(transform: (T) -> String) = when (size) {
+    0 -> ""
+    1 -> transform(first())
+    2 -> "${transform(first())} ${appString { and }} ${transform(last())}"
+    else -> {
+        "${dropLast(1).joinToString(", ", transform = transform)} ${appString { and }} ${transform(last())}"
+    }
+}
+
+fun parseDateTime(dateStr: String, timeStr: String) = parse(
+    timeStr,
+    "HH:mm",
+    parse(dateStr, "yyyy-MM-dd", Date())
+)
+
+fun SelectAttrsScope.onSelectedOptionsChange(block: (List<String>) -> Unit) {
+    onChange { event ->
+        block(
+            event.target.selectedOptions.asList().mapNotNull { (it as? HTMLOptionElement)?.value }
+        )
+    }
+}
 
 /**
  * Default spacing unit = 1.cssRem

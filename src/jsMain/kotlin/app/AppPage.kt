@@ -138,6 +138,7 @@ fun AppPage() {
 
                 NavPage.Schedule -> SchedulePage(scheduleView, reminder, { reminder = it }) {
                     scope.launch {
+                        reminder = null
                         reminderUpdates.emit(it)
                     }
                 }
