@@ -7,6 +7,7 @@ import api
 import apis.newReminder
 import apis.reminders
 import app.components.MultiSelect
+import app.components.Spacer
 import app.page.ScheduleView
 import app.reminder.ReminderItem
 import application
@@ -120,6 +121,8 @@ fun ScheduleNavPage(
     }
 
     fun addReminder() {
+        val timezone = systemTimezone
+
         if (newReminderTitle.isBlank()) {
             return
         }
@@ -131,7 +134,9 @@ fun ScheduleNavPage(
                 Reminder(
                     title = newReminderTitle,
                     start = parseDateTime(date, time).toISOString(),
-                    end = if (until) parseDateTime(date, time).toISOString() else null,
+                    end = if (until) parseDateTime(untilDate, untilTime).toISOString() else null,
+                    timezone = timezone,
+                    utcOffset = getTimezoneOffset(timezone) / (60 * 60 * 1000),
                     schedule = if (reoccurs) {
                         ReminderSchedule(
                             hours = reoccurringHours.filter { it != "-" }.map { it.toInt() },
@@ -479,7 +484,7 @@ fun ScheduleNavPage(
                     selected = reminder == null && view == ScheduleView.Yearly
                 ) { onViewClick(ScheduleView.Yearly) }
             }
-            Div({ style { height(1.r) } })
+            Spacer()
         }
 
         if (isLoading) {

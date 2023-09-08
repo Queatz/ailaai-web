@@ -138,6 +138,8 @@ class Reminder(
     var note: String? = null,
     var start: String? = null,
     var end: String? = null,
+    var timezone: String? = null,
+    var utcOffset: Double? = null,
     var schedule: ReminderSchedule? = null
 ) : Model()
 

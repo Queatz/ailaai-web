@@ -20,11 +20,17 @@ external fun addYears(date: Date, amount: Double): Date
 
 external fun previousSunday(date: Date): Date
 
+external fun isEqual(date: Date, dateToCompare: Date): Boolean
+external fun isBefore(date: Date, dateToCompare: Date): Boolean
+external fun isAfter(date: Date, dateToCompare: Date): Boolean
+
 external fun isToday(date: Date): Boolean
 external fun isTomorrow(date: Date): Boolean
 external fun isThisYear(date: Date): Boolean
 
 external fun startOfDay(date: Date): Date
+external fun startOfMonth(date: Date): Date
+external fun startOfYear(date: Date): Date
 
 external fun setMinutes(date: Date, minutes: Int): Date
 external fun getMinutes(date: Date): Int

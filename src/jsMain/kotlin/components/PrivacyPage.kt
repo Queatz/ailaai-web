@@ -11,7 +11,7 @@ import r
 fun PrivacyPage() {
     Div({
         style {
-            property("margin", "$1.r auto")
+            property("margin", "${1.r} auto")
             maxWidth(1200.px)
             padding(0.r, 1.r, 1.r, 1.r)
             fontSize(22.px)

@@ -4,6 +4,7 @@ import kotlinx.browser.document
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.await
 import lib.Qr
+import lib.intlFormat
 import lib.parse
 import org.jetbrains.compose.web.attributes.AttrsScope
 import org.jetbrains.compose.web.css.cssRem
@@ -30,6 +31,20 @@ fun <T> List<T>.asNaturalList(transform: (T) -> String) = when (size) {
         "${dropLast(1).joinToString(", ", transform = transform)} ${appString { and }} ${transform(last())}"
     }
 }
+
+val formatOptions = js("""
+    {
+     weekday: 'long',
+     year: 'numeric',
+     month: 'long',
+     day: 'numeric',
+     hour: 'numeric',
+     minute: 'numeric',
+     hour12: true,
+   }
+""")
+
+fun Date.format() = intlFormat(this, formatOptions, js("{ locale: \"en-US\" }"))
 
 fun parseDateTime(dateStr: String, timeStr: String) = parse(
     timeStr,

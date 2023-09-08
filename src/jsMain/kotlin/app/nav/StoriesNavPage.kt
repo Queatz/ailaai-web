@@ -3,6 +3,7 @@ import Story
 import androidx.compose.runtime.*
 import api
 import app.AppStyles
+import app.components.Spacer
 import application
 import components.IconButton
 import components.Loading
@@ -119,13 +120,7 @@ fun StoriesNavPage(storyUpdates: Flow<Story>, selected: Story?, onSelected: (Sto
 //                NavMenuItem("favorite", "Saved") {
 //                    // todo
 //                }
-                Div({
-                    style {
-                        height(1.r)
-                    }
-                }) {
-
-                }
+                Spacer()
             }
             shownStories.forEach { StoryItem(it, it == selected) { onSelected(it)} }
         }

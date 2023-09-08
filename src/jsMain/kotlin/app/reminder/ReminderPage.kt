@@ -5,9 +5,11 @@ import androidx.compose.runtime.*
 import api
 import apis.deleteReminder
 import apis.reminders
+import apis.updateReminder
 import app.PageTopBar
 import app.menu.Menu
 import dialog
+import inputDialog
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
@@ -26,6 +28,22 @@ fun ReminderPage(reminder: Reminder, onDelete: (Reminder) -> Unit) {
 
     menuTarget?.let { target ->
         Menu({ menuTarget = null }, target) {
+            item("Edit title") {
+                scope.launch {
+                    val title = inputDialog("Reminder", "Title", "Update", defaultValue = reminder.title ?: "")
+
+                    if (title == null) return@launch
+
+                    api.updateReminder(reminder.id!!, Reminder(title = title)) {
+//                        onReminderUpdated(it)
+                    }
+                }
+            }
+
+            item("Edit schedule") {
+
+            }
+
             item("Invite") {
 
             }

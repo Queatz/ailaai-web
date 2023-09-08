@@ -1,16 +1,20 @@
 package app.reminder
 
 import androidx.compose.runtime.*
+import app.page.ReminderEvent
 import app.page.SchedulePageStyles
 import app.page.ScheduleView
 import components.IconButton
 import focusable
+import lib.format
+import notBlank
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Text
+import kotlin.js.Date
 
 @Composable
-fun EventRow(view: ScheduleView, text: String) {
+fun EventRow(view: ScheduleView, date: Date, event: ReminderEvent, text: String, note: String) {
     var done by remember {
         mutableStateOf(false)
     }
@@ -47,7 +51,11 @@ fun EventRow(view: ScheduleView, text: String) {
                     }
                 }
             }) {
-                Text(text)
+                Text(text + when (event) {
+                    ReminderEvent.Start -> " starts"
+                    ReminderEvent.End -> " ends"
+                    ReminderEvent.Occur -> ""
+                })
             }
             Div({
                 style {
@@ -60,21 +68,23 @@ fun EventRow(view: ScheduleView, text: String) {
                     }
                 }
             }) {
+                val details = note.notBlank?.let { " • $it" } ?: ""
+
                 when (view) {
                     ScheduleView.Daily -> {
-                        Text("1:00pm • I am note!")
+                        Text("${format(date, "h:mm a")}$details")
                     }
 
                     ScheduleView.Weekly -> {
-                        Text("1st, Tuesday, 1:00pm")
+                        Text("${format(date, "MMMM do, EEEE, h:mm a")}$details")
                     }
 
                     ScheduleView.Monthly -> {
-                        Text("12th, Tuesday, 1:00pm • I am note!")
+                        Text("${format(date, "do, EEEE, h:mm a")}$details")
                     }
 
                     ScheduleView.Yearly -> {
-                        Text("August 1st, Tuesday, 1:00pm")
+                        Text("${format(date, "MMMM do, EEEE, h:mm a")}$details")
                     }
                 }
             }

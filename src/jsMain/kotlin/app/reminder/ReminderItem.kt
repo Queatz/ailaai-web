@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import app.AppStyles
 import asNaturalList
 import focusable
+import format
 import lib.*
 import notEmpty
 import org.jetbrains.compose.web.css.flexGrow
@@ -12,7 +13,6 @@ import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.css.width
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Text
-import parseDateTime
 import kotlin.js.Date
 
 @Composable
@@ -51,6 +51,21 @@ fun ReminderItem(reminder: Reminder, selected: Boolean, onSelected: () -> Unit) 
 }
 
 val Reminder.scheduleText @Composable get(): String = buildString {
+    if (schedule == null) {
+        append(Date(start!!).format())
+
+        val start = Date(start!!)
+        if (isAfter(start, Date())) {
+            append(" from ${ start.format() }")
+        }
+
+        if (end != null) {
+            append(" until ${Date(end!!).format()}")
+        }
+
+        return@buildString
+    }
+
     append("Every")
     append(" ")
 
@@ -103,18 +118,12 @@ val Reminder.scheduleText @Composable get(): String = buildString {
         append(" ")
     }
 
+    val start = Date(start!!)
+    if (isAfter(start, Date())) {
+        append("from ${ start.format() } ")
+    }
+
     end?.let { Date(it) }?.let { end ->
-        val options = js("""
-            {
-             weekday: 'long',
-             year: 'numeric',
-             month: 'long',
-             day: 'numeric',
-             hour: 'numeric',
-             minute: 'numeric',
-             hour12: true,
-           }
-        """)
-        append("until ${ intlFormat(end, options, js("{ locale: \"en-US\" }")) }")
+        append("until ${ end.format() } ")
     }
 }.trimEnd()

@@ -21,7 +21,7 @@ kotlin {
     js(IR) {
         browser {
             runTask {
-                devServer = devServer?.copy(port = 4040)
+                devServer = devServer?.copy(port = 4041)
             }
             testTask {
                 testLogging.showStandardStreams = true
@@ -44,6 +44,7 @@ kotlin {
                 implementation("app.softwork:routing-compose:0.2.12")
                 implementation(npm("@paulmillr/qr", "0.1.1"))
                 implementation(npm("date-fns", "2.30.0"))
+                implementation(npm("date-fns-tz", "2.0.0"))
             }
         }
         val jsTest by getting {

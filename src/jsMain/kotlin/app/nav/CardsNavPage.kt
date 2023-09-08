@@ -5,6 +5,7 @@ import Styles
 import androidx.compose.runtime.*
 import api
 import app.AppStyles
+import app.components.Spacer
 import app.menu.Menu
 import appString
 import application
@@ -214,13 +215,7 @@ fun CardsNavPage(cardUpdates: Flow<Card>, nav: CardNav, onSelected: (CardNav) ->
                 NavMenuItem("favorite", "Saved", selected = nav == CardNav.Saved) {
                     onSelected(CardNav.Saved)
                 }
-                Div({
-                    style {
-                        height(1.r)
-                    }
-                }) {
-
-                }
+                Spacer()
             }
             val selected = (nav as? CardNav.Selected)?.let { it.subCard ?: it.card }
             shownCards.forEach {
