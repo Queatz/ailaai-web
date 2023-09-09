@@ -81,7 +81,7 @@ fun SchedulePage(
     }
 
     var offset by remember(view) {
-        mutableStateOf(Date())
+        mutableStateOf(startOfDay(Date()))
     }
 
     if (reminder != null) {
@@ -154,7 +154,7 @@ fun SchedulePage(
     suspend fun reload() {
         val start = when (view) {
             ScheduleView.Daily -> startOfDay(offset)
-            ScheduleView.Weekly -> startOfDay(offset)
+            ScheduleView.Weekly -> startOfWeek(offset)
             ScheduleView.Monthly -> startOfMonth(offset)
             ScheduleView.Yearly -> startOfYear(offset)
         }
@@ -246,10 +246,6 @@ fun SchedulePage(
         }) {
             var today = offset
 
-            if (view == ScheduleView.Weekly) {
-                today = previousSunday(today)
-            }
-
             IconButton("keyboard_arrow_up", "Previous period") {
                 move(-1.0)
             }
@@ -257,7 +253,7 @@ fun SchedulePage(
             (0 until range[view]!!).forEach { index ->
                 val start = when (view) {
                     ScheduleView.Daily -> startOfDay(today)
-                    ScheduleView.Weekly -> startOfDay(today)
+                    ScheduleView.Weekly -> startOfWeek(today)
                     ScheduleView.Monthly -> startOfMonth(today)
                     ScheduleView.Yearly -> startOfYear(today)
                 }

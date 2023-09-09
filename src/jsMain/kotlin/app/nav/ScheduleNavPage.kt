@@ -124,6 +124,7 @@ fun ScheduleNavPage(
                 )
             ) {
                 newReminderTitle = ""
+                reload()
                 onReminder(it)
             }
 

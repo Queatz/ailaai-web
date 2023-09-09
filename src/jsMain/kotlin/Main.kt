@@ -16,7 +16,8 @@ import org.jetbrains.compose.web.renderComposableInBody
 import org.w3c.dom.get
 import org.w3c.dom.set
 
-const val baseUrl = "https://api.ailaai.app"//"http://0.0.0.0:8080"
+//const val baseUrl = "https://api.ailaai.app"
+const val baseUrl = "http://0.0.0.0:8080"
 const val webBaseUrl = "https://ailaai.app"
 
 val json = Json {

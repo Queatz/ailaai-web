@@ -21,7 +21,7 @@ kotlin {
     js(IR) {
         browser {
             runTask {
-                devServer = devServer?.copy(port = 4040)
+                devServer = devServer?.copy(port = 4041)
             }
             testTask {
                 testLogging.showStandardStreams = true

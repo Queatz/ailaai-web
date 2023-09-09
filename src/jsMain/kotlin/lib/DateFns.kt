@@ -29,6 +29,7 @@ external fun isTomorrow(date: Date): Boolean
 external fun isThisYear(date: Date): Boolean
 
 external fun startOfDay(date: Date): Date
+external fun startOfWeek(date: Date): Date
 external fun startOfMonth(date: Date): Date
 external fun startOfYear(date: Date): Date
 
