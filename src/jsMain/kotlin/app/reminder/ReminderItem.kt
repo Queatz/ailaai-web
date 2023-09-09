@@ -7,6 +7,7 @@ import asNaturalList
 import focusable
 import format
 import lib.*
+import notBlank
 import notEmpty
 import org.jetbrains.compose.web.css.flexGrow
 import org.jetbrains.compose.web.css.px
@@ -46,6 +47,13 @@ fun ReminderItem(reminder: Reminder, selected: Boolean, onSelected: () -> Unit) 
             }) {
                 Text(reminder.scheduleText)
             }
+            reminder.note?.notBlank?.let {
+                Div({
+                    classes(AppStyles.groupItemMessage)
+                }) {
+                    Text(it)
+                }
+            }
         }
     }
 }
@@ -54,12 +62,12 @@ val Reminder.scheduleText @Composable get(): String = buildString {
     if (schedule == null) {
         append(Date(start!!).format())
 
-        val start = Date(start!!)
-        if (isAfter(start, Date())) {
-            append(" from ${ start.format() }")
-        }
-
         if (end != null) {
+            val start = Date(start!!)
+            if (isAfter(start, Date())) {
+                append(" from ${ start.format() }")
+            }
+
             append(" until ${Date(end!!).format()}")
         }
 
@@ -102,6 +110,11 @@ val Reminder.scheduleText @Composable get(): String = buildString {
         append(weeks.asNaturalList { enUS.localize.ordinalNumber(it) })
         append(" week")
         append(" ")
+
+        if (schedule?.months?.notEmpty == null) {
+            append("of every month")
+            append("")
+        }
     }
 
     schedule?.months?.notEmpty?.let { months ->

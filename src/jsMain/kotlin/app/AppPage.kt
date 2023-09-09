@@ -136,12 +136,22 @@ fun AppPage() {
                     }
                 )
 
-                NavPage.Schedule -> SchedulePage(scheduleView, reminder, { reminder = it }) {
-                    scope.launch {
-                        reminder = null
-                        reminderUpdates.emit(it)
+                NavPage.Schedule -> SchedulePage(
+                    scheduleView,
+                    reminder,
+                    { reminder = it },
+                    onUpdate = {
+                        scope.launch {
+                            reminderUpdates.emit(it)
+                        }
+                    },
+                    onDelete = {
+                        scope.launch {
+                            reminder = null
+                            reminderUpdates.emit(it)
+                        }
                     }
-                }
+                )
                 NavPage.Cards -> CardsPage(card, { card = it }) {
                     scope.launch {
                         cardUpdates.emit(it)

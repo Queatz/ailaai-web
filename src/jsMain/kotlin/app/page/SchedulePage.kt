@@ -4,12 +4,20 @@ import Reminder
 import ReminderOccurrence
 import androidx.compose.runtime.*
 import api
+import apis.deleteReminderOccurrence
 import apis.occurrences
+import apis.updateReminderOccurrence
 import app.FullPageLayout
 import app.reminder.EventRow
 import app.reminder.ReminderPage
-import components.Loading
+import components.IconButton
+import dialog
+import inputDialog
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import lib.*
+import notBlank
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Text
@@ -23,16 +31,28 @@ enum class ScheduleView {
     Yearly
 }
 
-enum class ReminderEvent {
+enum class ReminderEventType {
     Start,
     Occur,
     End
 }
 
-data class ReminderInstance(
+data class ReminderEvent(
+    /**
+     * The reminder that spawned this event
+     */
     val reminder: Reminder,
+    /**
+     * The date of the event
+     */
     val date: Date,
-    val event: ReminderEvent,
+    /**
+     * The type of event.
+     */
+    val event: ReminderEventType,
+    /**
+     * The `ReminderOccurrence` associated with this event, if any.
+     */
     val occurrence: ReminderOccurrence?
 )
 
@@ -41,48 +61,111 @@ fun SchedulePage(
     view: ScheduleView,
     reminder: Reminder?,
     onReminder: (Reminder?) -> Unit,
+    onUpdate: (Reminder) -> Unit,
     onDelete: (Reminder) -> Unit
 ) {
     Style(SchedulePageStyles)
+
+    val scope = rememberCoroutineScope()
+
+    val changes = remember {
+        MutableSharedFlow<Unit>()
+    }
 
     var isLoading by remember(view) {
         mutableStateOf(true)
     }
 
     var events by remember(view) {
-        mutableStateOf(emptyList<ReminderInstance>())
+        mutableStateOf(emptyList<ReminderEvent>())
+    }
+
+    var offset by remember(view) {
+        mutableStateOf(Date())
     }
 
     if (reminder != null) {
         ReminderPage(
             reminder,
+            onUpdate = { onUpdate(it) },
             onDelete = { onDelete(it) }
         )
         return
     }
 
+    fun move(amount: Double) {
+        offset = when (view) {
+            ScheduleView.Daily -> addDays(offset, amount)
+            ScheduleView.Weekly -> addWeeks(offset, amount)
+            ScheduleView.Monthly -> addMonths(offset, amount)
+            ScheduleView.Yearly -> addYears(offset, amount)
+        }
+    }
+
     val range = mapOf(
         ScheduleView.Daily to 7,
         ScheduleView.Weekly to 4,
-        ScheduleView.Monthly to 6,
+        ScheduleView.Monthly to 3,
         ScheduleView.Yearly to 2
     )
 
-    LaunchedEffect(view) {
+    fun markAsDone(event: ReminderEvent, done: Boolean) {
+        scope.launch {
+            api.updateReminderOccurrence(event.reminder.id!!, event.date, ReminderOccurrence(
+                done = done
+            )) {
+                onUpdate(event.reminder)
+                changes.emit(Unit)
+            }
+        }
+    }
+
+    fun edit(event: ReminderEvent) {
+        scope.launch {
+            val note = inputDialog("Edit note", "", confirmButton = "Update", defaultValue = event.occurrence?.note?.notBlank ?: event.reminder.note?.notBlank ?: "")
+
+            if (note == null) return@launch
+
+            api.updateReminderOccurrence(event.reminder.id!!, event.date, ReminderOccurrence(
+                note = note
+            )) {
+                onUpdate(event.reminder)
+                changes.emit(Unit)
+            }
+        }
+    }
+
+    fun delete(event: ReminderEvent) {
+        scope.launch {
+            val result = dialog("Delete this occurrence?", confirmButton = "Yes, delete")
+
+            if (result != true) return@launch
+
+            api.deleteReminderOccurrence(
+                event.reminder.id!!,
+                event.occurrence?.occurrence?.let(::Date) ?: event.date
+            ) {
+                onUpdate(event.reminder)
+                changes.emit(Unit)
+            }
+        }
+    }
+
+    suspend fun reload() {
         val start = when (view) {
-            ScheduleView.Daily -> startOfDay(Date())
-            ScheduleView.Weekly -> startOfDay(Date())
-            ScheduleView.Monthly -> startOfMonth(Date())
-            ScheduleView.Yearly -> startOfYear(Date())
+            ScheduleView.Daily -> startOfDay(offset)
+            ScheduleView.Weekly -> startOfDay(offset)
+            ScheduleView.Monthly -> startOfMonth(offset)
+            ScheduleView.Yearly -> startOfYear(offset)
         }
 
         api.occurrences(
             start = start,
             end = when (view) {
-                ScheduleView.Daily -> addDays(start, 7.0)
-                ScheduleView.Weekly -> addWeeks(start, 4.0)
-                ScheduleView.Monthly -> addMonths(start, 6.0)
-                ScheduleView.Yearly -> addYears(start, 2.0)
+                ScheduleView.Daily -> addDays(start, range[ScheduleView.Daily]!!.toDouble())
+                ScheduleView.Weekly -> addWeeks(start, range[ScheduleView.Weekly]!!.toDouble())
+                ScheduleView.Monthly -> addMonths(start, range[ScheduleView.Monthly]!!.toDouble())
+                ScheduleView.Yearly -> addYears(start, range[ScheduleView.Yearly]!!.toDouble())
             }
         ) {
             /**
@@ -95,19 +178,19 @@ fun SchedulePage(
                 it.forEach {
                     if (it.reminder.schedule == null) {
                         add(
-                            ReminderInstance(
+                            ReminderEvent(
                                 it.reminder,
                                 Date(it.reminder.start!!),
-                                if (it.reminder.end == null) ReminderEvent.Occur else ReminderEvent.Start,
+                                if (it.reminder.end == null) ReminderEventType.Occur else ReminderEventType.Start,
                                 null
                             )
                         )
                         if (it.reminder.end != null) {
                             add(
-                                ReminderInstance(
+                                ReminderEvent(
                                     it.reminder,
                                     Date(it.reminder.end!!),
-                                    ReminderEvent.End,
+                                    ReminderEventType.End,
                                     null
                                 )
                             )
@@ -115,24 +198,26 @@ fun SchedulePage(
                     }
 
                     it.occurrences.forEach { occurrence ->
-                        add(
-                            ReminderInstance(
-                                it.reminder,
-                                Date(occurrence.date!!),
-                                ReminderEvent.Occur,
-                                occurrence
+                        if (occurrence.gone != true) {
+                            add(
+                                ReminderEvent(
+                                    it.reminder,
+                                    Date((occurrence.date ?: occurrence.occurrence)!!),
+                                    ReminderEventType.Occur,
+                                    occurrence
+                                )
                             )
-                        )
+                        }
                     }
 
                     it.dates.filter { date ->
                         it.occurrences.none { it.occurrence == date }
                     }.forEach { date ->
                         add(
-                            ReminderInstance(
+                            ReminderEvent(
                                 it.reminder,
                                 Date(date),
-                                ReminderEvent.Occur,
+                                ReminderEventType.Occur,
                                 null
                             )
                         )
@@ -143,6 +228,14 @@ fun SchedulePage(
         isLoading = false
     }
 
+    LaunchedEffect(view, offset) {
+        reload()
+
+        changes.collectLatest {
+            reload()
+        }
+    }
+
     FullPageLayout {
         Div({
             style {
@@ -151,10 +244,14 @@ fun SchedulePage(
                 padding(1.5.r, 1.r, 0.r, 1.r)
             }
         }) {
-            var today = Date()
+            var today = offset
 
             if (view == ScheduleView.Weekly) {
-                today = previousSunday(Date())
+                today = previousSunday(today)
+            }
+
+            IconButton("keyboard_arrow_up", "Previous period") {
+                move(-1.0)
             }
 
             (0 until range[view]!!).forEach { index ->
@@ -174,11 +271,17 @@ fun SchedulePage(
 
                 Period(
                     view,
-                    start,
-                    end,
-                    if (isLoading) null else events.filter { event ->
-                        (isAfter(event.date, start) || isEqual(event.date, start)) &&
-                        isBefore(event.date, end)
+                    start, end, if (isLoading) null else events.filter { event ->
+                        (isAfter(event.date, start) || isEqual(event.date, start)) && isBefore(event.date, end)
+                    },
+                    onDone = { it, done ->
+                        markAsDone(it, done)
+                    },
+                    onEdit = {
+                        edit(it)
+                    },
+                    onDelete = {
+                        delete(it)
                     }
                 )
 
@@ -200,12 +303,24 @@ fun SchedulePage(
                     }
                 }
             }
+
+            IconButton("keyboard_arrow_down", "Next period") {
+                move(1.0)
+            }
         }
     }
 }
 
 @Composable
-fun Period(view: ScheduleView, start: Date, end: Date, events: List<ReminderInstance>?) {
+fun Period(
+    view: ScheduleView,
+    start: Date,
+    end: Date,
+    events: List<ReminderEvent>?,
+    onDone: (ReminderEvent, Boolean) -> Unit,
+    onEdit: (ReminderEvent) -> Unit,
+    onDelete: (ReminderEvent) -> Unit,
+) {
     Div({
         classes(SchedulePageStyles.title)
     }) {
@@ -250,8 +365,18 @@ fun Period(view: ScheduleView, start: Date, end: Date, events: List<ReminderInst
                     view,
                     event.date,
                     event.event,
-                    event.reminder.title ?: "New reminder",
-                    event.reminder.note ?: ""
+                    event.occurrence?.done ?: false,
+                    event.reminder.title?.notBlank ?: "New reminder",
+                    event.occurrence?.note?.notBlank ?: event.reminder.note?.notBlank ?: "",
+                    onDone = {
+                        onDone(event, it)
+                    },
+                    onEdit = {
+                        onEdit(event)
+                    },
+                    onDelete = {
+                        onDelete(event)
+                    },
                 )
             }
         }

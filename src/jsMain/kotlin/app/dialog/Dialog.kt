@@ -122,6 +122,9 @@ suspend fun inputDialog(
             selectAll = true,
             styles = {
                 margin(0.r)
+            },
+            onDismissRequest = {
+                resolve(false)
             }
         ) {
             resolve(true)

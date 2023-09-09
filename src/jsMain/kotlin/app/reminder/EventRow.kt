@@ -1,7 +1,7 @@
 package app.reminder
 
 import androidx.compose.runtime.*
-import app.page.ReminderEvent
+import app.page.ReminderEventType
 import app.page.SchedulePageStyles
 import app.page.ScheduleView
 import components.IconButton
@@ -14,22 +14,24 @@ import org.jetbrains.compose.web.dom.Text
 import kotlin.js.Date
 
 @Composable
-fun EventRow(view: ScheduleView, date: Date, event: ReminderEvent, text: String, note: String) {
-    var done by remember {
-        mutableStateOf(false)
-    }
-
-    var edit by remember {
-        mutableStateOf(false)
-    }
-
+fun EventRow(
+    view: ScheduleView,
+    date: Date,
+    event: ReminderEventType,
+    done: Boolean,
+    text: String,
+    note: String,
+    onDone: (Boolean) -> Unit,
+    onEdit: () -> Unit,
+    onDelete: () -> Unit,
+) {
     Div({
         classes(SchedulePageStyles.row)
 
         title("Mark as done")
 
         onClick {
-            done = !done
+            onDone(!done)
         }
 
         focusable()
@@ -51,11 +53,13 @@ fun EventRow(view: ScheduleView, date: Date, event: ReminderEvent, text: String,
                     }
                 }
             }) {
-                Text(text + when (event) {
-                    ReminderEvent.Start -> " starts"
-                    ReminderEvent.End -> " ends"
-                    ReminderEvent.Occur -> ""
-                })
+                Text(
+                    text + when (event) {
+                        ReminderEventType.Start -> " starts"
+                        ReminderEventType.End -> " ends"
+                        ReminderEventType.Occur -> ""
+                    }
+                )
             }
             Div({
                 style {
@@ -94,11 +98,13 @@ fun EventRow(view: ScheduleView, date: Date, event: ReminderEvent, text: String,
         }) {
             IconButton("edit", "Edit", styles = {
             }) {
-                edit = !edit
+                it.stopPropagation()
+                onEdit()
             }
             IconButton("clear", "Delete", styles = {
             }) {
-
+                it.stopPropagation()
+                onDelete()
             }
         }
     }

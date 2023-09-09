@@ -271,6 +271,7 @@ fun GroupPage(group: GroupExtended?, onGroupUpdated: () -> Unit, onGroupGone: ()
                 }
             }
             val messageString = if (isSending) appString { sending } else appString { message }
+            // todo can be EditField
             TextArea(messageText) {
                 classes(Styles.textarea)
                 style {

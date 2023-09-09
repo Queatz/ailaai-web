@@ -44,6 +44,7 @@ fun EditField(value: String, placeholder: String = "", styles: StyleScope.() -> 
         }
     }
 
+    // todo can be EditField
     TextArea(messageText) {
         classes(Styles.textarea)
         style {

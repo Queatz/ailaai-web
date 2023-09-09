@@ -186,6 +186,7 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
                             }
                             if (isReplying != null) {
                                 val includeContactString = appString { includeContact }
+                                // todo can be EditField
                                 TextArea(replyMessage) {
                                     classes(Styles.textarea)
                                     style {

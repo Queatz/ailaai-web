@@ -61,6 +61,30 @@ suspend fun Api.updateReminder(
     onSuccess = onSuccess
 )
 
+suspend fun Api.updateReminderOccurrence(
+    id: String,
+    occurrence: Date,
+    update: ReminderOccurrence,
+    onError: suspend (Throwable) -> Unit = {},
+    onSuccess: suspend (ReminderOccurrence) -> Unit = {}
+) = post(
+    url = "reminders/$id/occurrences/${occurrence.toISOString()}",
+    body = update,
+    onError = onError,
+    onSuccess = onSuccess
+)
+
+suspend fun Api.deleteReminderOccurrence(
+    id: String,
+    occurrence: Date,
+    onError: suspend (Throwable) -> Unit = {},
+    onSuccess: suspend (HttpResponse) -> Unit = {}
+) = post(
+    url = "reminders/$id/occurrences/${occurrence.toISOString()}/delete",
+    onError = onError,
+    onSuccess = onSuccess
+)
+
 suspend fun Api.deleteReminder(
     reminderId: String,
     onError: suspend (Throwable) -> Unit = {},

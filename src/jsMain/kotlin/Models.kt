@@ -149,7 +149,7 @@ class ReminderOccurrence(
     var occurrence: String? = null,
     var date: String? = null,
     var note: String? = null,
-    var done: String? = null,
+    var done: Boolean? = null,
     var gone: Boolean? = null,
 ) : Model()
 
