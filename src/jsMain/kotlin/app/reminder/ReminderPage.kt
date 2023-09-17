@@ -4,7 +4,6 @@ import Reminder
 import androidx.compose.runtime.*
 import api
 import apis.deleteReminder
-import apis.reminders
 import apis.updateReminder
 import app.PageTopBar
 import app.components.EditField
@@ -12,7 +11,6 @@ import app.menu.Menu
 import dialog
 import inputDialog
 import kotlinx.coroutines.launch
-import lib.getTimezoneOffset
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Text

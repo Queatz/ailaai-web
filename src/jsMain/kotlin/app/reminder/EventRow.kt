@@ -65,6 +65,7 @@ fun EventRow(
                 style {
                     color(Styles.colors.secondary)
                     fontSize(14.px)
+                    whiteSpace("pre-wrap")
 
                     if (done) {
                         textDecoration("line-through")

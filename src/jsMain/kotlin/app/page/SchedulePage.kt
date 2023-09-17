@@ -177,23 +177,29 @@ fun SchedulePage(
             events = buildList {
                 it.forEach {
                     if (it.reminder.schedule == null) {
-                        add(
-                            ReminderEvent(
-                                it.reminder,
-                                Date(it.reminder.start!!),
-                                if (it.reminder.end == null) ReminderEventType.Occur else ReminderEventType.Start,
-                                null
-                            )
-                        )
-                        if (it.reminder.end != null) {
+                        // Occurrences always override
+                        if (it.occurrences.none { occurrence -> occurrence.occurrence == it.reminder.start }) {
                             add(
                                 ReminderEvent(
                                     it.reminder,
-                                    Date(it.reminder.end!!),
-                                    ReminderEventType.End,
+                                    Date(it.reminder.start!!),
+                                    if (it.reminder.end == null) ReminderEventType.Occur else ReminderEventType.Start,
                                     null
                                 )
                             )
+                        }
+                        if (it.reminder.end != null) {
+                            // Occurrences always override
+                            if (it.occurrences.none { occurrence -> occurrence.occurrence == it.reminder.end }) {
+                                add(
+                                    ReminderEvent(
+                                        it.reminder,
+                                        Date(it.reminder.end!!),
+                                        ReminderEventType.End,
+                                        null
+                                    )
+                                )
+                            }
                         }
                     }
 
@@ -203,7 +209,11 @@ fun SchedulePage(
                                 ReminderEvent(
                                     it.reminder,
                                     Date((occurrence.date ?: occurrence.occurrence)!!),
-                                    ReminderEventType.Occur,
+                                    when {
+                                        it.reminder.schedule == null && it.reminder.end != null && it.reminder.start == occurrence.occurrence -> ReminderEventType.Start
+                                        it.reminder.schedule == null && it.reminder.end != null && it.reminder.end == occurrence.occurrence -> ReminderEventType.End
+                                        else -> ReminderEventType.Occur
+                                     },
                                     occurrence
                                 )
                             )
@@ -211,6 +221,7 @@ fun SchedulePage(
                     }
 
                     it.dates.filter { date ->
+                        // Occurrences always override
                         it.occurrences.none { it.occurrence == date }
                     }.forEach { date ->
                         add(
@@ -267,7 +278,9 @@ fun SchedulePage(
 
                 Period(
                     view,
-                    start, end, if (isLoading) null else events.filter { event ->
+                    start,
+                    end,
+                    if (isLoading) null else events.filter { event ->
                         (isAfter(event.date, start) || isEqual(event.date, start)) && isBefore(event.date, end)
                     },
                     onDone = { it, done ->

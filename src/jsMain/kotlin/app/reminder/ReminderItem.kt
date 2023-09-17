@@ -113,7 +113,7 @@ val Reminder.scheduleText @Composable get(): String = buildString {
 
         if (schedule?.months?.notEmpty == null) {
             append("of every month")
-            append("")
+            append(" ")
         }
     }
 
