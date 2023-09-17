@@ -10,16 +10,20 @@ import app.AppStyles
 import app.StickerItem
 import baseUrl
 import components.CardItem
+import components.Icon
 import components.LinkifyText
 import ellipsize
 import kotlinx.browser.window
 import lib.formatDistanceToNow
+import org.jetbrains.compose.web.ExperimentalComposeWebApi
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
+import org.w3c.dom.HTMLVideoElement
 import r
 import stories.textContent
 import kotlin.js.Date
 
+@OptIn(ExperimentalComposeWebApi::class)
 @Composable
 fun MessageContent(message: Message, myMember: MemberAndPerson?, isReply: Boolean = false) {
     val isMe = message.member == myMember?.member?.id
@@ -128,8 +132,74 @@ fun MessageContent(message: Message, myMember: MemberAndPerson?, isReply: Boolea
                 }
             }
 
-            is VideoAttachment -> {
-                // todo
+            is VideosAttachment -> {
+                attachment.videos?.forEach {
+                    var isPlaying by remember {
+                        mutableStateOf(false)
+                    }
+//                    var videoElement by remember { mutableStateOf<HTMLVideoElement?>(null) }
+                    Div({
+                        style {
+                            position(Position.Relative)
+                        }
+                    }) {
+                        Video({
+//                    attr("autoplay", "")
+                            attr("loop", "")
+                            attr("playsinline", "")
+//                        attr("muted", "")
+                            style {
+                                property("object-fit", "cover")
+                                width(100.percent)
+                                borderRadius(1.r)
+                                backgroundColor(Styles.colors.background)
+                                cursor("pointer")
+                            }
+                            onClick {
+                                (it.target as? HTMLVideoElement)?.apply {
+                                    if (paused) {
+                                        play()
+                                        isPlaying = true
+                                    } else {
+                                        pause()
+                                        isPlaying = false
+                                    }
+                                    muted = false
+                                }
+                            }
+//                        // Do this so that auto-play works on page load, but unmute on page navigation
+//                        ref { videoEl ->
+//                            videoEl.onloadedmetadata = {
+//                                videoEl.muted = true
+//                                videoElement = videoEl
+//                                it
+//                            }
+//                            onDispose { }
+//                        }
+                        }) {
+                            Source({
+                                attr("src", "$baseUrl$it")
+                                attr("type", "video/webm")
+                            })
+                        }
+                        if (!isPlaying) {
+                            Icon("play_arrow", null) {
+                                position(Position.Absolute)
+                                borderRadius(100.percent)
+                                backgroundColor(rgba(0, 0, 0, .5))
+                                padding(1.r)
+                                top(50.percent)
+                                left(50.percent)
+                                property("pointer-events", "none")
+
+                                transform {
+                                    translateX(-50.percent)
+                                    translateY(-50.percent)
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
             is CardAttachment -> {
