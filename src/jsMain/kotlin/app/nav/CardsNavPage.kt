@@ -51,6 +51,7 @@ fun CardsNavPage(cardUpdates: Flow<Card>, nav: CardNav, onSelected: (CardNav) ->
     var filterMenuTarget by remember {
         mutableStateOf<DOMRect?>(null)
     }
+
     var isLoading by remember { mutableStateOf(true) }
 
     var showSearch by remember(cardId) {

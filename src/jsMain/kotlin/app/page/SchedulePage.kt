@@ -13,6 +13,7 @@ import app.reminder.ReminderPage
 import components.IconButton
 import dialog
 import inputDialog
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -60,6 +61,7 @@ data class ReminderEvent(
 fun SchedulePage(
     view: ScheduleView,
     reminder: Reminder?,
+    goToToday: Flow<Unit>,
     onReminder: (Reminder?) -> Unit,
     onUpdate: (Reminder) -> Unit,
     onDelete: (Reminder) -> Unit
@@ -80,8 +82,15 @@ fun SchedulePage(
         mutableStateOf(emptyList<ReminderEvent>())
     }
 
-    var offset by remember(view) {
+    var offset by remember {
         mutableStateOf(startOfDay(Date()))
+    }
+
+    LaunchedEffect(view) {
+        offset = startOfDay(Date())
+        goToToday.collectLatest {
+            offset = startOfDay(Date())
+        }
     }
 
     if (reminder != null) {
@@ -257,7 +266,12 @@ fun SchedulePage(
         }) {
             var today = offset
 
-            IconButton("keyboard_arrow_up", "Previous period") {
+            IconButton("keyboard_arrow_up", when (view) {
+                ScheduleView.Daily -> "Previous day"
+                ScheduleView.Weekly -> "Previous week"
+                ScheduleView.Monthly -> "Previous month"
+                ScheduleView.Yearly -> "Previous year"
+            }) {
                 move(-1.0)
             }
 
@@ -291,29 +305,21 @@ fun SchedulePage(
                     },
                     onDelete = {
                         delete(it)
+                    },
+                    onOpen = {
+                        onReminder(it.reminder)
                     }
                 )
 
-                when (view) {
-                    ScheduleView.Daily -> {
-                        today = addDays(today, 1.0)
-                    }
-
-                    ScheduleView.Weekly -> {
-                        today = addWeeks(today, 1.0)
-                    }
-
-                    ScheduleView.Monthly -> {
-                        today = addMonths(today, 1.0)
-                    }
-
-                    ScheduleView.Yearly -> {
-                        today = addYears(today, 1.0)
-                    }
-                }
+                today = end
             }
 
-            IconButton("keyboard_arrow_down", "Next period") {
+            IconButton("keyboard_arrow_down", when (view) {
+                ScheduleView.Daily -> "Next day"
+                ScheduleView.Weekly -> "Next week"
+                ScheduleView.Monthly -> "Next month"
+                ScheduleView.Yearly -> "Next year"
+            }) {
                 move(1.0)
             }
         }
@@ -329,6 +335,7 @@ fun Period(
     onDone: (ReminderEvent, Boolean) -> Unit,
     onEdit: (ReminderEvent) -> Unit,
     onDelete: (ReminderEvent) -> Unit,
+    onOpen: (ReminderEvent) -> Unit,
 ) {
     Div({
         classes(SchedulePageStyles.title)
@@ -386,6 +393,9 @@ fun Period(
                     onDelete = {
                         onDelete(event)
                     },
+                    onOpenReminder = {
+                        onOpen(event)
+                    }
                 )
             }
         }

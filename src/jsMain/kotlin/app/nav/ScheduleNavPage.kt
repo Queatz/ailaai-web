@@ -33,6 +33,7 @@ fun ScheduleNavPage(
     reminderUpdates: Flow<Reminder>,
     reminder: Reminder?,
     onReminder: (Reminder?) -> Unit,
+    onUpdate: (Reminder) -> Unit,
     view: ScheduleView,
     onViewClick: (ScheduleView) -> Unit,
     onProfileClick: () -> Unit
@@ -90,12 +91,12 @@ fun ScheduleNavPage(
         onValueChange()
     }
 
-    fun reload() {
+    fun reload(select: Boolean = false) {
         scope.launch {
             api.reminders {
                 reminders = it
 
-                if (reminder != null) {
+                if (select && reminder != null) {
                     onReminder(reminders.firstOrNull { it.id == reminder.id })
                 }
             }
@@ -103,7 +104,7 @@ fun ScheduleNavPage(
         }
     }
 
-    fun addReminder() {
+    fun addReminder(open: Boolean = false) {
         val timezone = systemTimezone
 
         if (newReminderTitle.isBlank()) {
@@ -124,8 +125,12 @@ fun ScheduleNavPage(
                 )
             ) {
                 newReminderTitle = ""
-                reload()
-                onReminder(it)
+                reload(false)
+                if (open) {
+                    onReminder(it)
+                } else {
+                    onUpdate(it)
+                }
             }
 
             isSavingReminder = false
@@ -180,7 +185,7 @@ fun ScheduleNavPage(
                     if (it.key == "Enter" && !it.shiftKey) {
                         it.preventDefault()
                         it.stopPropagation()
-                        addReminder()
+                        addReminder(it.ctrlKey)
                     }
                 }
 
@@ -233,7 +238,7 @@ fun ScheduleNavPage(
                     }
 
                     onClick {
-                        addReminder()
+                        addReminder(it.ctrlKey)
                     }
 
                     if (isSavingReminder) {

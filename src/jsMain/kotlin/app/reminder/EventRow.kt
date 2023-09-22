@@ -1,6 +1,7 @@
 package app.reminder
 
 import androidx.compose.runtime.*
+import app.menu.Menu
 import app.page.ReminderEventType
 import app.page.SchedulePageStyles
 import app.page.ScheduleView
@@ -11,6 +12,8 @@ import notBlank
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Text
+import org.w3c.dom.DOMRect
+import org.w3c.dom.HTMLElement
 import kotlin.js.Date
 
 @Composable
@@ -22,9 +25,26 @@ fun EventRow(
     text: String,
     note: String,
     onDone: (Boolean) -> Unit,
+    onOpenReminder: () -> Unit,
     onEdit: () -> Unit,
     onDelete: () -> Unit,
 ) {
+    var menuTarget by remember {
+        mutableStateOf<DOMRect?>(null)
+    }
+
+
+    menuTarget?.let { target ->
+        Menu({ menuTarget = null }, target) {
+            item("Open") {
+                onOpenReminder()
+            }
+            item("Delete") {
+                onDelete()
+            }
+        }
+    }
+
     Div({
         classes(SchedulePageStyles.row)
 
@@ -102,10 +122,10 @@ fun EventRow(
                 it.stopPropagation()
                 onEdit()
             }
-            IconButton("clear", "Delete", styles = {
+            IconButton("more_vert", "Options", styles = {
             }) {
                 it.stopPropagation()
-                onDelete()
+                menuTarget = if (menuTarget == null) (it.target as HTMLElement).getBoundingClientRect() else null
             }
         }
     }

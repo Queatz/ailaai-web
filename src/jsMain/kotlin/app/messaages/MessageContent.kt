@@ -187,7 +187,7 @@ fun MessageContent(message: Message, myMember: MemberAndPerson?, isReply: Boolea
                                 position(Position.Absolute)
                                 borderRadius(100.percent)
                                 backgroundColor(rgba(0, 0, 0, .5))
-                                padding(1.r)
+                                padding(.5.r)
                                 top(50.percent)
                                 left(50.percent)
                                 property("pointer-events", "none")

@@ -60,15 +60,10 @@ fun ReminderItem(reminder: Reminder, selected: Boolean, onSelected: () -> Unit) 
 
 val Reminder.scheduleText @Composable get(): String = buildString {
     if (schedule == null) {
-        append(Date(start!!).format())
-
         if (end != null) {
-            val start = Date(start!!)
-            if (isAfter(start, Date())) {
-                append(" from ${ start.format() }")
-            }
-
-            append(" until ${Date(end!!).format()}")
+            append("From ${Date(start!!).format()} until ${Date(end!!).format()}")
+        } else {
+            append(Date(start!!).format())
         }
 
         return@buildString

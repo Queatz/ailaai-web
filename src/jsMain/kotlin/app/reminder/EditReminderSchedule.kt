@@ -73,6 +73,22 @@ fun EditReminderSchedule(
             listOf("-") else if (schedule.reoccurringMonths.size > 1 && "-" in schedule.reoccurringMonths) schedule.reoccurringMonths -= "-"
     }
 
+    LaunchedEffect(schedule.until) {
+        if (schedule.until) {
+            schedule.untilDate = schedule.date
+            schedule.untilTime = schedule.time
+        }
+    }
+
+    LaunchedEffect(schedule.reoccurs) {
+        if (schedule.reoccurs) {
+            schedule.reoccurringHours = listOf(schedule.time.split(":").first().toInt().toString())
+            schedule.reoccurringDays = emptyList()
+            schedule.reoccurringWeeks = emptyList()
+            schedule.reoccurringMonths = emptyList()
+        }
+    }
+
     Div({
         style {
             padding(.5.r, .5.r, 1.r, .5.r)

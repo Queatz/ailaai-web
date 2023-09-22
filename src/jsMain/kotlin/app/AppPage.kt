@@ -70,6 +70,10 @@ fun AppPage() {
         mutableStateOf(ScheduleView.Monthly)
     }
 
+    val goToToday = remember {
+        MutableSharedFlow<Unit>()
+    }
+
     LaunchedEffect(nav) {
         application.setNavPage(nav)
     }
@@ -101,12 +105,29 @@ fun AppPage() {
                         }
                     )
 
-                    NavPage.Schedule -> ScheduleNavPage(reminderUpdates, reminder, { reminder = it }, scheduleView, {
-                        reminder = null
-                        scheduleView = it
-                    }, {
-                        nav = NavPage.Profile
-                    })
+                    NavPage.Schedule -> ScheduleNavPage(
+                        reminderUpdates,
+                        reminder,
+                        { reminder = it },
+                        {
+                            scope.launch {
+                                reminderUpdates.emit(it)
+                            }
+                        },
+                        scheduleView,
+                        {
+                            reminder = null
+
+                            if (scheduleView == it) {
+                                scope.launch { goToToday.emit(Unit) }
+                            } else {
+                                scheduleView = it
+                            }
+                        },
+                        {
+                            nav = NavPage.Profile
+                        }
+                    )
 
                     NavPage.Cards -> CardsNavPage(cardUpdates, card, { card = it }, {
                         nav = NavPage.Profile
@@ -139,6 +160,7 @@ fun AppPage() {
                 NavPage.Schedule -> SchedulePage(
                     scheduleView,
                     reminder,
+                    goToToday,
                     { reminder = it },
                     onUpdate = {
                         scope.launch {
