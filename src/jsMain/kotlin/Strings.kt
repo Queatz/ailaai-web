@@ -19,9 +19,9 @@ object Strings {
         "13575494"
     )
     val appName = Translation(
-        "Ai Là Ai",
-        "Ai là ai",
-        "Ай Ла Ай"
+        "Hi Town",
+        "Chào Town",
+        "Город приветик"
     )
     val stories = Translation(
         "Stories",
@@ -145,8 +145,8 @@ object Strings {
         "Расширяйте и оживляйте свой город"
     )
     val downloadApp = Translation(
-        "Download Ai Là Ai Beta for Android",
-        "Tải xuống Ai là ai beta cho Android",
+        "Download Hi Town Beta for Android",
+        "Tải xuống Chào Town beta cho Android",
         "Скачать Ай Ла Ай Бета для Андроид"
     )
     val appTagline = Translation(
@@ -155,18 +155,18 @@ object Strings {
         "Локальный обмен сообщениями, торговая площадка и вдохновение"
     )
     val homeAboutTitle = Translation(
-        "What is Ai Là Ai?",
-        "Ai là ai là gì?"
+        "What is Hi Town?",
+        "Chào Town là gì?"
         ,"Что такое Ай Ла Ай?"
     )
     val homeAboutDescription = Translation(
-        "Ai Là Ai is a collaboration platform that helps you discover and stay connected to your city, enabling you to do more, externalize all of your visions, and go farther than you ever imagined.",
-        "Ai là ai là một nền tảng hợp tác giúp bạn khám phá và giữ liên lạc với mọi người trong thành phố của bạn, cho phép bạn làm được nhiều hơn, hiện thực hóa tất cả tầm nhìn của bạn và tiến xa hơn những gì bạn tưởng tượng."
+        "Hi Town is a collaboration platform that helps you discover and stay connected to your city, enabling you to do more, externalize all of your visions, and go farther than you ever imagined.",
+        "Chào Town là một nền tảng hợp tác giúp bạn khám phá và giữ liên lạc với mọi người trong thành phố của bạn, cho phép bạn làm được nhiều hơn, hiện thực hóa tất cả tầm nhìn của bạn và tiến xa hơn những gì bạn tưởng tượng."
         ,""
     )
     val inviteEmailSubject = Translation(
-        "Ai là ai invite to join",
-        "Ai là ai lời mời tham gia",
+        "Hi Town invite to join",
+        "Chào Town lời mời tham gia",
         "Ай ла ай приглашаю присоединиться"
     )
     val peopleToKnow = Translation(
@@ -194,8 +194,8 @@ object Strings {
         "Liên hệ"
     )
     val isCreatedBy = Translation(
-        "Ai Là Ai is being created by ",
-        "Ai là ai đang tạo ra bởi "
+        "Hi Town is being created by ",
+        "Chào Town đang tạo ra bởi "
     )
     val sendMeAnEmail = Translation(
         "Send me an email",

@@ -7,7 +7,7 @@ import org.jetbrains.compose.web.dom.*
 fun OpenSourcePage() {
     Div {
         H1 {
-            Text("Ai Là Ai is Open Source")
+            Text("Hi Town is Open Source")
         }
         H3 {
             Text("This website")
@@ -16,13 +16,13 @@ fun OpenSourcePage() {
             Text("Go to GitHub")
         }
         H3 {
-            Text("Ai Là Ai Server")
+            Text("Hi Town Server")
         }
         A("https://github.com/Queatz/ailaai-backend") {
             Text("Go to GitHub")
         }
         H3 {
-            Text("Ai Là Ai for Android")
+            Text("Hi Town for Android")
         }
         A("https://github.com/Queatz/AiLaAi") {
             Text("Go to GitHub")
