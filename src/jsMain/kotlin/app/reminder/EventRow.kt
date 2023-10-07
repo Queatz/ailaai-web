@@ -26,6 +26,7 @@ fun EventRow(
     note: String,
     onDone: (Boolean) -> Unit,
     onOpenReminder: () -> Unit,
+    onRescheduleReminder: () -> Unit,
     onEdit: () -> Unit,
     onDelete: () -> Unit,
 ) {
@@ -33,11 +34,13 @@ fun EventRow(
         mutableStateOf<DOMRect?>(null)
     }
 
-
     menuTarget?.let { target ->
         Menu({ menuTarget = null }, target) {
             item("Open") {
                 onOpenReminder()
+            }
+            item("Reschedule") {
+                onRescheduleReminder()
             }
             item("Delete") {
                 onDelete()

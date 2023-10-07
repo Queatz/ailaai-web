@@ -73,62 +73,17 @@ fun EditReminderSchedule(
             listOf("-") else if (schedule.reoccurringMonths.size > 1 && "-" in schedule.reoccurringMonths) schedule.reoccurringMonths -= "-"
     }
 
-    LaunchedEffect(schedule.until) {
-        if (schedule.until) {
-            schedule.untilDate = schedule.date
-            schedule.untilTime = schedule.time
-        }
-    }
-
-    LaunchedEffect(schedule.reoccurs) {
-        if (schedule.reoccurs) {
-            schedule.reoccurringHours = listOf(schedule.time.split(":").first().toInt().toString())
-            schedule.reoccurringDays = emptyList()
-            schedule.reoccurringWeeks = emptyList()
-            schedule.reoccurringMonths = emptyList()
-        }
-    }
-
-    Div({
-        style {
+    ReminderDateTime(
+        schedule.date,
+        schedule.time,
+        { schedule.date = it },
+        { schedule.time = it },
+        disabled,
+        {
             padding(.5.r, .5.r, 1.r, .5.r)
-            display(DisplayStyle.Flex)
         }
-    }) {
-        DateInput(schedule.date) {
-            classes(Styles.dateTimeInput)
+    )
 
-            style {
-                marginRight(1.r)
-                padding(1.r)
-                flex(1)
-            }
-
-            onChange {
-                schedule.date = it.value
-            }
-
-            if (disabled) {
-                disabled()
-            }
-        }
-
-        TimeInput(schedule.time) {
-            classes(Styles.dateTimeInput)
-
-            style {
-                padding(1.r)
-            }
-
-            onChange {
-                schedule.time = it.value
-            }
-
-            if (disabled) {
-                disabled()
-            }
-        }
-    }
     Label(attrs = {
         style {
             padding(0.r, .5.r, 1.r, .5.r)
@@ -229,6 +184,8 @@ fun EditReminderSchedule(
         CheckboxInput(schedule.until) {
             onChange {
                 schedule.until = it.value
+                schedule.untilDate = schedule.date
+                schedule.untilTime = schedule.time
             }
 
             if (disabled) {
@@ -239,46 +196,16 @@ fun EditReminderSchedule(
     }
 
     if (schedule.until) {
-        Div({
-            style {
-                display(DisplayStyle.Flex)
+        ReminderDateTime(
+            schedule.untilDate,
+            schedule.untilTime,
+            { schedule.untilDate = it },
+            { schedule.untilTime = it },
+            disabled,
+            {
                 marginBottom(1.r)
                 padding(0.r, .5.r)
             }
-        }) {
-            DateInput(schedule.untilDate) {
-                classes(Styles.dateTimeInput)
-
-                style {
-                    marginRight(1.r)
-                    padding(1.r)
-                    flex(1)
-                }
-
-                onChange {
-                    schedule.untilDate = it.value
-                }
-
-                if (disabled) {
-                    disabled()
-                }
-            }
-
-            TimeInput(schedule.untilTime) {
-                classes(Styles.dateTimeInput)
-
-                style {
-                    padding(1.r)
-                }
-
-                onChange {
-                    schedule.untilTime = it.value
-                }
-
-                if (disabled) {
-                    disabled()
-                }
-            }
-        }
+        )
     }
 }

@@ -91,7 +91,7 @@ fun ScheduleNavPage(
         onValueChange()
     }
 
-    fun reload(select: Boolean = false) {
+    fun reload(select: Boolean = true) {
         scope.launch {
             api.reminders {
                 reminders = it

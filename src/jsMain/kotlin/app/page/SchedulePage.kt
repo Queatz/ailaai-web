@@ -9,6 +9,7 @@ import apis.occurrences
 import apis.updateReminderOccurrence
 import app.FullPageLayout
 import app.reminder.EventRow
+import app.reminder.ReminderDateTime
 import app.reminder.ReminderPage
 import components.IconButton
 import dialog
@@ -22,6 +23,7 @@ import notBlank
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Text
+import parseDateTime
 import r
 import kotlin.js.Date
 
@@ -153,6 +155,35 @@ fun SchedulePage(
             api.deleteReminderOccurrence(
                 event.reminder.id!!,
                 event.occurrence?.occurrence?.let(::Date) ?: event.date
+            ) {
+                onUpdate(event.reminder)
+                changes.emit(Unit)
+            }
+        }
+    }
+
+    fun reschedule(event: ReminderEvent) {
+        scope.launch {
+            var date by mutableStateOf(format(event.date, "yyyy-MM-dd"))
+            var time by mutableStateOf(format(event.date, "HH:mm"))
+            console.log(date, time)
+            val result = dialog("Reschedule occurrence", confirmButton = "Update") {
+                ReminderDateTime(
+                    date,
+                    time,
+                    { date = it },
+                    { time = it },
+                )
+            }
+
+            if (result != true) return@launch
+
+            api.updateReminderOccurrence(
+                event.reminder.id!!,
+                event.date,
+                ReminderOccurrence(
+                    date = parseDateTime(date, time, event.date).toISOString()
+                )
             ) {
                 onUpdate(event.reminder)
                 changes.emit(Unit)
@@ -306,6 +337,9 @@ fun SchedulePage(
                     onDelete = {
                         delete(it)
                     },
+                    onReschedule = {
+                        reschedule(it)
+                    },
                     onOpen = {
                         onReminder(it.reminder)
                     }
@@ -335,6 +369,7 @@ fun Period(
     onDone: (ReminderEvent, Boolean) -> Unit,
     onEdit: (ReminderEvent) -> Unit,
     onDelete: (ReminderEvent) -> Unit,
+    onReschedule: (ReminderEvent) -> Unit,
     onOpen: (ReminderEvent) -> Unit,
 ) {
     Div({
@@ -392,6 +427,9 @@ fun Period(
                     },
                     onDelete = {
                         onDelete(event)
+                    },
+                    onRescheduleReminder = {
+                        onReschedule(event)
                     },
                     onOpenReminder = {
                         onOpen(event)

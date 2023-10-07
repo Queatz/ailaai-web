@@ -20,7 +20,11 @@ import r
 import kotlin.js.Date
 
 @Composable
-fun ReminderPage(reminder: Reminder, onUpdate: (Reminder) -> Unit, onDelete: (Reminder) -> Unit) {
+fun ReminderPage(
+    reminder: Reminder,
+    onUpdate: (Reminder) -> Unit,
+    onDelete: (Reminder) -> Unit
+) {
     val scope = rememberCoroutineScope()
 
     var menuTarget by remember(reminder) {
