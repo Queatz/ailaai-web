@@ -11,6 +11,7 @@ import app.FullPageLayout
 import app.reminder.EventRow
 import app.reminder.ReminderDateTime
 import app.reminder.ReminderPage
+import app.reminder.toEvents
 import components.IconButton
 import dialog
 import inputDialog
@@ -208,73 +209,7 @@ fun SchedulePage(
                 ScheduleView.Yearly -> addYears(start, range[ScheduleView.Yearly]!!.toDouble())
             }
         ) {
-            /**
-             * Rules are:
-             *
-             * If reminder has a schedule -> Show occurrences
-             * Else: Show start and end (if defined)
-             */
-            events = buildList {
-                it.forEach {
-                    if (it.reminder.schedule == null) {
-                        // Occurrences always override
-                        if (it.occurrences.none { occurrence -> occurrence.occurrence == it.reminder.start }) {
-                            add(
-                                ReminderEvent(
-                                    it.reminder,
-                                    Date(it.reminder.start!!),
-                                    if (it.reminder.end == null) ReminderEventType.Occur else ReminderEventType.Start,
-                                    null
-                                )
-                            )
-                        }
-                        if (it.reminder.end != null) {
-                            // Occurrences always override
-                            if (it.occurrences.none { occurrence -> occurrence.occurrence == it.reminder.end }) {
-                                add(
-                                    ReminderEvent(
-                                        it.reminder,
-                                        Date(it.reminder.end!!),
-                                        ReminderEventType.End,
-                                        null
-                                    )
-                                )
-                            }
-                        }
-                    }
-
-                    it.occurrences.forEach { occurrence ->
-                        if (occurrence.gone != true) {
-                            add(
-                                ReminderEvent(
-                                    it.reminder,
-                                    Date((occurrence.date ?: occurrence.occurrence)!!),
-                                    when {
-                                        it.reminder.schedule == null && it.reminder.end != null && it.reminder.start == occurrence.occurrence -> ReminderEventType.Start
-                                        it.reminder.schedule == null && it.reminder.end != null && it.reminder.end == occurrence.occurrence -> ReminderEventType.End
-                                        else -> ReminderEventType.Occur
-                                     },
-                                    occurrence
-                                )
-                            )
-                        }
-                    }
-
-                    it.dates.filter { date ->
-                        // Occurrences always override
-                        it.occurrences.none { it.occurrence == date }
-                    }.forEach { date ->
-                        add(
-                            ReminderEvent(
-                                it.reminder,
-                                Date(date),
-                                ReminderEventType.Occur,
-                                null
-                            )
-                        )
-                    }
-                }
-            }.sortedBy { it.date.getTime() }
+            events = it.toEvents()
         }
         isLoading = false
     }

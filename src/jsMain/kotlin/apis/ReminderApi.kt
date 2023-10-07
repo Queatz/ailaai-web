@@ -19,6 +19,7 @@ suspend fun Api.reminders(
     onSuccess: suspend (List<Reminder>) -> Unit = {}
 ) = get(
     url = "reminders",
+    parameters = mapOf("limit" to "100"),
     onError = onError,
     onSuccess = onSuccess
 )
@@ -30,6 +31,22 @@ suspend fun Api.occurrences(
     onSuccess: suspend (List<ReminderOccurrences>) -> Unit = {}
 ) = get(
     url = "occurrences",
+    onError = onError,
+    onSuccess = onSuccess,
+    parameters = mapOf(
+        "start" to start.toISOString(),
+        "end" to end.toISOString()
+    )
+)
+
+suspend fun Api.reminderOccurrences(
+    id: String,
+    start: Date,
+    end: Date,
+    onError: suspend (Throwable) -> Unit = {},
+    onSuccess: suspend (List<ReminderOccurrences>) -> Unit = {}
+) = get(
+    url = "/reminders/$id/occurrences",
     onError = onError,
     onSuccess = onSuccess,
     parameters = mapOf(

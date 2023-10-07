@@ -111,7 +111,7 @@ fun ReminderPage(
         }
     }) {
         EditField(reminder.note ?: "", "Note", {
-            margin(1.r)
+            margin(1.r, 1.r, 0.r, 1.r)
         }) {
             var success = false
             api.updateReminder(reminder.id!!, Reminder(note = it)) {
@@ -121,13 +121,7 @@ fun ReminderPage(
 
             success
         }
-        Div({
-            style {
-                padding(1.r)
-            }
-        }) {
-            Text("Reminder history and future, see all occurrences")
-        }
+        ReminderEvents(reminder)
     }
     PageTopBar(
         reminder.title ?: "new reminder",
