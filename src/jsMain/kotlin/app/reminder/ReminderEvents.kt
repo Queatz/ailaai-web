@@ -7,7 +7,7 @@ import apis.reminderOccurrences
 import app.page.ReminderEvent
 import app.page.SchedulePageStyles
 import app.page.ScheduleView
-import notBlank
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.css.margin
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Text
@@ -16,6 +16,8 @@ import kotlin.js.Date
 
 @Composable
 fun ReminderEvents(reminder: Reminder) {
+    val scope = rememberCoroutineScope()
+
     var events by remember(reminder) {
         mutableStateOf(emptyList<ReminderEvent>())
     }
@@ -51,25 +53,14 @@ fun ReminderEvents(reminder: Reminder) {
                 events.forEach { event ->
                     EventRow(
                         ScheduleView.Yearly,
-                        event.date,
-                        event.event,
-                        event.occurrence?.done ?: false,
-                        event.reminder.title?.notBlank ?: "New reminder",
-                        event.occurrence?.note?.notBlank ?: event.reminder.note?.notBlank ?: "",
-                        onDone = {
-//                    onDone(event, it)
-                        },
-                        onEdit = {
-//                    onEdit(event)
-                        },
-                        onDelete = {
-//                    onDelete(event)
-                        },
-                        onRescheduleReminder = {
-//                    onReschedule(event)
+                        event,
+                        showOpen = false,
+                        onUpdate = {
+                             scope.launch {
+                                 reload()
+                             }
                         },
                         onOpenReminder = {
-//                    onOpen(event)
                         }
                     )
                 }

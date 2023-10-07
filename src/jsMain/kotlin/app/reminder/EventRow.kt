@@ -1,12 +1,20 @@
 package app.reminder
 
+import ReminderOccurrence
 import androidx.compose.runtime.*
+import api
+import apis.deleteReminderOccurrence
+import apis.updateReminderOccurrence
 import app.menu.Menu
+import app.page.ReminderEvent
 import app.page.ReminderEventType
 import app.page.SchedulePageStyles
 import app.page.ScheduleView
 import components.IconButton
+import dialog
 import focusable
+import inputDialog
+import kotlinx.coroutines.launch
 import lib.format
 import notBlank
 import org.jetbrains.compose.web.css.*
@@ -14,39 +22,111 @@ import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Text
 import org.w3c.dom.DOMRect
 import org.w3c.dom.HTMLElement
+import parseDateTime
 import kotlin.js.Date
 
 @Composable
 fun EventRow(
     view: ScheduleView,
-    date: Date,
-    event: ReminderEventType,
-    done: Boolean,
-    text: String,
-    note: String,
-    onDone: (Boolean) -> Unit,
+    event: ReminderEvent,
+    onUpdate: () -> Unit,
     onOpenReminder: () -> Unit,
-    onRescheduleReminder: () -> Unit,
-    onEdit: () -> Unit,
-    onDelete: () -> Unit,
+    showOpen: Boolean = true
 ) {
+    val scope = rememberCoroutineScope()
+
     var menuTarget by remember {
         mutableStateOf<DOMRect?>(null)
     }
 
-    menuTarget?.let { target ->
-        Menu({ menuTarget = null }, target) {
-            item("Open") {
-                onOpenReminder()
-            }
-            item("Reschedule") {
-                onRescheduleReminder()
-            }
-            item("Delete") {
-                onDelete()
+    fun markAsDone(done: Boolean) {
+        scope.launch {
+            api.updateReminderOccurrence(event.reminder.id!!, event.date, ReminderOccurrence(
+                done = done
+            )) {
+                onUpdate()
             }
         }
     }
+
+    fun edit() {
+        scope.launch {
+            val note = inputDialog("Edit note", "", confirmButton = "Update", defaultValue = event.occurrence?.note?.notBlank ?: event.reminder.note?.notBlank ?: "")
+
+            if (note == null) return@launch
+
+            api.updateReminderOccurrence(event.reminder.id!!, event.date, ReminderOccurrence(
+                note = note
+            )) {
+                onUpdate()
+            }
+        }
+    }
+
+    fun delete() {
+        scope.launch {
+            val result = dialog("Delete this occurrence?", confirmButton = "Yes, delete")
+
+            if (result != true) return@launch
+
+            api.deleteReminderOccurrence(
+                event.reminder.id!!,
+                event.occurrence?.occurrence?.let(::Date) ?: event.date
+            ) {
+                onUpdate()
+            }
+        }
+    }
+
+    fun reschedule() {
+        scope.launch {
+            var date by mutableStateOf(format(event.date, "yyyy-MM-dd"))
+            var time by mutableStateOf(format(event.date, "HH:mm"))
+            console.log(date, time)
+            val result = dialog("Reschedule occurrence", confirmButton = "Update") {
+                ReminderDateTime(
+                    date,
+                    time,
+                    { date = it },
+                    { time = it },
+                )
+            }
+
+            if (result != true) return@launch
+
+            api.updateReminderOccurrence(
+                event.reminder.id!!,
+                event.date,
+                ReminderOccurrence(
+                    date = parseDateTime(date, time, event.date).toISOString()
+                )
+            ) {
+                onUpdate()
+            }
+        }
+    }
+
+    menuTarget?.let { target ->
+        Menu({ menuTarget = null }, target) {
+            if (showOpen) {
+                item("Open") {
+                    onOpenReminder()
+                }
+            }
+            item("Reschedule") {
+                reschedule()
+            }
+            item("Delete") {
+                delete()
+            }
+        }
+    }
+
+    val eventType = event.event
+    val date = event.date
+    val done = event.occurrence?.done ?: false
+    val text = event.reminder.title?.notBlank ?: "New reminder"
+    val note = event.occurrence?.note?.notBlank ?: event.reminder.note?.notBlank ?: ""
 
     Div({
         classes(SchedulePageStyles.row)
@@ -54,7 +134,7 @@ fun EventRow(
         title("Mark as done")
 
         onClick {
-            onDone(!done)
+            markAsDone(!done)
         }
 
         focusable()
@@ -77,7 +157,7 @@ fun EventRow(
                 }
             }) {
                 Text(
-                    text + when (event) {
+                    text + when (eventType) {
                         ReminderEventType.Start -> " starts"
                         ReminderEventType.End -> " ends"
                         ReminderEventType.Occur -> ""
@@ -123,7 +203,7 @@ fun EventRow(
             IconButton("edit", "Edit", styles = {
             }) {
                 it.stopPropagation()
-                onEdit()
+                edit()
             }
             IconButton("more_vert", "Options", styles = {
             }) {

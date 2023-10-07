@@ -121,77 +121,6 @@ fun SchedulePage(
         ScheduleView.Yearly to 2
     )
 
-    fun markAsDone(event: ReminderEvent, done: Boolean) {
-        scope.launch {
-            api.updateReminderOccurrence(event.reminder.id!!, event.date, ReminderOccurrence(
-                done = done
-            )) {
-                onUpdate(event.reminder)
-                changes.emit(Unit)
-            }
-        }
-    }
-
-    fun edit(event: ReminderEvent) {
-        scope.launch {
-            val note = inputDialog("Edit note", "", confirmButton = "Update", defaultValue = event.occurrence?.note?.notBlank ?: event.reminder.note?.notBlank ?: "")
-
-            if (note == null) return@launch
-
-            api.updateReminderOccurrence(event.reminder.id!!, event.date, ReminderOccurrence(
-                note = note
-            )) {
-                onUpdate(event.reminder)
-                changes.emit(Unit)
-            }
-        }
-    }
-
-    fun delete(event: ReminderEvent) {
-        scope.launch {
-            val result = dialog("Delete this occurrence?", confirmButton = "Yes, delete")
-
-            if (result != true) return@launch
-
-            api.deleteReminderOccurrence(
-                event.reminder.id!!,
-                event.occurrence?.occurrence?.let(::Date) ?: event.date
-            ) {
-                onUpdate(event.reminder)
-                changes.emit(Unit)
-            }
-        }
-    }
-
-    fun reschedule(event: ReminderEvent) {
-        scope.launch {
-            var date by mutableStateOf(format(event.date, "yyyy-MM-dd"))
-            var time by mutableStateOf(format(event.date, "HH:mm"))
-            console.log(date, time)
-            val result = dialog("Reschedule occurrence", confirmButton = "Update") {
-                ReminderDateTime(
-                    date,
-                    time,
-                    { date = it },
-                    { time = it },
-                )
-            }
-
-            if (result != true) return@launch
-
-            api.updateReminderOccurrence(
-                event.reminder.id!!,
-                event.date,
-                ReminderOccurrence(
-                    date = parseDateTime(date, time, event.date).toISOString()
-                )
-            ) {
-                onUpdate(event.reminder)
-                changes.emit(Unit)
-            }
-        }
-    }
-
     suspend fun reload() {
         val start = when (view) {
             ScheduleView.Daily -> startOfDay(offset)
@@ -263,17 +192,11 @@ fun SchedulePage(
                     if (isLoading) null else events.filter { event ->
                         (isAfter(event.date, start) || isEqual(event.date, start)) && isBefore(event.date, end)
                     },
-                    onDone = { it, done ->
-                        markAsDone(it, done)
-                    },
-                    onEdit = {
-                        edit(it)
-                    },
-                    onDelete = {
-                        delete(it)
-                    },
-                    onReschedule = {
-                        reschedule(it)
+                    onUpdate = {
+                        scope.launch {
+                            changes.emit(Unit)
+                            onUpdate(it.reminder)
+                        }
                     },
                     onOpen = {
                         onReminder(it.reminder)
@@ -301,10 +224,7 @@ fun Period(
     start: Date,
     end: Date,
     events: List<ReminderEvent>?,
-    onDone: (ReminderEvent, Boolean) -> Unit,
-    onEdit: (ReminderEvent) -> Unit,
-    onDelete: (ReminderEvent) -> Unit,
-    onReschedule: (ReminderEvent) -> Unit,
+    onUpdate: (ReminderEvent) -> Unit,
     onOpen: (ReminderEvent) -> Unit,
 ) {
     Div({
@@ -349,22 +269,9 @@ fun Period(
             events.forEach { event ->
                 EventRow(
                     view,
-                    event.date,
-                    event.event,
-                    event.occurrence?.done ?: false,
-                    event.reminder.title?.notBlank ?: "New reminder",
-                    event.occurrence?.note?.notBlank ?: event.reminder.note?.notBlank ?: "",
-                    onDone = {
-                        onDone(event, it)
-                    },
-                    onEdit = {
-                        onEdit(event)
-                    },
-                    onDelete = {
-                        onDelete(event)
-                    },
-                    onRescheduleReminder = {
-                        onReschedule(event)
+                    event,
+                    onUpdate = {
+                        onUpdate(event)
                     },
                     onOpenReminder = {
                         onOpen(event)
