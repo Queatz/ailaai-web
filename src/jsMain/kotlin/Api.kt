@@ -144,6 +144,15 @@ class Api {
         onSuccess = onSuccess
     )
 
+    suspend fun collaborations(
+        onError: suspend (Throwable) -> Unit = {},
+        onSuccess: suspend (List<Card>) -> Unit
+    ) = get(
+        url = "me/collaborations",
+        onError = onError,
+        onSuccess = onSuccess
+    )
+
     suspend fun groups(
         onError: suspend (Throwable) -> Unit = {},
         onSuccess: suspend (List<GroupExtended>) -> Unit

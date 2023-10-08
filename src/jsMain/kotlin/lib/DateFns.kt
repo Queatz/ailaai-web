@@ -24,6 +24,7 @@ external fun isEqual(date: Date, dateToCompare: Date): Boolean
 external fun isBefore(date: Date, dateToCompare: Date): Boolean
 external fun isAfter(date: Date, dateToCompare: Date): Boolean
 
+external fun isYesterday(date: Date): Boolean
 external fun isToday(date: Date): Boolean
 external fun isTomorrow(date: Date): Boolean
 external fun isThisYear(date: Date): Boolean

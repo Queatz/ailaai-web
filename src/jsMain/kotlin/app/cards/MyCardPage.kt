@@ -1,10 +1,13 @@
 package app.cards
 
 import Card
+import Configuration
+import LocalConfiguration
 import androidx.compose.runtime.*
 import api
 import app.PageTopBar
 import app.components.EditField
+import app.menu.InlineMenu
 import app.menu.Menu
 import app.nav.NavSearchInput
 import application
@@ -89,6 +92,109 @@ fun MyCardPage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Unit
         }
     }
 
+    val configuration = LocalConfiguration.current
+
+    fun moveToPage(cardId: String) {
+        scope.launch {
+            api.updateCard(card.id!!, Card(offline = false, parent = cardId, equipped = false, geo = null)) {
+                onCardUpdated(it)
+            }
+        }
+    }
+
+    fun moveToPage() {
+        scope.launch {
+            val result = dialog("In a page", "Cancel", null) { resolve ->
+                var value by remember {
+                    mutableStateOf("")
+                }
+                var loading by remember {
+                    mutableStateOf(true)
+                }
+
+                var allCards by remember { mutableStateOf(emptyList<Card>()) }
+                var cards by remember { mutableStateOf(emptyList<Card>()) }
+                val saved by saves.cards.collectAsState()
+
+                LaunchedEffect(Unit) {
+                    api.collaborations {
+                        allCards = it
+                    }
+                    loading = false
+                }
+
+                LaunchedEffect(allCards, value) {
+                    cards = if (value.isBlank()) {
+                        allCards
+                    } else {
+                        allCards.filter { (it.name?.contains(value, true) ?: false) }
+                    }.filter {
+                        it.id != card.id
+                    }.sortedByDescending { saved.any { save -> it.id == save.id } }
+                }
+
+                CompositionLocalProvider(LocalConfiguration provides configuration) {
+                    NavSearchInput(
+                        value,
+                        {
+                            value = it
+                        },
+                        placeholder = "Search",
+                        styles = {
+                            margin(0.r)
+                        },
+                        onDismissRequest = {
+                            resolve(false)
+                        }
+                    ) {
+                        resolve(true)
+                    }
+
+                    if (loading) {
+                        Div({
+                            style {
+                                padding(1.r)
+                            }
+                        }) {
+                            Loading()
+                        }
+                    } else {
+                        Div({
+                            style {
+                                overflowY("auto")
+                                overflowX("hidden")
+                                width(28.r)
+                                maxWidth(100.percent)
+                                padding(1.r / 2, 0.r)
+                            }
+                        }) {
+                            cards.forEach { card ->
+                                app.nav.CardItem(
+                                    card,
+                                    false,
+                                    false,
+                                    saved.any { save -> save.id == card.id },
+                                    card.active == true
+                                ) {
+                                    if (!it) {
+                                        moveToPage(card.id!!)
+                                        resolve(false)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (result == true) {
+                if (cards.isNotEmpty()) {
+                    moveToPage(cards.first().id!!)
+                }
+            }
+        }
+    }
+
     if (menuTarget != null) {
         Menu({ menuTarget = null }, menuTarget!!) {
             val isSaved = saves.cards.value.any { it.id == card.id }
@@ -139,6 +245,45 @@ fun MyCardPage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Unit
 
                     api.updateCard(card.id!!, Card(location = hint)) {
                         onCardUpdated(it)
+                    }
+                }
+            }
+
+            item("Location") {
+                scope.launch {
+                    val name = dialog(
+                        "Location",
+                        "Close",
+                        null
+                    ) {
+                        InlineMenu({
+                            it(true)
+                        }) {
+                            item("On profile", selected = card.equipped == true, "account_circle") {
+                                scope.launch {
+                                    api.updateCard(card.id!!, Card(offline = false, parent = null, equipped = true, geo = null)) {
+                                        onCardUpdated(it)
+                                    }
+                                }
+                            }
+                            item("At a location", selected = card.parent == null && card.offline != true && card.equipped != true && card.geo != null, "location_on") {
+
+                            }
+                            item("In a page", selected = card.parent != null, "description") {
+                                moveToPage()
+                            }
+                            item("None", selected = card.offline == true) {
+                                scope.launch {
+                                    api.updateCard(card.id!!, Card(offline = true, parent = null, equipped = false, geo = null)) {
+                                        onCardUpdated(it)
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (name == null) {
+                        return@launch
                     }
                 }
             }

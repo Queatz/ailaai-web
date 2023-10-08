@@ -19,9 +19,15 @@ import r
 
 class MenuScope {
     @Composable
-    fun item(title: String, icon: String? = null, onClick: () -> Unit) {
+    fun item(title: String, selected: Boolean = false, icon: String? = null, onClick: () -> Unit) {
         Div({
-            classes(AppStyles.menuItem)
+            classes(
+                if (selected) {
+                    listOf(AppStyles.menuItem, AppStyles.menuItemSelected)
+                } else {
+                    listOf(AppStyles.menuItem)
+                }
+            )
 
             focusable()
 
@@ -79,6 +85,22 @@ fun Menu(
                 document.removeEventListener("click", clickListener)
                 window.removeEventListener("resize", resizeListener)
             }
+        }
+    }) {
+        MenuScope().content()
+    }
+}
+
+@Composable
+fun InlineMenu(
+    onDismissRequest: () -> Unit,
+    content: @Composable MenuScope.() -> Unit
+) {
+    Div({
+        classes(AppStyles.menuInline)
+
+        onClick {
+            onDismissRequest()
         }
     }) {
         MenuScope().content()

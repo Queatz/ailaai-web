@@ -42,6 +42,21 @@ object AppStyles : StyleSheet() {
         }
     }
 
+    val menuInline by style {
+        backgroundColor(Color.white)
+        borderRadius(1.r)
+        property("user-select", "none")
+
+        media("(prefers-color-scheme: dark)") {
+            self style {
+                backgroundColor(Styles.colors.dark.background)
+            }
+        }
+    }
+
+    val menuItemSelected by style {
+    }
+
     val menuItem by style {
         borderRadius(.5.r)
         padding(1.r)
@@ -61,6 +76,11 @@ object AppStyles : StyleSheet() {
             self + hover style {
                 backgroundColor(Color.black)
             }
+        }
+
+        self + className(menuItemSelected) style {
+            backgroundColor(Styles.colors.primary)
+            color(Color.white)
         }
     }
 

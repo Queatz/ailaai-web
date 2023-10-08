@@ -233,7 +233,7 @@ fun Period(
         when (view) {
             ScheduleView.Daily -> {
                 Text(
-                    (if (isToday(start)) "Today, " else if (isTomorrow(start)) "Tomorrow, " else "") + format(
+                    (if (isToday(start)) "Today, " else if (isYesterday(start)) "Yesterday, " else if (isTomorrow(start)) "Tomorrow, " else "") + format(
                         start,
                         "EEEE, MMMM do"
                     )
