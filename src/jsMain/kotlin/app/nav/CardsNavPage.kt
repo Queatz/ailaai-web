@@ -14,13 +14,15 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
+import org.jetbrains.compose.web.dom.Text
 import org.w3c.dom.DOMRect
 import org.w3c.dom.HTMLElement
 import r
 import saves
 
 sealed class CardNav {
-    data object Explore : CardNav()
+    data object Friends : CardNav()
+    data object Local : CardNav()
     data object Saved : CardNav()
     data class Selected(val card: Card, val subCard: Card? = null) : CardNav()
 }
@@ -74,13 +76,12 @@ fun CardsNavPage(cardUpdates: Flow<Card>, nav: CardNav, onSelected: (CardNav) ->
             }
         }).sortedByDescending { saved.any { save -> it.id == save.id } }.let {
             if (filters.isNotEmpty()) {
-                it.filter {  card ->
+                it.filter { card ->
                     filters.none {
                         when (it) {
                             CardFilter.Published -> card.active != true
                             CardFilter.NotPublished -> card.active == true
                             CardFilter.NoParent -> card.parent != null
-                            else -> false
                         }
                     }
                 }
@@ -97,7 +98,7 @@ fun CardsNavPage(cardUpdates: Flow<Card>, nav: CardNav, onSelected: (CardNav) ->
                 val subCard = myCards.firstOrNull { it.id == subCardId }
                 onSelected(myCards.firstOrNull { it.id == cardId }?.let {
                     CardNav.Selected(it, subCard)
-                } ?: CardNav.Explore)
+                } ?: CardNav.Local)
             }
         }
 
@@ -121,8 +122,8 @@ fun CardsNavPage(cardUpdates: Flow<Card>, nav: CardNav, onSelected: (CardNav) ->
     if (filterMenuTarget != null) {
         Menu(
             {
-            filterMenuTarget = null
-        },
+                filterMenuTarget = null
+            },
             filterMenuTarget!!
         ) {
             item("Published", icon = if (CardFilter.Published in filters) "check" else null) {
@@ -158,7 +159,8 @@ fun CardsNavPage(cardUpdates: Flow<Card>, nav: CardNav, onSelected: (CardNav) ->
         }
         IconButton("filter_list", "Filter", count = filters.size, styles = {
         }) {
-            filterMenuTarget = if (filterMenuTarget == null) (it.target as HTMLElement).getBoundingClientRect() else null
+            filterMenuTarget =
+                if (filterMenuTarget == null) (it.target as HTMLElement).getBoundingClientRect() else null
         }
 
         IconButton(
@@ -202,38 +204,61 @@ fun CardsNavPage(cardUpdates: Flow<Card>, nav: CardNav, onSelected: (CardNav) ->
             }
         }) {
             if (!showSearch) {
-                NavMenuItem("distance", "Explore nearby", selected = nav == CardNav.Explore) {
-                    onSelected(CardNav.Explore)
+                NavMenuItem("group", "Friends", selected = nav == CardNav.Friends) {
+                    onSelected(CardNav.Friends)
+                }
+                NavMenuItem("location_on", "Local", selected = nav == CardNav.Local) {
+                    onSelected(CardNav.Local)
                 }
                 NavMenuItem("favorite", "Saved", selected = nav == CardNav.Saved) {
                     onSelected(CardNav.Saved)
                 }
                 Spacer()
             }
-            val selected = (nav as? CardNav.Selected)?.let { it.subCard ?: it.card }
-            shownCards.forEach {
-                CardItem(it, (nav as? CardNav.Selected)?.subCard == null, selected == it, saved.any { save -> save.id == it.id }, it.active == true) { navigate ->
-                    onSelected(CardNav.Selected(it))
-                }
-                if (it.id == cardId && childCards.isNotEmpty()) {
+            if (shownCards.isEmpty()) {
                 Div({
-                    style { marginLeft(1.r) }
+                    style {
+                        display(DisplayStyle.Flex)
+                        alignItems(AlignItems.Center)
+                        justifyContent(JustifyContent.Center)
+                        opacity(.5)
+                        padding(1.r)
+                    }
                 }) {
+                    Text("No pages")
+                }
+            } else {
+                val selected = (nav as? CardNav.Selected)?.let { it.subCard ?: it.card }
+                shownCards.forEach {
+                    CardItem(
+                        it,
+                        (nav as? CardNav.Selected)?.subCard == null,
+                        selected == it,
+                        saved.any { save -> save.id == it.id },
+                        it.active == true
+                    ) { _ ->
+                        onSelected(CardNav.Selected(it))
+                    }
+                    if (it.id == cardId && childCards.isNotEmpty()) {
+                        Div({
+                            style { marginLeft(1.r) }
+                        }) {
 //                    val selectedSubCard = (nav as? CardNav.Selected)?.let { it.subCard }
-                        childCards.forEach {
-                            CardItem(
-                                it,
-                                true,
-                                selected == it,
-                                saved.any { save -> save.id == it.id },
-                                it.active == true
-                            ) { navigate ->
-                                val card = (nav as CardNav.Selected).card
+                            childCards.forEach {
+                                CardItem(
+                                    it,
+                                    true,
+                                    selected == it,
+                                    saved.any { save -> save.id == it.id },
+                                    it.active == true
+                                ) { navigate ->
+                                    val card = (nav as CardNav.Selected).card
 
-                                if (navigate) {
-                                    onSelected(CardNav.Selected(it))
-                                } else {
-                                    onSelected(CardNav.Selected(card, it))
+                                    if (navigate) {
+                                        onSelected(CardNav.Selected(it))
+                                    } else {
+                                        onSelected(CardNav.Selected(card, it))
+                                    }
                                 }
                             }
                         }
@@ -243,4 +268,3 @@ fun CardsNavPage(cardUpdates: Flow<Card>, nav: CardNav, onSelected: (CardNav) ->
         }
     }
 }
-

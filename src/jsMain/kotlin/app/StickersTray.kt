@@ -2,11 +2,10 @@ package app
 
 import Sticker
 import StickerPack
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import api
+import components.Loading
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
@@ -19,13 +18,20 @@ val allStickerPacks = MutableStateFlow<List<StickerPack>>(emptyList())
 fun StickersTray(onSticker: (Sticker) -> Unit) {
     val stickerPacks by allStickerPacks.collectAsState()
 
+    var isLoading by remember {
+        mutableStateOf(true)
+    }
+
     LaunchedEffect(Unit) {
         api.stickerPacks {
             allStickerPacks.value = it
         }
+        isLoading = false
     }
 
-    if (stickerPacks.isNotEmpty()) {
+    if (isLoading) {
+        Loading()
+    } else if (stickerPacks.isNotEmpty()) {
         Div({
             style {
                 padding(1.r)

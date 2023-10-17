@@ -35,11 +35,11 @@ fun AppPage() {
     }
 
     var group by remember {
-        mutableStateOf<GroupExtended?>(null)
+        mutableStateOf<GroupNav>(GroupNav.None)
     }
 
     var card by remember {
-        mutableStateOf<CardNav>(CardNav.Explore)
+        mutableStateOf<CardNav>(CardNav.Local)
     }
 
     var reminder by remember {
@@ -63,7 +63,7 @@ fun AppPage() {
     }
 
     var story by remember {
-        mutableStateOf<Story?>(null)
+        mutableStateOf<StoryNav>(StoryNav.Friends)
     }
 
     var scheduleView by remember {
@@ -97,7 +97,7 @@ fun AppPage() {
                     NavPage.Groups -> GroupsNavPage(
                         groupUpdates,
                         group,
-                        onGroupSelected = {
+                        onSelected = {
                             group = it
                         },
                         onProfileClick = {

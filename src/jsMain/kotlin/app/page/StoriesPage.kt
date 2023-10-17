@@ -7,15 +7,20 @@ import api
 import app.FullPageLayout
 import app.PageTopBar
 import app.menu.Menu
+import app.nav.StoryNav
+import appText
 import application
 import components.Loading
+import defaultGeo
 import dialog
 import inputDialog
 import kotlinx.browser.window
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.css.*
+import org.jetbrains.compose.web.dom.Col
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Img
+import org.jetbrains.compose.web.dom.Span
 import org.w3c.dom.DOMRect
 import org.w3c.dom.HTMLElement
 import qr
@@ -26,7 +31,7 @@ import stories.full
 import webBaseUrl
 
 @Composable
-fun StoriesPage(story: Story?, onStoryUpdated: (Story) -> Unit) {
+fun StoriesPage(selected: StoryNav, onStoryUpdated: (Story) -> Unit) {
     val me by application.me.collectAsState()
     val scope = rememberCoroutineScope()
     var storyContent by remember { mutableStateOf<List<StoryContent>>(emptyList()) }
@@ -37,56 +42,70 @@ fun StoriesPage(story: Story?, onStoryUpdated: (Story) -> Unit) {
         mutableStateOf<DOMRect?>(null)
     }
 
-    LaunchedEffect(story) {
+    LaunchedEffect(selected) {
         isLoading = true
 
-        if (story == null) {
-            api.stories(me?.geo ?: listOf(10.7915858, 106.7426523)) { stories ->
-                storyContent = stories.flatMapIndexed { index, it ->
-                    if (index < stories.lastIndex) it.full() + StoryContent.Divider else it.full()
+        when (selected) {
+            is StoryNav.Friends -> {
+                api.stories(me?.geo ?: defaultGeo) { stories ->
+                    storyContent = stories.flatMapIndexed { index, it ->
+                        if (index < stories.lastIndex) it.full() + StoryContent.Divider else it.full()
+                    }
                 }
             }
-        } else {
-            storyContent = story.full()
+
+            is StoryNav.Local -> {
+                api.stories(me?.geo ?: defaultGeo, public = true) { stories ->
+                    storyContent = stories.flatMapIndexed { index, it ->
+                        if (index < stories.lastIndex) it.full() + StoryContent.Divider else it.full()
+                    }
+                }
+            }
+            is StoryNav.Saved -> {}
+            is StoryNav.Selected -> {
+                storyContent = selected.story.full()
+            }
         }
 
         isLoading = false
     }
 
-    menuTarget?.let { target ->
-        Menu({ menuTarget = null }, target) {
-            item("Open in new tab", icon = "open_in_new") {
-                window.open("/story/${story!!.id}", target = "_blank")
-            }
-            item("Rename") {
-                scope.launch {
-                    val title = inputDialog(
-                        "Story title",
-                        "",
-                        "Update",
-                        defaultValue = story!!.title ?: ""
-                    )
+    (selected as? StoryNav.Selected)?.story?.let { story ->
+        menuTarget?.let { target ->
+            Menu({ menuTarget = null }, target) {
+                item("Open in new tab", icon = "open_in_new") {
+                    window.open("/story/${story!!.id}", target = "_blank")
+                }
+                item("Rename") {
+                    scope.launch {
+                        val title = inputDialog(
+                            "Story title",
+                            "",
+                            "Update",
+                            defaultValue = story!!.title ?: ""
+                        )
 
-                    if (title == null) return@launch
+                        if (title == null) return@launch
 
-                    api.updateStory(
-                        story.id!!,
-                        Story(title = title)
-                    ) {
-                        onStoryUpdated(it)
+                        api.updateStory(
+                            story.id!!,
+                            Story(title = title)
+                        ) {
+                            onStoryUpdated(it)
+                        }
                     }
                 }
-            }
 
-            item("QR code") {
-                scope.launch {
-                    dialog("", cancelButton = null) {
-                        val qrCode = remember {
-                            "$webBaseUrl/story/${story!!.id!!}".qr
-                        }
-                        Img(src = qrCode) {
-                            style {
-                                borderRadius(1.r)
+                item("QR code") {
+                    scope.launch {
+                        dialog("", cancelButton = null) {
+                            val qrCode = remember {
+                                "$webBaseUrl/story/${story.id!!}".qr
+                            }
+                            Img(src = qrCode) {
+                                style {
+                                    borderRadius(1.r)
+                                }
                             }
                         }
                     }
@@ -94,6 +113,7 @@ fun StoriesPage(story: Story?, onStoryUpdated: (Story) -> Unit) {
             }
         }
     }
+
 
     if (isLoading) {
         Loading()
@@ -107,10 +127,25 @@ fun StoriesPage(story: Story?, onStoryUpdated: (Story) -> Unit) {
                     padding(1.r)
                 }
             }) {
-                StoryContents(storyContent, openInNewWindow = true)
+                if (storyContent.isEmpty()) {
+                    Div({
+                        style {
+                            color(Styles.colors.secondary)
+                            padding(1.r)
+                            width(100.percent)
+                            display(DisplayStyle.Flex)
+                            flexDirection(FlexDirection.Column)
+                            alignItems(AlignItems.Center)
+                        }
+                    }) {
+                        appText { noStories }
+                    }
+                } else {
+                    StoryContents(storyContent, openInNewWindow = true)
+                }
             }
         }
-        story?.let { story ->
+        if (selected is StoryNav.Selected) {
             PageTopBar(
                 ""
 //                story.title?.notBlank ?: "New story"

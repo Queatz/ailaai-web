@@ -9,7 +9,6 @@ import components.IconButton
 import components.Loading
 import focusable
 import inputDialog
-import kotlinx.browser.window
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -20,8 +19,15 @@ import r
 import stories.storyStatus
 import stories.textContent
 
+sealed class StoryNav {
+    data object Friends : StoryNav()
+    data object Local : StoryNav()
+    data object Saved : StoryNav()
+    data class Selected(val story: Story) : StoryNav()
+}
+
 @Composable
-fun StoriesNavPage(storyUpdates: Flow<Story>, selected: Story?, onSelected: (Story?) -> Unit, onProfileClick: () -> Unit) {
+fun StoriesNavPage(storyUpdates: Flow<Story>, selected: StoryNav, onSelected: (StoryNav) -> Unit, onProfileClick: () -> Unit) {
     val me by application.me.collectAsState()
     val scope = rememberCoroutineScope()
 
@@ -57,8 +63,8 @@ fun StoriesNavPage(storyUpdates: Flow<Story>, selected: Story?, onSelected: (Sto
             myStories = it
         }
 
-        if (selected != null) {
-            onSelected(myStories.firstOrNull { it.id == selected.id })
+        (selected as? StoryNav.Selected)?.story?.let { selected ->
+            onSelected(myStories.firstOrNull { it.id == selected.id }?.let { StoryNav.Selected(it) } ?: StoryNav.Friends)
         }
 
         isLoading = false
@@ -114,15 +120,32 @@ fun StoriesNavPage(storyUpdates: Flow<Story>, selected: Story?, onSelected: (Sto
             }
         }) {
             if (!showSearch) {
-                NavMenuItem("distance", "Explore nearby", selected = selected == null) {
-                    onSelected(null)
+                NavMenuItem("group", "Friends", selected = selected is StoryNav.Friends) {
+                    onSelected(StoryNav.Friends)
                 }
-//                NavMenuItem("favorite", "Saved") {
-//                    // todo
+                NavMenuItem("location_on", "Local", selected = selected is StoryNav.Local) {
+                    onSelected(StoryNav.Local)
+                }
+//                NavMenuItem("favorite", "Saved", selected = false) {
+//                    onSelected(null)
 //                }
                 Spacer()
             }
-            shownStories.forEach { StoryItem(it, it == selected) { onSelected(it)} }
+            if (shownStories.isEmpty()) {
+                Div({
+                    style {
+                        display(DisplayStyle.Flex)
+                        alignItems(AlignItems.Center)
+                        justifyContent(JustifyContent.Center)
+                        opacity(.5)
+                        padding(1.r)
+                    }
+                }) {
+                    Text("No stories")
+                }
+            } else {
+                shownStories.forEach { StoryItem(it, it == (selected as? StoryNav.Selected)?.story) { onSelected(StoryNav.Selected(it)) } }
+            }
         }
     }
 }

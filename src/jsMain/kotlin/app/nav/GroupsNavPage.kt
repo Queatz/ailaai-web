@@ -7,14 +7,15 @@ import Styles
 import androidx.compose.runtime.*
 import api
 import app.AppStyles
+import app.components.Spacer
 import app.messaages.preview
+import appText
 import application
 import components.GroupPhoto
 import components.IconButton
 import components.Loading
 import focusable
 import inputDialog
-import kotlinx.browser.window
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
@@ -29,11 +30,19 @@ import push
 import r
 import kotlin.js.Date
 
+sealed class GroupNav {
+    data object None : GroupNav()
+    data object Friends : GroupNav()
+    data object Local : GroupNav()
+    data object Saved : GroupNav()
+    data class Selected(val group: GroupExtended) : GroupNav()
+}
+
 @Composable
 fun GroupsNavPage(
     groupUpdates: Flow<Unit>,
-    selectedGroup: GroupExtended?,
-    onGroupSelected: (GroupExtended?) -> Unit,
+    selected: GroupNav,
+    onSelected: (GroupNav) -> Unit,
     onProfileClick: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
@@ -54,7 +63,7 @@ fun GroupsNavPage(
         mutableStateOf("")
     }
 
-    LaunchedEffect(selectedGroup) {
+    LaunchedEffect(selected) {
         searchText = ""
         showSearch = false
     }
@@ -76,19 +85,21 @@ fun GroupsNavPage(
         application.bearerToken.first { it != null }
         api.groups {
             groups = it
-            onGroupSelected(groups.firstOrNull { it.group?.id == selectedGroup?.group?.id })
+            groups.firstOrNull { it.group?.id == (selected as? GroupNav.Selected)?.group?.group?.id }?.let {
+                onSelected(GroupNav.Selected(it))
+            }
         }
     }
 
     // todo remove selectedGroup
-    LaunchedEffect(selectedGroup) {
+    LaunchedEffect(selected) {
         push.events.collectLatest {
             reload()
         }
     }
 
     // todo remove selectedGroup
-    LaunchedEffect(selectedGroup) {
+    LaunchedEffect(selected) {
         push.reconnect.collectLatest {
             reload()
         }
@@ -100,7 +111,7 @@ fun GroupsNavPage(
     }
 
     // todo remove selectedGroup
-    LaunchedEffect(selectedGroup) {
+    LaunchedEffect(selected) {
         groupUpdates.collectLatest {
             reload()
         }
@@ -127,7 +138,7 @@ fun GroupsNavPage(
                     api.updateGroup(group.id!!, Group(name = result))
                     reload()
                     api.group(group.id!!) {
-                        onGroupSelected(it)
+                        onSelected(GroupNav.Selected(it))
                     }
                 }
             }
@@ -143,18 +154,6 @@ fun GroupsNavPage(
 
     if (isLoading) {
         Loading()
-    } else if (shownGroups.isEmpty()) {
-        Div({
-            style {
-                height(100.percent)
-                display(DisplayStyle.Flex)
-                alignItems(AlignItems.Center)
-                justifyContent(JustifyContent.Center)
-                opacity(.5)
-            }
-        }) {
-            Text("No groups")
-        }
     } else {
         Div({
             style {
@@ -163,86 +162,110 @@ fun GroupsNavPage(
                 padding(1.r / 2)
             }
         }) {
-            shownGroups.forEach { group ->
-                val myMember = group.members?.find { it.person?.id == me!!.id }
+            if (!showSearch) {
+                NavMenuItem("group", "Friends", selected = selected is GroupNav.Friends) {
+                    onSelected(GroupNav.Friends)
+                }
+                NavMenuItem("location_on", "Local", selected = selected is GroupNav.Local) {
+                    onSelected(GroupNav.Local)
+                }
+                Spacer()
+            }
+
+            if (shownGroups.isEmpty()) {
                 Div({
-                    classes(
-                        listOf(AppStyles.groupItem) + if (selectedGroup?.group?.id == group.group?.id) {
-                            listOf(AppStyles.groupItemSelected)
-                        } else {
-                            emptyList()
-                        }
-                    )
-                    onClick {
-                        onGroupSelected(group)
+                    style {
+                        display(DisplayStyle.Flex)
+                        alignItems(AlignItems.Center)
+                        justifyContent(JustifyContent.Center)
+                        opacity(.5)
+                        padding(1.r)
                     }
-
-                    focusable()
                 }) {
-                    GroupPhoto(group, me!!)
+                    appText { noGroups }
+                }
+            } else {
+                shownGroups.forEach { group ->
+                    val myMember = group.members?.find { it.person?.id == me!!.id }
                     Div({
-                        style {
-                            width(0.px)
-                            flexGrow(1)
+                        classes(
+                            listOf(AppStyles.groupItem) + if ((selected as? GroupNav.Selected)?.group?.group?.id == group.group?.id) {
+                                listOf(AppStyles.groupItemSelected)
+                            } else {
+                                emptyList()
+                            }
+                        )
+                        onClick {
+                            onSelected(GroupNav.Selected(group))
                         }
+
+                        focusable()
                     }) {
-                        Div({
-                            classes(AppStyles.groupItemName)
-
-                            style {
-                                if (group.isUnread(myMember?.member)) {
-                                    fontWeight("bold")
-                                }
-                            }
-                        }) {
-                            Text(group.name("Someone", "New group", listOf(me!!.id!!)))
-                        }
-                        Div({
-                            classes(AppStyles.groupItemMessage)
-                        }) {
-                            if (group.latestMessage?.member == myMember?.member?.id) {
-                                Text("You: ")
-                            }
-                            Text(
-                                group.latestMessage?.preview() ?: "Created ${
-                                    formatDistanceToNow(
-                                        Date(group.group!!.createdAt!!),
-                                        js("{ addSuffix: true }")
-                                    )
-                                }"
-                            )
-
-                        }
-                    }
-                    if (group.latestMessage != null) {
+                        GroupPhoto(group, me!!)
                         Div({
                             style {
-                                marginLeft(.5.r)
-                                flexShrink(0)
+                                width(0.px)
+                                flexGrow(1)
                             }
                         }) {
-                            Span({
+                            Div({
+                                classes(AppStyles.groupItemName)
+
                                 style {
                                     if (group.isUnread(myMember?.member)) {
-                                        color(Styles.colors.primary)
                                         fontWeight("bold")
-                                    } else {
-                                        color(Styles.colors.secondary)
-                                        opacity(.5)
                                     }
-                                    fontSize(14.px)
                                 }
                             }) {
+                                Text(group.name("Someone", "New group", listOf(me!!.id!!)))
+                            }
+                            Div({
+                                classes(AppStyles.groupItemMessage)
+                            }) {
+                                if (group.latestMessage?.member == myMember?.member?.id) {
+                                    Text("You: ")
+                                }
                                 Text(
-                                    " ${
-                                        group.group?.seen?.let {
-                                            formatDistanceToNow(
-                                                Date(it),
-                                                js("{ addSuffix: true }")
-                                            )
-                                        }
+                                    group.latestMessage?.preview() ?: "Created ${
+                                        formatDistanceToNow(
+                                            Date(group.group!!.createdAt!!),
+                                            js("{ addSuffix: true }")
+                                        )
                                     }"
                                 )
+
+                            }
+                        }
+                        if (group.latestMessage != null) {
+                            Div({
+                                style {
+                                    marginLeft(.5.r)
+                                    flexShrink(0)
+                                }
+                            }) {
+                                Span({
+                                    style {
+                                        if (group.isUnread(myMember?.member)) {
+                                            color(Styles.colors.primary)
+                                            fontWeight("bold")
+                                        } else {
+                                            color(Styles.colors.secondary)
+                                            opacity(.5)
+                                        }
+                                        fontSize(14.px)
+                                    }
+                                }) {
+                                    Text(
+                                        " ${
+                                            group.group?.seen?.let {
+                                                formatDistanceToNow(
+                                                    Date(it),
+                                                    js("{ addSuffix: true }")
+                                                )
+                                            }
+                                        }"
+                                    )
+                                }
                             }
                         }
                     }

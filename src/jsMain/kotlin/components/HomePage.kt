@@ -99,7 +99,7 @@ fun HomePage() {
                                 color(Styles.colors.secondary)
                             }
                         }) {
-                            appText { noCardsFound }
+                            appText { noCards }
                         }
                     }
                 } else {

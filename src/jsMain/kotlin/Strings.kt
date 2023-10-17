@@ -10,6 +10,10 @@ data class Translation(
 )
 
 object Strings {
+    val selectAGroup = Translation(
+    "Select a group",
+        "Chọn một nhóm"
+    )
     val introduction = Translation(
         "About",
         "Giới thiệu"
@@ -218,9 +222,17 @@ object Strings {
         "Search results",
         "Kết quả tìm kiếm"
     )
-    val noCardsFound = Translation(
-        "No pages found.",
+    val noCards = Translation(
+        "No pages",
         "Không tìm được trang để cho bạn xem."
+    )
+    val noStories = Translation(
+        "No stories",
+        "Không tìm được bài viết."
+    )
+    val noGroups = Translation(
+        "No groups",
+        "Không tìm được nhóm."
     )
     val searchCity = Translation(
         "Search Ho Chi Minh City",

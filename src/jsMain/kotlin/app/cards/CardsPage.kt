@@ -7,6 +7,7 @@ import app.FullPageLayout
 import app.nav.CardNav
 import application
 import components.*
+import defaultGeo
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
@@ -34,15 +35,21 @@ fun CardsPage(nav: CardNav, onCard: (CardNav) -> Unit, onCardUpdated: (Card) -> 
         if (me == null) return
 
         when (nav) {
-            is CardNav.Saved -> {
-                api.saved {
-                    cards = it.mapNotNull { it.card }
+            is CardNav.Friends -> {
+                api.explore(me?.geo ?: defaultGeo) {
+                    cards = it
                 }
             }
 
-            is CardNav.Explore -> {
-                api.explore(me?.geo ?: listOf(10.7915858, 106.7426523)) {
+            is CardNav.Local -> {
+                api.explore(me?.geo ?: defaultGeo, public = true) {
                     cards = it
+                }
+            }
+
+            is CardNav.Saved -> {
+                api.saved {
+                    cards = it.mapNotNull { it.card }
                 }
             }
 
@@ -73,7 +80,7 @@ fun CardsPage(nav: CardNav, onCard: (CardNav) -> Unit, onCardUpdated: (Card) -> 
                         }
                     }) {
                         when (nav) {
-                            is CardNav.Explore -> Text("No pages nearby")
+                            is CardNav.Local -> Text("No pages nearby")
                             is CardNav.Saved -> Text("No saved pages")
                             else -> {}
                         }
@@ -95,7 +102,7 @@ fun CardsPage(nav: CardNav, onCard: (CardNav) -> Unit, onCardUpdated: (Card) -> 
                     }
                 }
             } else {
-                MyCardPage(
+                ExplorePage(
                     nav.subCard ?: nav.card,
                     {
                         onCard(CardNav.Selected(it))
@@ -112,7 +119,7 @@ fun CardsPage(nav: CardNav, onCard: (CardNav) -> Unit, onCardUpdated: (Card) -> 
                                 }
                             }
                         } else {
-                            onCard(CardNav.Explore)
+                            onCard(CardNav.Local)
                             onCardUpdated(it)
                         }
                     }

@@ -132,13 +132,15 @@ class Api {
     suspend fun explore(
         geo: List<Double>,
         search: String? = null,
+        public: Boolean = false,
         onError: suspend (Throwable) -> Unit = {},
         onSuccess: suspend (List<Card>) -> Unit
     ) = get(
         url = "cards",
         parameters = mapOf(
             "geo" to geo.joinToString(","),
-            "search" to search
+            "search" to search,
+            "public" to public.toString()
         ),
         onError = onError,
         onSuccess = onSuccess
@@ -162,13 +164,34 @@ class Api {
         onSuccess = onSuccess
     )
 
+    suspend fun publicGroups(
+        geo: List<Double>,
+        search: String? = null,
+        public: Boolean = false,
+        onError: suspend (Throwable) -> Unit = {},
+        onSuccess: suspend (List<GroupExtended>) -> Unit
+    ) = get(
+        url = "groups/public",
+        parameters = mapOf(
+            "geo" to geo.joinToString(","),
+            "search" to search,
+            "public" to public.toString()
+        ),
+        onError = onError,
+        onSuccess = onSuccess
+    )
+
     suspend fun stories(
         geo: List<Double>,
+        public: Boolean = false,
         onError: suspend (Throwable) -> Unit = {},
         onSuccess: suspend (List<Story>) -> Unit
     ) = get(
         url = "stories",
-        parameters = mapOf("geo" to geo.joinToString(",")),
+        parameters = mapOf(
+            "geo" to geo.joinToString(","),
+            "public" to public.toString()
+        ),
         onError = onError,
         onSuccess = onSuccess
     )
@@ -505,7 +528,7 @@ class Api {
                     application.bearerToken.value?.let { bearer ->
                         bearerAuth(bearer)
                     }
-                    parameters?.forEach {
+                    parameters?.filter { it.value != null }?.forEach {
                         parameter(it.key, it.value)
                     }
                 }.body<T>()
@@ -519,7 +542,7 @@ class Api {
     internal suspend inline fun <reified T> post(
         url: String,
         contentType: ContentType? = DefaultContentType,
-        parameters: Map<String, String>? = null,
+        parameters: Map<String, String?>? = null,
         onError: suspend (Throwable) -> Unit,
         onSuccess: suspend (T) -> Unit
     ) {
@@ -537,7 +560,7 @@ class Api {
         url: String,
         contentType: ContentType? = DefaultContentType,
         body: B? = null,
-        parameters: Map<String, String>? = null,
+        parameters: Map<String, String?>? = null,
         onError: suspend (Throwable) -> Unit,
         onSuccess: suspend (T) -> Unit
     ) {

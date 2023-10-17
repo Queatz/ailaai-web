@@ -1,7 +1,6 @@
 package app.cards
 
 import Card
-import Configuration
 import LocalConfiguration
 import androidx.compose.runtime.*
 import api
@@ -36,7 +35,7 @@ import toScaledBytes
 import webBaseUrl
 
 @Composable
-fun MyCardPage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Unit, onCardDeleted: (card: Card) -> Unit) {
+fun ExplorePage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Unit, onCardDeleted: (card: Card) -> Unit) {
     val me by application.me.collectAsState()
     val scope = rememberCoroutineScope()
 
@@ -85,7 +84,7 @@ fun MyCardPage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Unit
                         Text("The page will be updated when the photo is generated.")
                         Br()
                         Br()
-                        Text("Page title, hint, and details are shared with stability.ai.")
+                        Text("Page title, hint, and details are shared with a 3rd party.")
                     }
                 }
             }
@@ -142,6 +141,8 @@ fun MyCardPage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Unit
                         placeholder = "Search",
                         styles = {
                             margin(0.r)
+                            width(28.r)
+                            maxWidth(100.percent)
                         },
                         onDismissRequest = {
                             resolve(false)

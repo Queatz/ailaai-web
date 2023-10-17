@@ -32,7 +32,7 @@ fun AppBottomBar(nav: NavPage, onNavClick: (NavPage) -> Unit) {
         }) {
             onNavClick(NavPage.Schedule)
         }
-        IconButton("description", "Pages", styles = {
+        IconButton("travel_explore", "Pages", styles = {
             if (nav == NavPage.Cards) {
                 backgroundColor(Styles.colors.primary)
                 color(Color.white)
