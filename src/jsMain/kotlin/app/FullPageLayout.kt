@@ -5,7 +5,7 @@ import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 
 @Composable
-fun FullPageLayout(maxWidth: CSSpxValue? = 960.px, content: @Composable () -> Unit) {
+fun FullPageLayout(maxWidth: CSSpxValue? = 800.px, content: @Composable () -> Unit) {
     Div({
         style {
             display(DisplayStyle.Flex)

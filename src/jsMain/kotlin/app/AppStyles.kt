@@ -17,6 +17,7 @@ object AppStyles : StyleSheet() {
         border(1.px, LineStyle.Solid, Styles.colors.secondary)
         backgroundColor(Styles.colors.background)
         cursor("pointer")
+        overflow("hidden")
 
         media("(prefers-color-scheme: dark)") {
             self style {
@@ -165,6 +166,10 @@ object AppStyles : StyleSheet() {
 
     }
 
+    val groupItemDefault by style {
+
+    }
+
     val groupItem by style {
         padding(.5.r, 1.r)
         borderRadius(1.r)
@@ -175,6 +180,14 @@ object AppStyles : StyleSheet() {
 
         self + hover style {
             backgroundColor(Styles.colors.background)
+        }
+
+        self + className(groupItemDefault) style {
+            backgroundColor(Styles.colors.background)
+
+            self + hover style {
+                backgroundColor(Styles.colors.background)
+            }
         }
 
         self + className(groupItemOnSurface) style {
@@ -193,6 +206,14 @@ object AppStyles : StyleSheet() {
             self + className(groupItemOnSurface) style {
                 self + hover style {
                     backgroundColor(Color.black)
+                }
+            }
+
+            self + className(groupItemDefault) style {
+                backgroundColor(Styles.colors.dark.background)
+
+                self + hover style {
+                    backgroundColor(Styles.colors.dark.background)
                 }
             }
         }
@@ -265,6 +286,7 @@ object AppStyles : StyleSheet() {
         borderRadius(1.r)
         border(1.px, LineStyle.Solid, Styles.colors.background)
         whiteSpace("pre-wrap")
+        property("word-break", "break-word")
 
         self + className(myMessage) style {
             backgroundColor(Styles.colors.background)
@@ -325,6 +347,21 @@ object AppStyles : StyleSheet() {
 
             self + className(myMessageReply) style {
                 property("border-right", "4px solid ${Color("#444")}")
+            }
+        }
+    }
+
+    val messageVideo by style {
+        property("object-fit", "cover")
+        width(100.percent)
+        maxHeight(66.vh) // Approx max in viewable area
+        borderRadius(1.r)
+        backgroundColor(Styles.colors.background)
+        cursor("pointer")
+
+        media("(prefers-color-scheme: dark)") {
+            self style {
+                backgroundColor(Styles.colors.dark.background)
             }
         }
     }

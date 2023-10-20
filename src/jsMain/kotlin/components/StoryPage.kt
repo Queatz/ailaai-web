@@ -59,7 +59,7 @@ fun StoryPage(storyUrl: String, onStoryLoaded: (Story) -> Unit) {
                 Div({
                     classes(Styles.navContainer)
                     style {
-                        maxWidth(960.px)
+                        maxWidth(800.px)
                         alignSelf(AlignSelf.Center)
                         marginBottom(1.r)
                     }

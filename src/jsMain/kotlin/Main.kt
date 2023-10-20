@@ -66,6 +66,7 @@ fun main() {
                 application.sync()
                 push.start(this)
                 saves.start(this)
+                joins.start(this)
             }
 
             BrowserRouter("") {

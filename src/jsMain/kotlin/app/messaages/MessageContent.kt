@@ -148,13 +148,7 @@ fun MessageContent(message: Message, myMember: MemberAndPerson?, isReply: Boolea
                             attr("loop", "")
                             attr("playsinline", "")
 //                        attr("muted", "")
-                            style {
-                                property("object-fit", "cover")
-                                width(100.percent)
-                                borderRadius(1.r)
-                                backgroundColor(Styles.colors.background)
-                                cursor("pointer")
-                            }
+                            classes(AppStyles.messageVideo)
                             onClick {
                                 (it.target as? HTMLVideoElement)?.apply {
                                     if (paused) {

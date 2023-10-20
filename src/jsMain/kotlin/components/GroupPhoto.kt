@@ -7,11 +7,12 @@ import androidx.compose.runtime.remember
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import r
+import kotlin.js.Date
 
 @Composable
 fun GroupPhoto(group: GroupExtended, me: Person) {
     val otherMembers = remember(group) {
-        group.members?.filter { it.person?.id != me.id }?.shuffled() ?: emptyList()
+        group.members?.filter { it.person?.id != me.id }?.sortedByDescending { it.member?.seen?.let { Date(it).getTime() } ?: 0.0 } ?: emptyList()
     }
 
     if (otherMembers.size > 1) {
@@ -23,12 +24,12 @@ fun GroupPhoto(group: GroupExtended, me: Person) {
                 marginRight(.5.r)
             }
         }) {
-            ProfilePhoto(otherMembers[0].person ?: me, size = 33.px, border = true) {
+            ProfilePhoto(otherMembers[1].person ?: me, size = 33.px, border = true) {
                 position(Position.Absolute)
                 top(0.r)
                 right(0.r)
             }
-            ProfilePhoto(otherMembers[1].person ?: me, size = 33.px, border = true) {
+            ProfilePhoto(otherMembers[0].person ?: me, size = 33.px, border = true) {
                 position(Position.Absolute)
                 bottom(0.r)
                 left(0.r)

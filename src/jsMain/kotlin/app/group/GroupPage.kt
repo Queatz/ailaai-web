@@ -1,10 +1,11 @@
-package app.page
+package app.group
 
 import GroupExtended
 import GroupLayout
 import androidx.compose.runtime.*
 import api
-import app.group.GroupList
+import app.FullPageLayout
+import app.components.Empty
 import app.nav.GroupNav
 import appText
 import application
@@ -13,9 +14,15 @@ import defaultGeo
 import notBlank
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
+import r
 
 @Composable
-fun GroupPage(nav: GroupNav, onGroupUpdated: () -> Unit, onGroupGone: () -> Unit) {
+fun GroupPage(
+    nav: GroupNav,
+    onGroup: (GroupExtended) -> Unit,
+    onGroupUpdated: () -> Unit,
+    onGroupGone: () -> Unit
+) {
     val me by application.me.collectAsState()
 
     var isLoading by remember {
@@ -35,7 +42,7 @@ fun GroupPage(nav: GroupNav, onGroupUpdated: () -> Unit, onGroupGone: () -> Unit
         when (nav) {
             GroupNav.Friends -> {
                 isLoading = true
-                api.publicGroups(
+                api.exploreGroups(
                     geo = me?.geo ?: defaultGeo,
                     search = search.notBlank,
                     public = false
@@ -47,7 +54,7 @@ fun GroupPage(nav: GroupNav, onGroupUpdated: () -> Unit, onGroupGone: () -> Unit
 
             GroupNav.Local -> {
                 isLoading = true
-                api.publicGroups(
+                api.exploreGroups(
                     geo = me?.geo ?: defaultGeo,
                     search = search.notBlank,
                     public = true
@@ -78,9 +85,45 @@ fun GroupPage(nav: GroupNav, onGroupUpdated: () -> Unit, onGroupGone: () -> Unit
     } else if (isLoading) {
         Loading()
     } else if (nav is GroupNav.Friends) {
-        GroupList(groups, public = false)
+        FullPageLayout {
+            Div({
+                style {
+                    display(DisplayStyle.Flex)
+                    flexDirection(FlexDirection.Column)
+                    padding(1.r)
+                }
+            }) {
+                if (groups.isEmpty()) {
+                    Empty {
+                        appText { noGroups }
+                    }
+                } else {
+                    GroupList(groups) {
+                        onGroup(it)
+                    }
+                }
+            }
+        }
     } else if (nav is GroupNav.Local) {
-        GroupList(groups, public = true)
+        FullPageLayout {
+            Div({
+                style {
+                    display(DisplayStyle.Flex)
+                    flexDirection(FlexDirection.Column)
+                    padding(1.r)
+                }
+            }) {
+                if (groups.isEmpty()) {
+                    Empty {
+                        appText { noGroups }
+                    }
+                } else {
+                    GroupList(groups) {
+                        onGroup(it)
+                    }
+                }
+            }
+        }
     } else if (nav is GroupNav.Selected) {
         GroupLayout(nav.group, onGroupUpdated, onGroupGone)
     }

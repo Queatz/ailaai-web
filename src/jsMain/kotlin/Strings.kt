@@ -10,6 +10,30 @@ data class Translation(
 )
 
 object Strings {
+    val accept = Translation(
+        "Accept",
+        "Chấp nhận"
+    )
+    val delete = Translation(
+        "Delete",
+        "Xóa bỏ"
+    )
+    val inlineMember = Translation(
+        "member",
+        "thành viên"
+    )
+    val inlineMembers = Translation(
+        "members",
+        "thành viên"
+    )
+    val close = Translation(
+        "Close",
+        "Đóng"
+    )
+    val manage = Translation(
+        "Manage",
+        "Quản lý"
+    )
     val selectAGroup = Translation(
     "Select a group",
         "Chọn một nhóm"

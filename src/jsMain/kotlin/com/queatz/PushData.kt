@@ -8,7 +8,8 @@ import kotlinx.serialization.Serializable
 
 enum class PushAction {
     Message,
-    Collaboration
+    Collaboration,
+    JoinRequest
 }
 
 @Serializable
@@ -34,6 +35,17 @@ data class CollaborationPushData(
     val event: CollaborationEvent,
     val data: CollaborationEventData,
 ) : PushDataData()
+
+@Serializable
+data class JoinRequestPushData(
+    val person: Person,
+    val group: Group,
+    val event: JoinRequestEvent,
+) : PushDataData()
+
+enum class JoinRequestEvent {
+    Request
+}
 
 @Serializable
 data class CollaborationEventData (

@@ -1,0 +1,73 @@
+package app.group
+
+import GroupExtended
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
+import inputDialog
+import joins
+import kotlinx.coroutines.launch
+import org.jetbrains.compose.web.css.*
+import org.jetbrains.compose.web.dom.Button
+import org.jetbrains.compose.web.dom.Div
+import org.jetbrains.compose.web.dom.Text
+import r
+
+@Composable
+fun JoinGroupLayout(group: GroupExtended) {
+    val scope = rememberCoroutineScope()
+    val joinRequests by joins.myJoins.collectAsState()
+    val joinRequestId = joinRequests.find { it.joinRequest?.group == group.group?.id }?.joinRequest?.id
+
+    fun join() {
+        scope.launch {
+            val result = inputDialog(
+                "Join group",
+                placeholder = "Message",
+                confirmButton = "Send request",
+                singleLine = false
+            )
+
+            if (result != null) {
+                joins.join(group.group!!.id!!, result)
+            }
+        }
+    }
+
+    fun cancelJoin() {
+        scope.launch {
+            joinRequestId?.let {
+                joins.delete(it)
+            }
+        }
+    }
+
+    Div({
+        style {
+            padding(1.r)
+            display(DisplayStyle.Flex)
+            justifyContent(JustifyContent.Center)
+        }
+    }) {
+        if (joinRequestId != null) {
+            Button({
+                classes(Styles.outlineButton)
+                onClick {
+                    cancelJoin()
+                }
+            }) {
+                Text("Cancel join request")
+            }
+        } else {
+            Button({
+                classes(Styles.button)
+                onClick {
+                    join()
+                }
+            }) {
+                Text("Join group")
+            }
+        }
+    }
+}

@@ -3,6 +3,7 @@ import Story
 import androidx.compose.runtime.*
 import api
 import app.AppStyles
+import app.components.Empty
 import app.components.Spacer
 import application
 import components.IconButton
@@ -132,15 +133,7 @@ fun StoriesNavPage(storyUpdates: Flow<Story>, selected: StoryNav, onSelected: (S
                 Spacer()
             }
             if (shownStories.isEmpty()) {
-                Div({
-                    style {
-                        display(DisplayStyle.Flex)
-                        alignItems(AlignItems.Center)
-                        justifyContent(JustifyContent.Center)
-                        opacity(.5)
-                        padding(1.r)
-                    }
-                }) {
+                Empty {
                     Text("No stories")
                 }
             } else {

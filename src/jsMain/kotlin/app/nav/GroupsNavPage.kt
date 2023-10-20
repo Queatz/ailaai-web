@@ -3,29 +3,22 @@ package app.nav
 import Group
 import GroupExtended
 import Member
-import Styles
 import androidx.compose.runtime.*
 import api
-import app.AppStyles
 import app.components.Spacer
-import app.messaages.preview
+import app.group.GroupItem
 import appText
 import application
-import components.GroupPhoto
 import components.IconButton
 import components.Loading
-import focusable
 import inputDialog
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import lib.formatDistanceToNow
 import notBlank
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
-import org.jetbrains.compose.web.dom.Span
-import org.jetbrains.compose.web.dom.Text
 import push
 import r
 import kotlin.js.Date
@@ -163,9 +156,9 @@ fun GroupsNavPage(
             }
         }) {
             if (!showSearch) {
-                NavMenuItem("group", "Friends", selected = selected is GroupNav.Friends) {
-                    onSelected(GroupNav.Friends)
-                }
+//                NavMenuItem("group", "Friends", selected = selected is GroupNav.Friends) {
+//                    onSelected(GroupNav.Friends)
+//                }
                 NavMenuItem("location_on", "Local", selected = selected is GroupNav.Local) {
                     onSelected(GroupNav.Local)
                 }
@@ -186,89 +179,13 @@ fun GroupsNavPage(
                 }
             } else {
                 shownGroups.forEach { group ->
-                    val myMember = group.members?.find { it.person?.id == me!!.id }
-                    Div({
-                        classes(
-                            listOf(AppStyles.groupItem) + if ((selected as? GroupNav.Selected)?.group?.group?.id == group.group?.id) {
-                                listOf(AppStyles.groupItemSelected)
-                            } else {
-                                emptyList()
-                            }
-                        )
-                        onClick {
-                            onSelected(GroupNav.Selected(group))
-                        }
-
-                        focusable()
-                    }) {
-                        GroupPhoto(group, me!!)
-                        Div({
-                            style {
-                                width(0.px)
-                                flexGrow(1)
-                            }
-                        }) {
-                            Div({
-                                classes(AppStyles.groupItemName)
-
-                                style {
-                                    if (group.isUnread(myMember?.member)) {
-                                        fontWeight("bold")
-                                    }
-                                }
-                            }) {
-                                Text(group.name("Someone", "New group", listOf(me!!.id!!)))
-                            }
-                            Div({
-                                classes(AppStyles.groupItemMessage)
-                            }) {
-                                if (group.latestMessage?.member == myMember?.member?.id) {
-                                    Text("You: ")
-                                }
-                                Text(
-                                    group.latestMessage?.preview() ?: "Created ${
-                                        formatDistanceToNow(
-                                            Date(group.group!!.createdAt!!),
-                                            js("{ addSuffix: true }")
-                                        )
-                                    }"
-                                )
-
-                            }
-                        }
-                        if (group.latestMessage != null) {
-                            Div({
-                                style {
-                                    marginLeft(.5.r)
-                                    flexShrink(0)
-                                }
-                            }) {
-                                Span({
-                                    style {
-                                        if (group.isUnread(myMember?.member)) {
-                                            color(Styles.colors.primary)
-                                            fontWeight("bold")
-                                        } else {
-                                            color(Styles.colors.secondary)
-                                            opacity(.5)
-                                        }
-                                        fontSize(14.px)
-                                    }
-                                }) {
-                                    Text(
-                                        " ${
-                                            group.group?.seen?.let {
-                                                formatDistanceToNow(
-                                                    Date(it),
-                                                    js("{ addSuffix: true }")
-                                                )
-                                            }
-                                        }"
-                                    )
-                                }
-                            }
-                        }
-                    }
+                   GroupItem(
+                       group,
+                       selected = (selected as? GroupNav.Selected)?.group?.group?.id == group.group?.id,
+                       onSelected = {
+                           onSelected(GroupNav.Selected(group))
+                       },
+                   )
                 }
             }
         }

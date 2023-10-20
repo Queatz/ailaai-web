@@ -2,18 +2,22 @@ package app.group
 
 import Group
 import GroupExtended
+import JoinRequestAndPerson
 import Member
 import androidx.compose.runtime.*
 import api
 import app.AppStyles
 import app.PageTopBar
+import app.menu.InlineMenu
 import app.menu.Menu
 import app.nav.name
+import appString
 import application
 import components.ProfilePhoto
 import dialog
 import focusable
 import inputDialog
+import joins
 import kotlinx.browser.window
 import kotlinx.coroutines.launch
 import lib.formatDistanceToNow
@@ -57,6 +61,27 @@ fun GroupTopBar(group: GroupExtended, onGroupUpdated: () -> Unit, onGroupGone: (
         }
     }
 
+    fun makeOpen(open: Boolean) {
+        scope.launch {
+            val result = dialog(
+                if (open) "Open group" else "Close group",
+                if (open) "Make group open" else "Make group closed",
+            ) {
+                if (open) {
+                    Text("Anyone will be able to discover this group, see all members, messages, and request to become a member.")
+                } else {
+                    Text("This group will only be accessible to members.")
+                }
+            }
+
+            if (result != true) return@launch
+
+            api.updateGroup(group.group!!.id!!, Group(open = open)) {
+                onGroupUpdated()
+            }
+        }
+    }
+
     fun updateIntroduction() {
         scope.launch {
             val introduction = inputDialog(
@@ -81,81 +106,62 @@ fun GroupTopBar(group: GroupExtended, onGroupUpdated: () -> Unit, onGroupGone: (
 //            }
             item("Members") {
                 scope.launch {
-                    dialog("Members (${group.members?.size ?: 0})", cancelButton = null) {
-                        Div({
-                            style {
-                                display(DisplayStyle.Flex)
-                                flexDirection(FlexDirection.Column)
-                            }
-                        }) {
-                            group.members?.sortedByDescending { it.person?.seen?.let { Date(it).getTime() } ?: 0.0 }
-                                ?.forEach { member ->
-                                    Div({
-                                        classes(
-                                            listOf(AppStyles.groupItem, AppStyles.groupItemOnSurface)
-                                        )
-                                        onClick {
-                                            window.open("/profile/${member.person!!.id}", "_blank")
+                    groupMembersDialog(group)
+                }
+            }
+            if (myMember != null) {
+                item("Rename") {
+                    renameGroup()
+                }
+                item("Introduction") {
+                    updateIntroduction()
+                }
+                if (myMember.member?.host == true) {
+                    val closeStr = appString { close }
+                    item(appString { manage }) {
+                        scope.launch {
+                            dialog(
+                                null,
+                                closeStr,
+                                null
+                            ) {
+                                InlineMenu({
+                                    it(true)
+                                }) {
+                                    if (group.group?.open == true) {
+                                        item("Make group closed") {
+                                            makeOpen(false)
                                         }
-
-                                        focusable()
-                                    }) {
-                                        ProfilePhoto(member.person!!)
-                                        Div({
-                                            style {
-                                                marginLeft(1.r)
-                                            }
-                                        }) {
-                                            Div({
-                                                classes(AppStyles.groupItemName)
-                                            }) {
-                                                Text(member.person?.name ?: "Someone")
-                                            }
-                                            Div({
-                                                classes(AppStyles.groupItemMessage)
-                                            }) {
-                                                Text(
-                                                    "Active ${
-                                                        formatDistanceToNow(
-                                                            Date(member.person!!.seen ?: member.person!!.createdAt!!),
-                                                            js("{ addSuffix: true }")
-                                                        )
-                                                    }"
-                                                )
-
-                                            }
+                                    } else {
+                                        item("Make group open") {
+                                            makeOpen(true)
                                         }
                                     }
                                 }
+                            }
                         }
                     }
                 }
-            }
-            item("Rename") {
-                renameGroup()
-            }
-            item("Introduction") {
-                updateIntroduction()
-            }
-            item("Hide") {
-                scope.launch {
-                    api.updateMember(
-                        myMember!!.member!!.id!!,
-                        Member(hide = true)
-                    ) {
-                        onGroupGone()
-                    }
-                }
-            }
-            item("Leave") {
-                scope.launch {
-                    val result = dialog("Leave this group?", "Leave")
-
-                    if (result == true) {
-                        api.removeMember(
-                            myMember!!.member!!.id!!
+                item("Hide") {
+                    scope.launch {
+                        api.updateMember(
+                            myMember.member!!.id!!,
+                            Member(hide = true)
                         ) {
                             onGroupGone()
+                        }
+                    }
+                }
+                item("Leave") {
+                    scope.launch {
+                        val result = dialog("Leave this group?", "Leave")
+
+                        if (result == true) {
+                            api.removeMember(
+                                myMember.member!!.id!!
+                            ) {
+                                onGroupGone()
+                            }
                         }
                     }
                 }
@@ -163,7 +169,32 @@ fun GroupTopBar(group: GroupExtended, onGroupUpdated: () -> Unit, onGroupGone: (
         }
     }
 
-    if (showDescription) {
+    val allJoinRequests by joins.joins.collectAsState()
+    var joinRequests by remember {
+        mutableStateOf(emptyList<JoinRequestAndPerson>())
+    }
+
+    LaunchedEffect(allJoinRequests) {
+        joinRequests = allJoinRequests.filter { it.joinRequest?.group == group.group?.id}
+    }
+
+    if (joinRequests.isNotEmpty()) {
+        Div({
+            style {
+                display(DisplayStyle.Flex)
+                flexDirection(FlexDirection.Column)
+                overflowX("hidden")
+                overflowY("auto")
+                maxHeight(25.vh)
+            }
+        }) {
+            joinRequests.forEach {
+                GroupJoinRequest(it) {
+                    onGroupUpdated()
+                }
+            }
+        }
+    } else if (showDescription) {
         group.group?.description?.notBlank?.let { description ->
             Div({
                 classes(AppStyles.groupDescription)

@@ -114,7 +114,6 @@ fun StoriesPage(selected: StoryNav, onStoryUpdated: (Story) -> Unit) {
         }
     }
 
-
     if (isLoading) {
         Loading()
     } else {

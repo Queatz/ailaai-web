@@ -10,7 +10,7 @@ import org.jetbrains.compose.web.renderComposable
 import org.w3c.dom.HTMLDialogElement
 
 suspend fun dialog(
-    title: String,
+    title: String?,
     confirmButton: String = "Okay",
     cancelButton: String? = "Cancel",
     cancellable: Boolean = true,
@@ -40,9 +40,9 @@ suspend fun dialog(
     }
     document.body?.appendChild(dialog)
     renderComposable(dialog) {
-        if (title.isNotBlank()) {
+        if (title.isNullOrBlank().not()) {
             Header {
-                Text(title)
+                Text(title ?: "")
             }
         }
         Section {

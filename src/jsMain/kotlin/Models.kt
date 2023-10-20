@@ -23,8 +23,21 @@ class Group(
     var name: String? = null,
     var seen: String? = null,
     var description: String? = null,
+    var open: Boolean? = null
 ) : Model()
 
+@Serializable
+class JoinRequest(
+    var person: String? = null,
+    var group: String? = null,
+    var message: String? = null
+) : Model()
+
+@Serializable
+class JoinRequestAndPerson(
+    var person: Person? = null,
+    var joinRequest: JoinRequest? = null
+)
 
 @Serializable
 class MemberAndPerson(

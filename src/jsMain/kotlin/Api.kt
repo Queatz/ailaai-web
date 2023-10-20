@@ -164,14 +164,14 @@ class Api {
         onSuccess = onSuccess
     )
 
-    suspend fun publicGroups(
+    suspend fun exploreGroups(
         geo: List<Double>,
         search: String? = null,
         public: Boolean = false,
         onError: suspend (Throwable) -> Unit = {},
         onSuccess: suspend (List<GroupExtended>) -> Unit
     ) = get(
-        url = "groups/public",
+        url = "groups/explore",
         parameters = mapOf(
             "geo" to geo.joinToString(","),
             "search" to search,

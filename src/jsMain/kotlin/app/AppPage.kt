@@ -1,11 +1,11 @@
 package app
 
 import Card
-import GroupExtended
 import Reminder
 import Story
 import androidx.compose.runtime.*
 import app.cards.CardsPage
+import app.group.GroupPage
 import app.nav.*
 import app.page.*
 import application
@@ -145,6 +145,9 @@ fun AppPage() {
             when (nav) {
                 NavPage.Groups -> GroupPage(
                     group,
+                    onGroup = {
+                              group = GroupNav.Selected(it)
+                    },
                     onGroupUpdated = {
                         scope.launch {
                             groupUpdates.emit(Unit)
