@@ -1,16 +1,19 @@
 package components
 
-import SignInRequest
-import SignUpRequest
 import Styles
 import androidx.compose.runtime.*
 import api
+import app.ailaai.api.me
+import app.ailaai.api.signIn
+import app.ailaai.api.signInWithLink
+import app.ailaai.api.signUp
 import app.softwork.routingcompose.Router
 import appText
 import application
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
+import linkDevice
 import org.jetbrains.compose.web.attributes.InputType
 import org.jetbrains.compose.web.attributes.autoFocus
 import org.jetbrains.compose.web.attributes.placeholder
@@ -65,8 +68,8 @@ fun SigninPage() {
             }
         }
         if (qrCodeLinked) {
-            api.signIn(
-                SignInRequest(link = linkDeviceToken),
+            api.signInWithLink(
+                linkDeviceToken!!,
                 onError = {
                     status = "Error"
                 }
@@ -85,7 +88,7 @@ fun SigninPage() {
     fun signIn(transferCode: String) {
         scope.launch {
             api.signIn(
-                SignInRequest(code = transferCode),
+                transferCode = transferCode,
                 onError = {
                     status = "Error"
                 }
@@ -104,7 +107,7 @@ fun SigninPage() {
     fun signUp(inviteCode: String? = null) {
         scope.launch {
             api.signUp(
-                SignUpRequest(code = inviteCode),
+                inviteCode,
                 onError = {
                     status = "Error"
 

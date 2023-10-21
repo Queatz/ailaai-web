@@ -3,9 +3,11 @@ package components
 import Styles
 import androidx.compose.runtime.*
 import api
+import app.ailaai.api.cards
 import appString
 import appText
 import com.queatz.db.Card
+import com.queatz.db.Geo
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
@@ -55,7 +57,7 @@ fun HomePage() {
 
             if (searchText.isNotBlank()) {
                 // HCMC
-                api.explore(listOf(10.7915858, 106.7426523), searchText, onError = {
+                api.cards(Geo(10.7915858, 106.7426523), search = searchText, onError = {
                     searchResults = emptyList()
                 }) {
                     searchResults = it

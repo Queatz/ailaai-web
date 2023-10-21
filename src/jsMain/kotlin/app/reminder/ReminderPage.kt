@@ -2,9 +2,9 @@ package app.reminder
 
 import androidx.compose.runtime.*
 import api
-import apis.deleteReminder
-import apis.updateReminder
 import app.PageTopBar
+import app.ailaai.api.deleteReminder
+import app.ailaai.api.updateReminder
 import app.components.EditField
 import app.menu.Menu
 import com.queatz.db.Reminder

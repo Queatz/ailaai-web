@@ -2,17 +2,16 @@ package app.reminder
 
 import androidx.compose.runtime.*
 import api
-import apis.reminderOccurrences
+import app.ailaai.api.reminderOccurrences
 import app.page.ReminderEvent
 import app.page.SchedulePageStyles
 import app.page.ScheduleView
-import com.queatz.db.*
+import com.queatz.db.Reminder
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.css.margin
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Text
 import r
-import kotlin.js.Date
 
 @Composable
 fun ReminderEvents(reminder: Reminder) {
@@ -25,8 +24,8 @@ fun ReminderEvents(reminder: Reminder) {
     suspend fun reload() {
         api.reminderOccurrences(
             reminder.id!!,
-            start = Date(reminder.start!!.toEpochMilliseconds()),
-            end = reminder.end?.let { Date(it.toEpochMilliseconds()) } ?: Date()
+            start = reminder.start!!,
+            end = reminder.end
         ) {
             events = it.toEvents().asReversed()
         }

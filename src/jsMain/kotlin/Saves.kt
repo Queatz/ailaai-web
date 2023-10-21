@@ -1,3 +1,6 @@
+import app.ailaai.api.saveCard
+import app.ailaai.api.savedCards
+import app.ailaai.api.unsaveCard
 import com.queatz.db.Card
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,18 +21,18 @@ class Saves {
 
     suspend fun reload() {
         application.bearerToken.first { it != null }
-        api.saved {
+        api.savedCards {
             cards.emit(it.mapNotNull { it.card }.toSet())
         }
     }
 
     suspend fun save(id: String) {
-        api.save(id)
+        api.saveCard(id)
         reload()
     }
 
     suspend fun unsave(id: String) {
-        api.unsave(id)
+        api.unsaveCard(id)
         reload()
     }
 }

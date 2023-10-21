@@ -9,7 +9,10 @@ import app.menu.Menu
 import app.nav.StoryNav
 import appText
 import application
-import com.queatz.db.*
+import com.queatz.ailaai.api.stories
+import com.queatz.ailaai.api.updateStory
+import com.queatz.db.Story
+import com.queatz.db.asGeo
 import components.Loading
 import defaultGeo
 import dialog
@@ -45,7 +48,7 @@ fun StoriesPage(selected: StoryNav, onStoryUpdated: (Story) -> Unit) {
 
         when (selected) {
             is StoryNav.Friends -> {
-                api.stories(me?.geo ?: defaultGeo) { stories ->
+                api.stories(me?.geo?.asGeo() ?: defaultGeo) { stories ->
                     storyContent = stories.flatMapIndexed { index, it ->
                         if (index < stories.lastIndex) it.full() + StoryContent.Divider else it.full()
                     }
@@ -53,7 +56,7 @@ fun StoriesPage(selected: StoryNav, onStoryUpdated: (Story) -> Unit) {
             }
 
             is StoryNav.Local -> {
-                api.stories(me?.geo ?: defaultGeo, public = true) { stories ->
+                api.stories(me?.geo?.asGeo() ?: defaultGeo, public = true) { stories ->
                     storyContent = stories.flatMapIndexed { index, it ->
                         if (index < stories.lastIndex) it.full() + StoryContent.Divider else it.full()
                     }

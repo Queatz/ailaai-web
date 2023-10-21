@@ -3,6 +3,9 @@ package app.nav
 import LocalConfiguration
 import androidx.compose.runtime.*
 import api
+import app.ailaai.api.profile
+import app.ailaai.api.updateMe
+import app.ailaai.api.updateProfile
 import app.components.EditField
 import appString
 import application

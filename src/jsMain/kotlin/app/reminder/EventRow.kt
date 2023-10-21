@@ -3,8 +3,8 @@ package app.reminder
 import Styles
 import androidx.compose.runtime.*
 import api
-import apis.deleteReminderOccurrence
-import apis.updateReminderOccurrence
+import app.ailaai.api.deleteReminderOccurrence
+import app.ailaai.api.updateReminderOccurrence
 import app.menu.Menu
 import app.page.ReminderEvent
 import app.page.ReminderEventType
@@ -25,7 +25,6 @@ import org.jetbrains.compose.web.dom.Text
 import org.w3c.dom.DOMRect
 import org.w3c.dom.HTMLElement
 import parseDateTime
-import kotlin.js.Date
 
 @Composable
 fun EventRow(
@@ -43,7 +42,7 @@ fun EventRow(
 
     fun markAsDone(done: Boolean) {
         scope.launch {
-            api.updateReminderOccurrence(event.reminder.id!!, event.date, ReminderOccurrence(
+            api.updateReminderOccurrence(event.reminder.id!!, event.date.toKotlinInstant(), ReminderOccurrence(
                 done = done
             )) {
                 onUpdate()
@@ -57,7 +56,7 @@ fun EventRow(
 
             if (note == null) return@launch
 
-            api.updateReminderOccurrence(event.reminder.id!!, event.date, ReminderOccurrence(
+            api.updateReminderOccurrence(event.reminder.id!!, event.date.toKotlinInstant(), ReminderOccurrence(
                 note = note
             )) {
                 onUpdate()
@@ -73,7 +72,7 @@ fun EventRow(
 
             api.deleteReminderOccurrence(
                 event.reminder.id!!,
-                event.occurrence?.occurrence?.let { Date(it.toEpochMilliseconds()) } ?: event.date
+                event.occurrence?.occurrence ?: event.date.toKotlinInstant()
             ) {
                 onUpdate()
             }
@@ -98,7 +97,7 @@ fun EventRow(
 
             api.updateReminderOccurrence(
                 event.reminder.id!!,
-                event.date,
+                event.date.toKotlinInstant(),
                 ReminderOccurrence(
                     date = parseDateTime(date, time, event.date).toKotlinInstant()
                 )

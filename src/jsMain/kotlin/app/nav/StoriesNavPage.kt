@@ -5,6 +5,8 @@ import app.AppStyles
 import app.components.Empty
 import app.components.Spacer
 import application
+import com.queatz.ailaai.api.createStory
+import com.queatz.ailaai.api.myStories
 import com.queatz.db.Story
 import components.IconButton
 import components.Loading
@@ -97,7 +99,7 @@ fun StoriesNavPage(storyUpdates: Flow<Story>, selected: StoryNav, onSelected: (S
                     "Create"
                 )
                 if (title == null) return@launch
-                api.newStory(Story(title = title)) {
+                api.createStory(Story(title = title)) {
                     reload()
                 }
             }

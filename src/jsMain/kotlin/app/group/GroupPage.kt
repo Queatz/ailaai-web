@@ -5,6 +5,7 @@ import com.queatz.db.*
 import androidx.compose.runtime.*
 import api
 import app.FullPageLayout
+import app.ailaai.api.exploreGroups
 import app.components.Empty
 import app.nav.GroupNav
 import appText
@@ -43,7 +44,7 @@ fun GroupPage(
             GroupNav.Friends -> {
                 isLoading = true
                 api.exploreGroups(
-                    geo = me?.geo ?: defaultGeo,
+                    geo = me?.geo?.asGeo() ?: defaultGeo,
                     search = search.notBlank,
                     public = false
                 ) {
@@ -55,7 +56,7 @@ fun GroupPage(
             GroupNav.Local -> {
                 isLoading = true
                 api.exploreGroups(
-                    geo = me?.geo ?: defaultGeo,
+                    geo = me?.geo?.asGeo() ?: defaultGeo,
                     search = search.notBlank,
                     public = true
                 ) {

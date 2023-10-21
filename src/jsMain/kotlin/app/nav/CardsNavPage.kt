@@ -2,6 +2,8 @@ package app.nav
 
 import androidx.compose.runtime.*
 import api
+import app.ailaai.api.myCards
+import app.ailaai.api.newCard
 import app.components.Spacer
 import app.menu.Menu
 import application

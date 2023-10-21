@@ -1,4 +1,4 @@
-import apis.*
+import app.ailaai.api.*
 import com.queatz.db.JoinRequest
 import com.queatz.db.JoinRequestAndPerson
 import com.queatz.push.PushAction

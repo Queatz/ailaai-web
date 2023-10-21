@@ -1,20 +1,19 @@
 package app.cards
 
-import com.queatz.db.*
 import LocalConfiguration
 import androidx.compose.runtime.*
 import api
 import app.PageTopBar
+import app.ailaai.api.*
 import app.components.EditField
 import app.menu.InlineMenu
 import app.menu.Menu
 import app.nav.NavSearchInput
 import application
+import com.queatz.db.Card
 import components.*
 import dialog
 import inputDialog
-import io.ktor.client.request.forms.*
-import io.ktor.http.*
 import json
 import kotlinx.browser.window
 import kotlinx.coroutines.launch
@@ -57,7 +56,7 @@ fun ExplorePage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Uni
 
     suspend fun reload() {
         if (me == null) return
-        api.cardsOfCard(card.id!!) {
+        api.cardsCards(card.id!!) {
             cards = it
         }
         isLoading = false
@@ -116,7 +115,7 @@ fun ExplorePage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Uni
                 val saved by saves.cards.collectAsState()
 
                 LaunchedEffect(Unit) {
-                    api.collaborations {
+                    api.myCollaborations {
                         allCards = it
                     }
                     loading = false
@@ -294,20 +293,9 @@ fun ExplorePage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Uni
                     it.singleOrNull()?.let {
                         scope.launch {
                             val photo = it.toScaledBytes()
-                            api.updateCardPhoto(
+                            api.uploadCardPhoto(
                                 card.id!!,
-                                MultiPartFormDataContent(
-                                    formData {
-                                        append(
-                                            "photo",
-                                            photo,
-                                            Headers.build {
-                                                append(HttpHeaders.ContentType, "image/jpeg")
-                                                append(HttpHeaders.ContentDisposition, "filename=photo.jpg")
-                                            }
-                                        )
-                                    }
-                                )
+                                photo
                             ) {
                                 onCardUpdated(card)
                             }

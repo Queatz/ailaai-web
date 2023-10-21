@@ -3,6 +3,9 @@ package components
 import Styles
 import androidx.compose.runtime.*
 import api
+import app.ailaai.api.card
+import app.ailaai.api.cardsCards
+import app.ailaai.api.wildReply
 import app.softwork.routingcompose.Router
 import appString
 import com.queatz.db.*
@@ -45,7 +48,7 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
             cardOptions = card!!.getOptions()
             stack.clear()
             cardLoaded(card!!)
-            api.cardsOfCard(cardId) {
+            api.cardsCards(cardId) {
                 cards = it
             }
         } catch (e: Throwable) {

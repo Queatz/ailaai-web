@@ -1,5 +1,8 @@
 import androidx.compose.runtime.*
 import app.AppStyles
+import app.ailaai.api.group
+import app.ailaai.api.messages
+import app.ailaai.api.messagesBefore
 import app.components.LoadMore
 import app.components.LoadMoreState
 import app.group.GroupMessageBar
@@ -45,7 +48,7 @@ fun GroupLayout(
     }
 
     suspend fun reloadMessages() {
-        api.groupMessages(group.group!!.id!!) {
+        api.messages(group.group!!.id!!) {
             messages = it
         }
         isLoading = false
@@ -55,9 +58,9 @@ fun GroupLayout(
         if (!hasMore || messages.isEmpty()) {
             return
         }
-        api.groupMessages(
+        api.messagesBefore(
             group.group!!.id!!,
-            before = messages.lastOrNull()?.createdAt?.let { Date(it.toEpochMilliseconds()) } ?: return
+            before = messages.lastOrNull()?.createdAt ?: return
         ) {
             val messagesCount = messages.size
             messages = (messages + it).distinctBy { it.id }

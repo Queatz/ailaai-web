@@ -3,8 +3,8 @@ package app.page
 import Styles
 import androidx.compose.runtime.*
 import api
-import apis.occurrences
 import app.FullPageLayout
+import app.ailaai.api.occurrences
 import app.reminder.EventRow
 import app.reminder.ReminderPage
 import app.reminder.toEvents
@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.datetime.toKotlinInstant
 import lib.*
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
@@ -124,13 +125,13 @@ fun SchedulePage(
         }
 
         api.occurrences(
-            start = start,
+            start = start.toKotlinInstant(),
             end = when (view) {
                 ScheduleView.Daily -> addDays(start, range[ScheduleView.Daily]!!.toDouble())
                 ScheduleView.Weekly -> addWeeks(start, range[ScheduleView.Weekly]!!.toDouble())
                 ScheduleView.Monthly -> addMonths(start, range[ScheduleView.Monthly]!!.toDouble())
                 ScheduleView.Yearly -> addYears(start, range[ScheduleView.Yearly]!!.toDouble())
-            }
+            }.toKotlinInstant()
         ) {
             events = it.toEvents()
         }

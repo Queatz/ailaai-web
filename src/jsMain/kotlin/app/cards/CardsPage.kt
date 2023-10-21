@@ -3,6 +3,9 @@ package app.cards
 import androidx.compose.runtime.*
 import api
 import app.FullPageLayout
+import app.ailaai.api.card
+import app.ailaai.api.cards
+import app.ailaai.api.savedCards
 import app.nav.CardNav
 import application
 import com.queatz.db.*
@@ -36,19 +39,19 @@ fun CardsPage(nav: CardNav, onCard: (CardNav) -> Unit, onCardUpdated: (Card) -> 
 
         when (nav) {
             is CardNav.Friends -> {
-                api.explore(me?.geo ?: defaultGeo) {
+                api.cards(me?.geo?.asGeo() ?: defaultGeo) {
                     cards = it
                 }
             }
 
             is CardNav.Local -> {
-                api.explore(me?.geo ?: defaultGeo, public = true) {
+                api.cards(me?.geo?.asGeo() ?: defaultGeo, public = true) {
                     cards = it
                 }
             }
 
             is CardNav.Saved -> {
-                api.saved {
+                api.savedCards {
                     cards = it.mapNotNull { it.card }
                 }
             }

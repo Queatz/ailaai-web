@@ -7,9 +7,10 @@
         <compositeConfiguration>
           <compositeBuild compositeDefinitionSource="SCRIPT">
             <builds>
-              <build path="$PROJECT_DIR$/../ailaai-shared" name="AiLaAi-Shared">
+              <build path="$PROJECT_DIR$/../ailaai-shared" name="ailaai-shared">
                 <projects>
                   <project path="$PROJECT_DIR$/../ailaai-shared" />
+                  <project path="$PROJECT_DIR$/../ailaai-shared/api" />
                   <project path="$PROJECT_DIR$/../ailaai-shared/models" />
                   <project path="$PROJECT_DIR$/../ailaai-shared/push" />
                 </projects>
@@ -21,6 +22,7 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$/../ailaai-shared" />
+            <option value="$PROJECT_DIR$/../ailaai-shared/api" />
             <option value="$PROJECT_DIR$/../ailaai-shared/models" />
             <option value="$PROJECT_DIR$/../ailaai-shared/push" />
             <option value="$PROJECT_DIR$" />

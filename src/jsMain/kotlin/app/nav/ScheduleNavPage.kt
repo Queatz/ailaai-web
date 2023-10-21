@@ -3,8 +3,8 @@ package app.nav
 import Styles
 import androidx.compose.runtime.*
 import api
-import apis.newReminder
-import apis.reminders
+import app.ailaai.api.newReminder
+import app.ailaai.api.reminders
 import app.components.Spacer
 import app.page.ScheduleView
 import app.reminder.*

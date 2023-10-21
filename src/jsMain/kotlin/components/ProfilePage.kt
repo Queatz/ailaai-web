@@ -3,10 +3,14 @@ package components
 import Styles
 import androidx.compose.runtime.*
 import api
+import app.ailaai.api.profile
+import app.ailaai.api.profileByUrl
+import app.ailaai.api.profileCards
 import app.softwork.routingcompose.Router
 import appString
 import baseUrl
-import com.queatz.db.*
+import com.queatz.db.Card
+import com.queatz.db.PersonProfile
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Source

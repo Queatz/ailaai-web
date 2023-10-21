@@ -5,14 +5,14 @@ import androidx.compose.runtime.*
 import api
 import app.AppStyles
 import app.StickersTray
+import app.ailaai.api.sendMedia
+import app.ailaai.api.sendMessage
 import appString
 import com.queatz.db.GroupExtended
 import com.queatz.db.Message
 import com.queatz.db.Sticker
 import com.queatz.db.StickerAttachment
 import components.IconButton
-import io.ktor.client.request.forms.*
-import io.ktor.http.*
 import json
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -52,25 +52,10 @@ fun GroupMessageBar(group: GroupExtended, reloadMessages: suspend () -> Unit) {
         try {
             val photos = files.map { it.toBytes() }
 
-            api.sendPhotos(
+            api.sendMedia(
                 group.group!!.id!!,
-                MultiPartFormDataContent(
-                    formData {
-                        if (message != null) {
-                            append("message", json.encodeToString(message))
-                        }
-                        photos.forEachIndexed { index, photo ->
-                            append(
-                                "photo[$index]",
-                                photo,
-                                Headers.build {
-                                    append(HttpHeaders.ContentType, "image/jpeg")
-                                    append(HttpHeaders.ContentDisposition, "filename=photo.jpg")
-                                }
-                            )
-                        }
-                    }
-                )
+                photos,
+                message
             ) {
                 reloadMessages()
             }

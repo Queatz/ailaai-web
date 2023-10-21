@@ -1,4 +1,4 @@
-import com.queatz.db.Device
+import app.ailaai.api.myDevice
 import com.queatz.db.DeviceType
 import com.queatz.push.PushData
 import kotlinx.coroutines.*
@@ -22,11 +22,9 @@ class Push {
                 application.bearerToken.first { it != null }
 
                 var error = false
-                api.device(
-                    Device(
-                        type = DeviceType.Web,
-                        token = api.device
-                    ),
+                api.myDevice(
+                    DeviceType.Web,
+                    api.device,
                     onError = {
                         error = true
                     }

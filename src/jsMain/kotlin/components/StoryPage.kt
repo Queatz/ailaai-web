@@ -3,8 +3,8 @@ package components
 import Styles
 import androidx.compose.runtime.*
 import api
-import app.softwork.routingcompose.Router
 import appString
+import com.queatz.ailaai.api.storyByUrl
 import com.queatz.db.Story
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
@@ -16,8 +16,6 @@ import stories.full
 
 @Composable
 fun StoryPage(storyUrl: String, onStoryLoaded: (Story) -> Unit) {
-    val scope = rememberCoroutineScope()
-    val router = Router.current
     var isLoading by remember { mutableStateOf(true) }
     var story by remember { mutableStateOf<Story?>(null) }
     var storyContent by remember { mutableStateOf<List<StoryContent>?>(null) }
