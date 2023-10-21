@@ -41,7 +41,12 @@ class Push {
                 sse.onmessage = {
                     jobScope.launch {
                         (it.data as? String)?.let { data ->
-                            events.emit(json.decodeFromString(data))
+                            try {
+                                events.emit(json.decodeFromString(data))
+                            } catch (e: Throwable) {
+                                console.log(e)
+                                null
+                            }
                         } ?: console.log("Not a string:", it.data)
                     }
                 }

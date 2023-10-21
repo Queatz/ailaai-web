@@ -156,9 +156,9 @@ fun GroupItem(
                     }
                 }) {
                     if (joinRequestCount == 1) {
-                        Text("$joinRequestCount request")
+                        Text("$joinRequestCount person waiting")
                     } else {
-                        Text("$joinRequestCount requests")
+                        Text("$joinRequestCount people waiting")
                     }
                 }
             }

@@ -2,14 +2,16 @@ package components
 
 import androidx.compose.runtime.*
 import kotlinx.coroutines.delay
+import org.jetbrains.compose.web.attributes.AttrsScope
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text
+import org.w3c.dom.HTMLDivElement
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
-fun Loading() {
+fun Loading(attrs: (AttrsScope<HTMLDivElement>.() -> Unit)? = null) {
     var opacity by remember {
         mutableStateOf(0f)
     }
@@ -21,6 +23,8 @@ fun Loading() {
             justifyContent(JustifyContent.Center)
             opacity(opacity)
         }
+
+        attrs?.invoke(this)
     }) {
         var side by remember {
             mutableStateOf("")

@@ -154,6 +154,7 @@ object AppStyles : StyleSheet() {
         overflowY("auto")
         overflowX("hidden")
     }
+
     val messageBar by style {
         flexShrink(0)
         display(DisplayStyle.Flex)

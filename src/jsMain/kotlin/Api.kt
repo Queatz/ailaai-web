@@ -9,6 +9,7 @@ import kotlinx.browser.localStorage
 import kotlinx.serialization.Serializable
 import org.w3c.dom.get
 import org.w3c.dom.set
+import kotlin.js.Date
 
 val api = Api()
 
@@ -397,10 +398,16 @@ class Api {
 
     suspend fun groupMessages(
         groupId: String,
+        before: Date? = null,
+        limit: Int? = null,
         onError: suspend (Throwable) -> Unit = {},
         onSuccess: suspend (List<Message>) -> Unit
     ) = get(
         url = "groups/$groupId/messages",
+        parameters = mapOf(
+            "before" to before?.toISOString(),
+            "limit" to limit?.toString()
+        ),
         onError = onError,
         onSuccess = onSuccess
     )

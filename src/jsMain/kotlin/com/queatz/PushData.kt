@@ -2,6 +2,7 @@ package com.queatz
 
 import Card
 import Group
+import JoinRequest
 import Message
 import Person
 import kotlinx.serialization.Serializable
@@ -40,6 +41,7 @@ data class CollaborationPushData(
 data class JoinRequestPushData(
     val person: Person,
     val group: Group,
+    val joinRequest: JoinRequest,
     val event: JoinRequestEvent,
 ) : PushDataData()
 
