@@ -78,9 +78,9 @@ fun GroupsNavPage(
         application.bearerToken.first { it != null }
         api.groups {
             groups = it
-            groups.firstOrNull { it.group?.id == (selected as? GroupNav.Selected)?.group?.group?.id }?.let {
-                onSelected(GroupNav.Selected(it))
-            }
+            onSelected(groups.firstOrNull { it.group?.id == (selected as? GroupNav.Selected)?.group?.group?.id }?.let {
+                GroupNav.Selected(it)
+            } ?: GroupNav.None)
         }
     }
 

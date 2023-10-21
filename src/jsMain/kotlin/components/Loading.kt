@@ -22,6 +22,7 @@ fun Loading(attrs: (AttrsScope<HTMLDivElement>.() -> Unit)? = null) {
             alignItems(AlignItems.Center)
             justifyContent(JustifyContent.Center)
             opacity(opacity)
+            property("user-select", "none")
         }
 
         attrs?.invoke(this)
