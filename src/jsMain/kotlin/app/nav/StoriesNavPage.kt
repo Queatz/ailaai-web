@@ -1,11 +1,11 @@
 package app.nav
-import Story
 import androidx.compose.runtime.*
 import api
 import app.AppStyles
 import app.components.Empty
 import app.components.Spacer
 import application
+import com.queatz.db.Story
 import components.IconButton
 import components.Loading
 import focusable

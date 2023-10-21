@@ -1,11 +1,11 @@
 package app.cards
 
-import Card
 import androidx.compose.runtime.*
 import api
 import app.FullPageLayout
 import app.nav.CardNav
 import application
+import com.queatz.db.*
 import components.*
 import defaultGeo
 import kotlinx.coroutines.launch

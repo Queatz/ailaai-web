@@ -7,6 +7,7 @@ import baseUrl
 import components.CardItem
 import components.Icon
 import components.LinkifyText
+import kotlinx.datetime.Instant
 import lib.format
 import lib.isThisYear
 import org.jetbrains.compose.web.attributes.ATarget
@@ -16,7 +17,7 @@ import org.jetbrains.compose.web.dom.*
 import kotlin.js.Date
 
 @Composable
-fun storyStatus(publishDate: String?) = publishDate?.let { Date(it) }?.let { format(it, "MMMM do${if (isThisYear(it)) "" else ", yyyy"}") } ?: appString { draft }
+fun storyStatus(publishDate: Instant?) = publishDate?.let { Date(it.toEpochMilliseconds()) }?.let { format(it, "MMMM do${if (isThisYear(it)) "" else ", yyyy"}") } ?: appString { draft }
 
 @Composable
 fun StoryContents(storyContent: List<StoryContent>, openInNewWindow: Boolean = false) {
@@ -35,7 +36,7 @@ fun StoryContents(storyContent: List<StoryContent>, openInNewWindow: Boolean = f
                     classes(StoryStyles.contentAuthors)
                 }) {
                     Span({
-                        title("${part.publishDate?.let { Date(it) }}")
+                        title("${part.publishDate?.let { Date(it.toEpochMilliseconds()) }}")
                     }) {
                         Text("${storyStatus(part.publishDate)} ${appString { inlineBy }} ")
                         part.authors.forEachIndexed { index, person ->

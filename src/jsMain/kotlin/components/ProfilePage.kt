@@ -1,13 +1,12 @@
 package components
 
-import Card
-import PersonProfile
 import Styles
 import androidx.compose.runtime.*
 import api
 import app.softwork.routingcompose.Router
 import appString
 import baseUrl
+import com.queatz.db.*
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Source
@@ -211,9 +210,9 @@ fun ProfilePage(personId: String? = null, url: String? = null, onProfile: (Perso
                                         Div(
                                             {
                                                 classes(ProfileStyles.infoCardValue)
-                                                title("${Date(profile.person.createdAt!!)}")
+                                                title("${Date(profile.person.createdAt!!.toEpochMilliseconds())}")
                                             }
-                                        ) { Text("${Date(profile.person.createdAt!!).getFullYear()}") }
+                                        ) { Text("${Date(profile.person.createdAt!!.toEpochMilliseconds()).getFullYear()}") }
                                         Div({ classes(ProfileStyles.infoCardName) }) { Text(appString { joined }) }
                                     }
                                 }

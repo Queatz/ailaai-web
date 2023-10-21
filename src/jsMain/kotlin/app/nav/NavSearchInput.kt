@@ -1,5 +1,6 @@
 package app.nav
 
+import Styles
 import androidx.compose.runtime.Composable
 import org.jetbrains.compose.web.attributes.autoFocus
 import org.jetbrains.compose.web.attributes.placeholder

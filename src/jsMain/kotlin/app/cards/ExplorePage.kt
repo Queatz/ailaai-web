@@ -1,6 +1,6 @@
 package app.cards
 
-import Card
+import com.queatz.db.*
 import LocalConfiguration
 import androidx.compose.runtime.*
 import api

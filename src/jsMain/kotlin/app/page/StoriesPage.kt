@@ -1,6 +1,5 @@
 package app.page
 
-import Story
 import Styles
 import androidx.compose.runtime.*
 import api
@@ -10,6 +9,7 @@ import app.menu.Menu
 import app.nav.StoryNav
 import appText
 import application
+import com.queatz.db.*
 import components.Loading
 import defaultGeo
 import dialog
@@ -17,10 +17,8 @@ import inputDialog
 import kotlinx.browser.window
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.css.*
-import org.jetbrains.compose.web.dom.Col
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Img
-import org.jetbrains.compose.web.dom.Span
 import org.w3c.dom.DOMRect
 import org.w3c.dom.HTMLElement
 import qr

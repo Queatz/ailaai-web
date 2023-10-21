@@ -1,9 +1,6 @@
 package app.group
 
-import Group
-import GroupExtended
-import JoinRequestAndPerson
-import Member
+import com.queatz.db.*
 import androidx.compose.runtime.*
 import api
 import app.AppStyles
@@ -13,12 +10,9 @@ import app.menu.Menu
 import app.nav.name
 import appString
 import application
-import components.ProfilePhoto
 import dialog
-import focusable
 import inputDialog
 import joins
-import kotlinx.browser.window
 import kotlinx.coroutines.launch
 import lib.formatDistanceToNow
 import notBlank
@@ -27,7 +21,6 @@ import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Text
 import org.w3c.dom.DOMRect
 import org.w3c.dom.HTMLElement
-import r
 import kotlin.js.Date
 
 @Composable
@@ -213,8 +206,8 @@ fun GroupTopBar(group: GroupExtended, onGroupUpdated: () -> Unit, onGroupGone: (
     PageTopBar(
         group.name("Someone", "New group", listOf(me!!.id!!)),
         group.members?.filter { it != myMember }?.maxByOrNull {
-            it.person?.seen?.let { Date(it).getTime() } ?: 0.0
-        }?.person?.seen?.let { Date(it) }?.let {
+            it.person?.seen?.toEpochMilliseconds() ?: 0
+        }?.person?.seen?.let { Date(it.toEpochMilliseconds()) }?.let {
             "Active ${formatDistanceToNow(it, js("{ addSuffix: true }"))}"
         }
     ) {

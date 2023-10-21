@@ -1,18 +1,13 @@
 package apis
 
 import Api
-import Reminder
-import ReminderOccurrence
+import com.queatz.db.Reminder
+import com.queatz.db.ReminderOccurrence
+import com.queatz.db.ReminderOccurrences
 import io.ktor.client.statement.*
 import kotlinx.serialization.Serializable
 import kotlin.js.Date
 
-@Serializable
-class ReminderOccurrences(
-    val reminder: Reminder,
-    val dates: List<String>,
-    val occurrences: List<ReminderOccurrence>,
-)
 
 suspend fun Api.reminders(
     onError: suspend (Throwable) -> Unit = {},

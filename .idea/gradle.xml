@@ -4,10 +4,25 @@
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
-        <option name="distributionType" value="DEFAULT_WRAPPED" />
+        <compositeConfiguration>
+          <compositeBuild compositeDefinitionSource="SCRIPT">
+            <builds>
+              <build path="$PROJECT_DIR$/../ailaai-shared" name="AiLaAi-Shared">
+                <projects>
+                  <project path="$PROJECT_DIR$/../ailaai-shared" />
+                  <project path="$PROJECT_DIR$/../ailaai-shared/models" />
+                  <project path="$PROJECT_DIR$/../ailaai-shared/push" />
+                </projects>
+              </build>
+            </builds>
+          </compositeBuild>
+        </compositeConfiguration>
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
           <set>
+            <option value="$PROJECT_DIR$/../ailaai-shared" />
+            <option value="$PROJECT_DIR$/../ailaai-shared/models" />
+            <option value="$PROJECT_DIR$/../ailaai-shared/push" />
             <option value="$PROJECT_DIR$" />
           </set>
         </option>

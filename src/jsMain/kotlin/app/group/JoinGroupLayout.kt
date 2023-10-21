@@ -1,10 +1,11 @@
 package app.group
 
-import GroupExtended
+import Styles
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import com.queatz.db.GroupExtended
 import inputDialog
 import joins
 import kotlinx.coroutines.launch

@@ -1,14 +1,16 @@
 package app
 
-import Card
-import Reminder
-import Story
 import androidx.compose.runtime.*
 import app.cards.CardsPage
 import app.group.GroupPage
 import app.nav.*
-import app.page.*
+import app.page.SchedulePage
+import app.page.ScheduleView
+import app.page.StoriesPage
 import application
+import com.queatz.db.Card
+import com.queatz.db.Reminder
+import com.queatz.db.Story
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable

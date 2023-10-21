@@ -1,5 +1,6 @@
 package app.reminder
 
+import Styles
 import androidx.compose.runtime.Composable
 import org.jetbrains.compose.web.attributes.disabled
 import org.jetbrains.compose.web.css.*

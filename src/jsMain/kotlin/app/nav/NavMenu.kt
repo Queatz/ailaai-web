@@ -1,5 +1,6 @@
 package app.nav
 
+import Styles
 import androidx.compose.runtime.Composable
 import app.AppStyles
 import app.messaages.inList

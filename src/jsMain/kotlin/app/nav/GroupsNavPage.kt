@@ -1,14 +1,12 @@
 package app.nav
 
-import Group
-import GroupExtended
-import Member
 import androidx.compose.runtime.*
 import api
 import app.components.Spacer
 import app.group.GroupItem
 import appText
 import application
+import com.queatz.db.*
 import components.IconButton
 import components.Loading
 import inputDialog
@@ -179,13 +177,13 @@ fun GroupsNavPage(
                 }
             } else {
                 shownGroups.forEach { group ->
-                   GroupItem(
-                       group,
-                       selected = (selected as? GroupNav.Selected)?.group?.group?.id == group.group?.id,
-                       onSelected = {
-                           onSelected(GroupNav.Selected(group))
-                       },
-                   )
+                    GroupItem(
+                        group,
+                        selected = (selected as? GroupNav.Selected)?.group?.group?.id == group.group?.id,
+                        onSelected = {
+                            onSelected(GroupNav.Selected(group))
+                        },
+                    )
                 }
             }
         }
@@ -202,6 +200,6 @@ fun GroupExtended.name(someone: String, emptyGroup: String, omit: List<String>) 
         ?: emptyGroup
 
 fun GroupExtended.isUnread(member: Member?): Boolean {
-    return (member?.seen?.let { Date(it) }?.getTime() ?: return false) < (latestMessage?.createdAt?.let { Date(it) }
-        ?.getTime() ?: return false)
+    return (member?.seen?.toEpochMilliseconds() ?: return false) < (latestMessage?.createdAt?.toEpochMilliseconds()
+        ?: return false)
 }

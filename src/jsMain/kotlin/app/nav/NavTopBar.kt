@@ -1,10 +1,9 @@
 package app.nav
 
-import Person
 import androidx.compose.runtime.Composable
 import appString
+import com.queatz.db.Person
 import components.ProfilePhoto
-import kotlinx.browser.window
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.ElementScope

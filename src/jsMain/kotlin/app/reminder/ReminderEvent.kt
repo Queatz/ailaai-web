@@ -1,8 +1,9 @@
 package app.reminder
 
-import apis.ReminderOccurrences
 import app.page.ReminderEvent
 import app.page.ReminderEventType
+import com.queatz.db.ReminderOccurrences
+import kotlin.js.Date
 
 /**
  * Rules are:
@@ -18,7 +19,7 @@ fun List<ReminderOccurrences>.toEvents() = buildList {
                 add(
                     ReminderEvent(
                         it.reminder,
-                        kotlin.js.Date(it.reminder.start!!),
+                        Date(it.reminder.start!!.toEpochMilliseconds()),
                         if (it.reminder.end == null) ReminderEventType.Occur else ReminderEventType.Start,
                         null
                     )
@@ -30,7 +31,7 @@ fun List<ReminderOccurrences>.toEvents() = buildList {
                     add(
                         ReminderEvent(
                             it.reminder,
-                            kotlin.js.Date(it.reminder.end!!),
+                            Date(it.reminder.end!!.toEpochMilliseconds()),
                             ReminderEventType.End,
                             null
                         )
@@ -44,7 +45,7 @@ fun List<ReminderOccurrences>.toEvents() = buildList {
                 add(
                     ReminderEvent(
                         it.reminder,
-                        kotlin.js.Date((occurrence.date ?: occurrence.occurrence)!!),
+                        Date((occurrence.date ?: occurrence.occurrence)!!.toEpochMilliseconds()),
                         when {
                             it.reminder.schedule == null && it.reminder.end != null && it.reminder.start == occurrence.occurrence -> ReminderEventType.Start
                             it.reminder.schedule == null && it.reminder.end != null && it.reminder.end == occurrence.occurrence -> ReminderEventType.End
@@ -63,7 +64,7 @@ fun List<ReminderOccurrences>.toEvents() = buildList {
             add(
                 ReminderEvent(
                     it.reminder,
-                    kotlin.js.Date(date),
+                    Date(date.toEpochMilliseconds()),
                     ReminderEventType.Occur,
                     null
                 )

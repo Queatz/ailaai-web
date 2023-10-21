@@ -1,6 +1,5 @@
 package app.group
 
-import GroupExtended
 import Styles
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -12,6 +11,7 @@ import app.nav.name
 import appString
 import appText
 import application
+import com.queatz.db.*
 import components.GroupPhoto
 import components.Icon
 import focusable
@@ -97,7 +97,7 @@ fun GroupItem(
                         Text(
                             group.latestMessage?.preview() ?: "Created ${
                                 formatDistanceToNow(
-                                    Date(group.group!!.createdAt!!),
+                                    Date(group.group!!.createdAt!!.toEpochMilliseconds()),
                                     js("{ addSuffix: true }")
                                 )
                             }"
@@ -185,7 +185,7 @@ fun GroupItem(
                         " ${
                             group.group?.seen?.let {
                                 formatDistanceToNow(
-                                    Date(it),
+                                    Date(it.toEpochMilliseconds()),
                                     js("{ addSuffix: true }")
                                 )
                             }

@@ -1,5 +1,6 @@
 package app
 
+import Styles
 import androidx.compose.runtime.Composable
 import components.IconButton
 import org.jetbrains.compose.web.css.Color

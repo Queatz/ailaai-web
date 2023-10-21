@@ -1,15 +1,14 @@
 package app.group
 
-import JoinRequestAndPerson
 import Styles
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import app.AppStyles
 import appText
+import com.queatz.db.JoinRequestAndPerson
 import components.ProfilePhoto
 import joins
 import kotlinx.browser.window
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import notBlank
 import org.jetbrains.compose.web.css.*

@@ -1,11 +1,11 @@
 package components
 
-import Card
 import Styles
 import androidx.compose.runtime.*
 import api
 import appString
 import appText
+import com.queatz.db.Card
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*

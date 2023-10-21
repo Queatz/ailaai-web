@@ -1,4 +1,5 @@
 import app.NavPage
+import com.queatz.db.Person
 import kotlinx.browser.localStorage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.serialization.encodeToString

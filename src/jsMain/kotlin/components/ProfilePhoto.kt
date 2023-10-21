@@ -1,15 +1,13 @@
 package components
 
-import Person
 import Styles
 import androidx.compose.runtime.Composable
-import app.AppStyles
 import baseUrl
+import com.queatz.db.Person
 import focusable
 import notBlank
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
-import org.jetbrains.compose.web.dom.Img
 import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text
 

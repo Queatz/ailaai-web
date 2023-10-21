@@ -1,6 +1,5 @@
 package app.nav
 
-import Reminder
 import Styles
 import androidx.compose.runtime.*
 import api
@@ -10,6 +9,7 @@ import app.components.Spacer
 import app.page.ScheduleView
 import app.reminder.*
 import application
+import com.queatz.db.Reminder
 import components.IconButton
 import components.Loading
 import kotlinx.coroutines.flow.Flow

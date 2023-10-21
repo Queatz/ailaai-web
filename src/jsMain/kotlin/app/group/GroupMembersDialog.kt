@@ -1,7 +1,7 @@
 package app.group
 
-import GroupExtended
 import app.AppStyles
+import com.queatz.db.GroupExtended
 import components.ProfilePhoto
 import dialog
 import focusable
@@ -20,7 +20,7 @@ suspend fun groupMembersDialog(group: GroupExtended) = dialog("Members (${group.
             flexDirection(FlexDirection.Column)
         }
     }) {
-        group.members?.sortedByDescending { it.person?.seen?.let { Date(it).getTime() } ?: 0.0 }
+        group.members?.sortedByDescending { it.person?.seen?.toEpochMilliseconds() ?: 0 }
             ?.forEach { member ->
                 Div({
                     classes(
@@ -49,7 +49,7 @@ suspend fun groupMembersDialog(group: GroupExtended) = dialog("Members (${group.
                             Text(
                                 "Active ${
                                     formatDistanceToNow(
-                                        Date(member.person!!.seen ?: member.person!!.createdAt!!),
+                                        Date(member.person!!.seen?.toEpochMilliseconds() ?: member.person!!.createdAt!!.toEpochMilliseconds()),
                                         js("{ addSuffix: true }")
                                     )
                                 }"

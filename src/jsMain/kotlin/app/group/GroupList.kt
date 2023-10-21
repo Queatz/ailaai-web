@@ -1,7 +1,7 @@
 package app.group
 
-import GroupExtended
 import androidx.compose.runtime.Composable
+import com.queatz.db.GroupExtended
 import org.jetbrains.compose.web.css.marginBottom
 import r
 

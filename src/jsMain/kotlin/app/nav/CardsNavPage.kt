@@ -1,11 +1,11 @@
 package app.nav
 
-import Card
 import androidx.compose.runtime.*
 import api
 import app.components.Spacer
 import app.menu.Menu
 import application
+import com.queatz.db.Card
 import components.IconButton
 import components.Loading
 import inputDialog

@@ -1,8 +1,9 @@
 package stories
 
-import Person
-import Story
+import com.queatz.db.Person
+import com.queatz.db.Story
 import json
+import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.*
 import notBlank
@@ -11,7 +12,7 @@ import notBlank
 sealed class StoryContent {
     object Divider : StoryContent()
     class Title(var title: String, val id: String) : StoryContent()
-    class Authors(var publishDate: String?, var authors: List<Person>) : StoryContent()
+    class Authors(var publishDate: Instant?, var authors: List<Person>) : StoryContent()
     @Serializable
     class Section(var section: String) : StoryContent()
     @Serializable

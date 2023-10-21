@@ -1,14 +1,12 @@
 package app.messaages
 
-import MemberAndPerson
-import Message
-import Story
 import Styles
 import androidx.compose.runtime.*
 import api
 import app.AppStyles
 import app.StickerItem
 import baseUrl
+import com.queatz.db.*
 import components.CardItem
 import components.Icon
 import components.LinkifyText
@@ -61,7 +59,7 @@ fun MessageContent(message: Message, myMember: MemberAndPerson?, isReply: Boolea
             }
         }
         title(
-            "${message.createdAt?.let { formatDistanceToNow(Date(it), js("{ addSuffix: true }")) }}\n${message.createdAt?.let { Date(it) }.toString()}"
+            "${message.createdAt?.let { formatDistanceToNow(Date(it.toEpochMilliseconds()), js("{ addSuffix: true }")) }}\n${message.createdAt?.let { Date(it.toEpochMilliseconds()) }.toString()}"
         )
     }) {
         reply?.let { reply ->

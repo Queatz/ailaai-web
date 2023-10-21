@@ -1,7 +1,7 @@
 package app.group
 
-import GroupExtended
 import GroupLayout
+import com.queatz.db.*
 import androidx.compose.runtime.*
 import api
 import app.FullPageLayout

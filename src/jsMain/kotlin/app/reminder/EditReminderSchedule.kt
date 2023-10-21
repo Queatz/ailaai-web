@@ -1,12 +1,16 @@
 package app.reminder
 
-import ReminderSchedule
 import androidx.compose.runtime.*
 import app.components.MultiSelect
+import com.queatz.db.ReminderSchedule
+import kotlinx.datetime.toKotlinInstant
 import lib.*
 import org.jetbrains.compose.web.attributes.disabled
 import org.jetbrains.compose.web.css.*
-import org.jetbrains.compose.web.dom.*
+import org.jetbrains.compose.web.dom.CheckboxInput
+import org.jetbrains.compose.web.dom.Div
+import org.jetbrains.compose.web.dom.Label
+import org.jetbrains.compose.web.dom.Text
 import parseDateTime
 import r
 import kotlin.js.Date
@@ -46,8 +50,8 @@ val EditSchedule.reminderSchedule get() = if (reoccurs) {
     null
 }
 
-val EditSchedule.start get() = parseDateTime(date, time).toISOString()
-val EditSchedule.end get() = if (until) parseDateTime(untilDate, untilTime).toISOString() else null
+val EditSchedule.start get() = parseDateTime(date, time).toKotlinInstant()
+val EditSchedule.end get() = if (until) parseDateTime(untilDate, untilTime).toKotlinInstant() else null
 
 @Composable
 fun EditReminderSchedule(

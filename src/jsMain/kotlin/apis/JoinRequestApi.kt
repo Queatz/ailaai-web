@@ -1,8 +1,8 @@
 package apis
 
 import Api
-import JoinRequest
-import JoinRequestAndPerson
+import com.queatz.db.JoinRequest
+import com.queatz.db.JoinRequestAndPerson
 import io.ktor.client.statement.*
 
 suspend fun Api.joinRequests(

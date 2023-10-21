@@ -1,14 +1,15 @@
 package app.group
 
-import GroupExtended
-import Message
-import Sticker
+import Styles
 import androidx.compose.runtime.*
 import api
 import app.AppStyles
 import app.StickersTray
-import app.messaages.StickerAttachment
 import appString
+import com.queatz.db.GroupExtended
+import com.queatz.db.Message
+import com.queatz.db.Sticker
+import com.queatz.db.StickerAttachment
 import components.IconButton
 import io.ktor.client.request.forms.*
 import io.ktor.http.*

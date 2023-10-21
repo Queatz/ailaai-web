@@ -1,10 +1,10 @@
 package app.nav
 
-import Card
 import Styles
 import androidx.compose.runtime.*
 import app.AppStyles
 import appString
+import com.queatz.db.Card
 import components.Icon
 import focusable
 import notBlank

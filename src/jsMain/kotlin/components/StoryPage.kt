@@ -1,10 +1,11 @@
 package components
-import Story
+
 import Styles
 import androidx.compose.runtime.*
 import api
 import app.softwork.routingcompose.Router
 import appString
+import com.queatz.db.Story
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Text

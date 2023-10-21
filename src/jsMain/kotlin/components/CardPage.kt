@@ -1,15 +1,14 @@
 package components
 
-import Card
 import Styles
 import androidx.compose.runtime.*
 import api
 import app.softwork.routingcompose.Router
 import appString
+import com.queatz.db.*
 import json
 import kotlinx.browser.window
 import kotlinx.coroutines.launch
-import kotlinx.serialization.Serializable
 import notEmpty
 import org.jetbrains.compose.web.attributes.autoFocus
 import org.jetbrains.compose.web.attributes.disabled
@@ -17,32 +16,6 @@ import org.jetbrains.compose.web.attributes.placeholder
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
 import r
-
-@Serializable
-data class WildReplyBody(
-    val message: String,
-    val conversation: String?,
-    val card: String,
-    val device: String,
-)
-
-@Serializable
-data class ConversationItem(
-    var title: String = "",
-    var message: String = "",
-    var action: ConversationAction? = null,
-    var items: MutableList<ConversationItem> = mutableListOf(),
-)
-
-@Serializable
-data class CardOptions(
-    var enableReplies: Boolean? = null,
-    var enableAnonymousReplies: Boolean? = null
-)
-
-enum class ConversationAction {
-    Message
-}
 
 @Composable
 fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) -> Unit) {

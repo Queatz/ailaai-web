@@ -1,3 +1,4 @@
+import com.queatz.db.Card
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first

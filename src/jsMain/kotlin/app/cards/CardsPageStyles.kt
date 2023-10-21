@@ -4,7 +4,6 @@ import Styles.card
 import org.jetbrains.compose.web.css.*
 import r
 
-
 object CardsPageStyles : StyleSheet() {
     val layout by style {
         boxSizing("border-box")

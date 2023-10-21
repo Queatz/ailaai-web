@@ -1,4 +1,6 @@
 package components
+
+import Styles
 import androidx.compose.runtime.*
 import app.softwork.routingcompose.Router
 import appString

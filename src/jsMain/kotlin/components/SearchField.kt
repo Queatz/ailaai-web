@@ -1,5 +1,6 @@
 package components
 
+import Styles
 import androidx.compose.runtime.Composable
 import org.jetbrains.compose.web.attributes.InputType
 import org.jetbrains.compose.web.attributes.autoFocus

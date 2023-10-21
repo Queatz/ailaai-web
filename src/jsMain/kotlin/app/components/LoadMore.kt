@@ -62,6 +62,8 @@ fun LoadMore(
             }
         }
 
+        eventListener(Event("scroll"))
+
         messagesDiv?.addEventListener("scroll", eventListener)
 
         onDispose {

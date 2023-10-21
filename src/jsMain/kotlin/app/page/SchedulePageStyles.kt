@@ -1,7 +1,7 @@
 package app.page
 
+import Styles
 import Styles.elevated
-import org.jetbrains.compose.web.ExperimentalComposeWebApi
 import org.jetbrains.compose.web.css.*
 import r
 

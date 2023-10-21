@@ -1,8 +1,9 @@
 package components
 
-import Card
+import Styles
 import androidx.compose.runtime.*
 import baseUrl
+import com.queatz.db.Card
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Source

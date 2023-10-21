@@ -1,14 +1,12 @@
 package app.nav
 
 import LocalConfiguration
-import Person
-import PersonProfile
-import Profile
 import androidx.compose.runtime.*
 import api
 import app.components.EditField
 import appString
 import application
+import com.queatz.db.*
 import components.IconButton
 import components.Wbr
 import dialog

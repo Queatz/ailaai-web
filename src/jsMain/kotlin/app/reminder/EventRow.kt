@@ -1,6 +1,6 @@
 package app.reminder
 
-import ReminderOccurrence
+import Styles
 import androidx.compose.runtime.*
 import api
 import apis.deleteReminderOccurrence
@@ -10,11 +10,13 @@ import app.page.ReminderEvent
 import app.page.ReminderEventType
 import app.page.SchedulePageStyles
 import app.page.ScheduleView
+import com.queatz.db.ReminderOccurrence
 import components.IconButton
 import dialog
 import focusable
 import inputDialog
 import kotlinx.coroutines.launch
+import kotlinx.datetime.toKotlinInstant
 import lib.format
 import notBlank
 import org.jetbrains.compose.web.css.*
@@ -71,7 +73,7 @@ fun EventRow(
 
             api.deleteReminderOccurrence(
                 event.reminder.id!!,
-                event.occurrence?.occurrence?.let(::Date) ?: event.date
+                event.occurrence?.occurrence?.let { Date(it.toEpochMilliseconds()) } ?: event.date
             ) {
                 onUpdate()
             }
@@ -98,7 +100,7 @@ fun EventRow(
                 event.reminder.id!!,
                 event.date,
                 ReminderOccurrence(
-                    date = parseDateTime(date, time, event.date).toISOString()
+                    date = parseDateTime(date, time, event.date).toKotlinInstant()
                 )
             ) {
                 onUpdate()

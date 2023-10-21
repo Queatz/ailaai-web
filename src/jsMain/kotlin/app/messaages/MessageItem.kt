@@ -1,9 +1,9 @@
 package app.messaages
 
-import MemberAndPerson
-import Message
 import androidx.compose.runtime.Composable
 import app.AppStyles
+import com.queatz.db.MemberAndPerson
+import com.queatz.db.Message
 import components.ProfilePhoto
 import kotlinx.browser.window
 import org.jetbrains.compose.web.css.*

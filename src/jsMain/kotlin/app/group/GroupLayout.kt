@@ -6,6 +6,7 @@ import app.group.GroupMessageBar
 import app.group.GroupTopBar
 import app.group.JoinGroupLayout
 import app.messaages.MessageItem
+import com.queatz.db.*
 import components.Loading
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -31,15 +32,15 @@ fun GroupLayout(
         }
     }
 
-    var isLoading by remember {
+    var isLoading by remember(group.group?.id) {
         mutableStateOf(true)
     }
 
-    var messages by remember {
+    var messages by remember(group.group?.id) {
         mutableStateOf(emptyList<Message>())
     }
 
-    var hasMore by remember {
+    var hasMore by remember(group.group?.id) {
         mutableStateOf(true)
     }
 
@@ -56,12 +57,13 @@ fun GroupLayout(
         }
         api.groupMessages(
             group.group!!.id!!,
-            before = messages.lastOrNull()?.createdAt?.let(::Date) ?: return
+            before = messages.lastOrNull()?.createdAt?.let { Date(it.toEpochMilliseconds()) } ?: return
         ) {
-            if (it.isEmpty()) {
+            val messagesCount = messages.size
+            messages = (messages + it).distinctBy { it.id }
+
+            if (messages.size == messagesCount) {
                 hasMore = false
-            } else {
-                messages = (messages + it).distinctBy { it.id }
             }
         }
     }
@@ -99,7 +101,7 @@ fun GroupLayout(
         }
         LoadMore(
             state,
-            hasMore,
+            hasMore && messages.isNotEmpty(),
             attrs = {
                 classes(AppStyles.messages)
             },

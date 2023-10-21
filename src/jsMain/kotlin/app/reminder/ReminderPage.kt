@@ -1,6 +1,5 @@
 package app.reminder
 
-import Reminder
 import androidx.compose.runtime.*
 import api
 import apis.deleteReminder
@@ -8,6 +7,7 @@ import apis.updateReminder
 import app.PageTopBar
 import app.components.EditField
 import app.menu.Menu
+import com.queatz.db.Reminder
 import dialog
 import inputDialog
 import kotlinx.coroutines.launch
@@ -36,8 +36,8 @@ fun ReminderPage(
             EditSchedule(
                 initialReoccurs = reminder.schedule != null,
                 initialUntil = reminder.end != null,
-                initialDate = Date(reminder.start!!),
-                initialUntilDate = reminder.end?.let(::Date),
+                initialDate = Date(reminder.start!!.toEpochMilliseconds()),
+                initialUntilDate = reminder.end?.let { Date(it.toEpochMilliseconds()) },
                 initialReoccurringHours = reminder.schedule?.hours,
                 initialReoccurringDays = reminder.schedule?.days,
                 initialReoccurringWeekdays = reminder.schedule?.weekdays,

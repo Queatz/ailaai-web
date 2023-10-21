@@ -1,9 +1,9 @@
 package app.reminder
 
-import Reminder
 import androidx.compose.runtime.Composable
 import app.AppStyles
 import asNaturalList
+import com.queatz.db.*
 import focusable
 import format
 import lib.*
@@ -61,9 +61,9 @@ fun ReminderItem(reminder: Reminder, selected: Boolean, onSelected: () -> Unit) 
 val Reminder.scheduleText @Composable get(): String = buildString {
     if (schedule == null) {
         if (end != null) {
-            append("From ${Date(start!!).format()} until ${Date(end!!).format()}")
+            append("From ${Date(start!!.toEpochMilliseconds()).format()} until ${Date(end!!.toEpochMilliseconds()).format()}")
         } else {
-            append(Date(start!!).format())
+            append(Date(start!!.toEpochMilliseconds()).format())
         }
 
         return@buildString
@@ -91,7 +91,7 @@ val Reminder.scheduleText @Composable get(): String = buildString {
     }
 
     schedule?.hours?.notEmpty?.let { hours ->
-        val mins = getMinutes(Date(start!!))
+        val mins = getMinutes(Date(start!!.toEpochMilliseconds()))
         append("at ")
         append(hours.asNaturalList { format(parse("$it:$mins", "HH:mm", Date()), "h:mm a") })
         append(" ")
@@ -126,12 +126,12 @@ val Reminder.scheduleText @Composable get(): String = buildString {
         append(" ")
     }
 
-    val start = Date(start!!)
+    val start = Date(start!!.toEpochMilliseconds())
     if (isAfter(start, Date())) {
         append("from ${ start.format() } ")
     }
 
-    end?.let { Date(it) }?.let { end ->
+    end?.let { Date(it.toEpochMilliseconds()) }?.let { end ->
         append("until ${ end.format() } ")
     }
 }.trimEnd()
