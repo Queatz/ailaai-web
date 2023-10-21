@@ -1,17 +1,14 @@
 import androidx.compose.runtime.*
 import app.AppStyles
+import app.components.LoadMore
+import app.components.LoadMoreState
 import app.group.GroupMessageBar
 import app.group.GroupTopBar
 import app.group.JoinGroupLayout
 import app.messaages.MessageItem
 import components.Loading
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.web.css.padding
-import org.jetbrains.compose.web.dom.Div
-import org.w3c.dom.*
-import org.w3c.dom.events.Event
 import kotlin.js.Date
 
 @Composable
@@ -23,6 +20,9 @@ fun GroupLayout(
     val scope = rememberCoroutineScope()
     val me by application.me.collectAsState()
     val myMember = group.members?.find { it.person?.id == me!!.id }
+    val state = remember {
+        LoadMoreState()
+    }
 
     LaunchedEffect(group.group?.id) {
         group.group?.id?.let { groupId ->
@@ -39,24 +39,8 @@ fun GroupLayout(
         mutableStateOf(emptyList<Message>())
     }
 
-    var latestMessage by remember {
-        mutableStateOf<String?>(null)
-    }
-
-    var messagesDiv by remember {
-        mutableStateOf<HTMLDivElement?>(null)
-    }
-
-    var loadingDiv by remember {
-        mutableStateOf<HTMLDivElement?>(null)
-    }
-
     var hasMore by remember {
         mutableStateOf(true)
-    }
-
-    var isLoadMoreVisible by remember {
-        mutableStateOf(false)
     }
 
     suspend fun reloadMessages() {
@@ -64,26 +48,12 @@ fun GroupLayout(
             messages = it
         }
         isLoading = false
-
-        if (messages.lastOrNull()?.id != latestMessage) {
-            latestMessage = messages.lastOrNull()?.id
-            scope.launch {
-                delay(100)
-                messagesDiv?.scroll(
-                    ScrollToOptions(
-                        top = messagesDiv!!.scrollHeight.toDouble(),
-                        behavior = ScrollBehavior.SMOOTH
-                    )
-                )
-            }
-        }
     }
 
     suspend fun loadMore() {
         if (!hasMore || messages.isEmpty()) {
             return
         }
-        console.log("Load more... ${Date()}")
         api.groupMessages(
             group.group!!.id!!,
             before = messages.lastOrNull()?.createdAt?.let(::Date) ?: return
@@ -113,27 +83,8 @@ fun GroupLayout(
         }
     }
 
-    DisposableEffect(messagesDiv, loadingDiv) {
-        val eventListener = { event: Event ->
-            if (messagesDiv != null && loadingDiv != null) {
-                val loadingRect = loadingDiv!!.getBoundingClientRect()
-                val messagesRect = messagesDiv!!.getBoundingClientRect()
-
-                isLoadMoreVisible = loadingRect.overlaps(messagesRect)
-            }
-        }
-
-        messagesDiv?.addEventListener("scroll", eventListener)
-
-        onDispose {
-            messagesDiv?.removeEventListener("scroll", eventListener)
-        }
-    }
-
-    LaunchedEffect(isLoadMoreVisible) {
-        if (isLoadMoreVisible) {
-            loadMore()
-        }
+    LaunchedEffect(messages.firstOrNull()?.id) {
+        state.scrollToBottom()
     }
 
     if (isLoading) {
@@ -146,16 +97,18 @@ fun GroupLayout(
         } else {
             JoinGroupLayout(group)
         }
-        Div({
-            classes(AppStyles.messages)
-            ref {
-                messagesDiv = it
-
-                onDispose {
-                    messagesDiv = null
+        LoadMore(
+            state,
+            hasMore,
+            attrs = {
+                classes(AppStyles.messages)
+            },
+            onLoadMore = {
+                scope.launch {
+                    loadMore()
                 }
             }
-        }) {
+        ) {
             messages.forEachIndexed { index, it ->
                 MessageItem(
                     it,
@@ -163,21 +116,6 @@ fun GroupLayout(
                     group.members?.find { member -> member.member?.id == it.member },
                     myMember
                 )
-            }
-
-            if (hasMore) {
-                Loading {
-                    style {
-                        padding(1.r)
-                    }
-                    ref { element ->
-                        loadingDiv = element
-
-                        onDispose {
-                            loadingDiv = null
-                        }
-                    }
-                }
             }
         }
     }
@@ -188,5 +126,3 @@ fun GroupLayout(
         onGroupGone = onGroupGone
     )
 }
-
-private fun DOMRect.overlaps(other: DOMRect) = (other.bottom > top && other.top < bottom && other.right > left && other.left < right)
