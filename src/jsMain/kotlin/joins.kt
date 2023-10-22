@@ -21,7 +21,8 @@ class Joins {
             reload()
             reloadMine()
             push.events.filter {
-                it.action == PushAction.JoinRequest
+                it.action == PushAction.JoinRequest ||
+                it.action == PushAction.Group
             }.collectLatest {
                 reload()
                 reloadMine()
