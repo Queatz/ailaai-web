@@ -59,6 +59,7 @@ fun main() {
 
             LaunchedEffect(language) {
                 localStorage["language"] = language
+                application.language = language
             }
 
             LaunchedEffect(Unit) {

@@ -16,6 +16,8 @@ class Application {
     var navPage: NavPage = NavPage.Groups
         private set
 
+    var language: String = "en"
+
     init {
         bearerToken.value = localStorage["bearer"]
 
@@ -37,6 +39,8 @@ class Application {
             }
         }
     }
+
+    fun appString(block: Strings.() -> Translation) = getString(block(Strings), language)
 
     fun setNavPage(navPage: NavPage?) {
         this.navPage = navPage ?: NavPage.Groups

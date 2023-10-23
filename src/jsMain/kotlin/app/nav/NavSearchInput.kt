@@ -2,6 +2,7 @@ package app.nav
 
 import Styles
 import androidx.compose.runtime.Composable
+import appString
 import org.jetbrains.compose.web.attributes.autoFocus
 import org.jetbrains.compose.web.attributes.placeholder
 import org.jetbrains.compose.web.css.StyleScope
@@ -13,7 +14,7 @@ import r
 fun NavSearchInput(
     value: String,
     onChange: (String) -> Unit,
-    placeholder: String = "Search",
+    placeholder: String = appString { search },
     autoFocus: Boolean = true,
     selectAll: Boolean = false,
     onDismissRequest: () -> Unit = {},

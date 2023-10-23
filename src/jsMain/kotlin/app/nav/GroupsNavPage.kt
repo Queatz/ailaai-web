@@ -8,6 +8,7 @@ import app.ailaai.api.groups
 import app.ailaai.api.updateGroup
 import app.components.Spacer
 import app.group.GroupItem
+import appString
 import appText
 import application
 import com.queatz.db.Group
@@ -113,19 +114,24 @@ fun GroupsNavPage(
         }
     }
 
-    NavTopBar(me, "Groups", onProfileClick = onProfileClick) {
-        IconButton("search", "Search", styles = {
+    NavTopBar(me, appString { this.groups }, onProfileClick = onProfileClick) {
+        IconButton("search", appString { search }, styles = {
         }) {
             showSearch = !showSearch
         }
-        IconButton("add", "New group", styles = {
+
+        val createGroup = appString { createGroup }
+        val groupName = appString { groupName }
+        val create = appString { create }
+
+        IconButton("add", appString { this.createGroup }, styles = {
             marginRight(.5.r)
         }) {
             scope.launch {
                 val result = inputDialog(
-                    "New group",
-                    "Name",
-                    "Create"
+                    createGroup,
+                    groupName,
+                    create
                 )
 
                 if (result == null) return@launch
@@ -162,7 +168,7 @@ fun GroupsNavPage(
 //                NavMenuItem("group", "Friends", selected = selected is GroupNav.Friends) {
 //                    onSelected(GroupNav.Friends)
 //                }
-                NavMenuItem("location_on", "Local", selected = selected is GroupNav.Local) {
+                NavMenuItem("location_on", appString { local }, selected = selected is GroupNav.Local) {
                     onSelected(GroupNav.Local)
                 }
                 Spacer()

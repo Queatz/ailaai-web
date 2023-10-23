@@ -8,6 +8,8 @@ import app.ailaai.api.reminders
 import app.components.Spacer
 import app.page.ScheduleView
 import app.reminder.*
+import appString
+import appText
 import application
 import com.queatz.db.Reminder
 import components.IconButton
@@ -23,7 +25,6 @@ import org.jetbrains.compose.web.attributes.placeholder
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Button
 import org.jetbrains.compose.web.dom.Div
-import org.jetbrains.compose.web.dom.Text
 import org.jetbrains.compose.web.dom.TextArea
 import org.w3c.dom.events.Event
 import r
@@ -147,8 +148,8 @@ fun ScheduleNavPage(
         }
     }
 
-    NavTopBar(me, "Reminders", onProfileClick) {
-        IconButton("search", "Search", styles = {
+    NavTopBar(me, appString { this.reminders }, onProfileClick) {
+        IconButton("search", appString { search }, styles = {
             marginRight(.5.r)
         }) {
             showSearch = !showSearch
@@ -171,6 +172,8 @@ fun ScheduleNavPage(
             flexDirection(FlexDirection.Column)
         }
     }) {
+        val createReminder = appString { createReminder }
+
         if (!showSearch) {
             // todo can be EditField
             TextArea(newReminderTitle) {
@@ -208,7 +211,7 @@ fun ScheduleNavPage(
                     disabled()
                 }
 
-                placeholder("New reminder")
+                placeholder(createReminder)
 
                 autoFocus()
 
@@ -245,7 +248,7 @@ fun ScheduleNavPage(
                         disabled()
                     }
                 }) {
-                    Text("Add reminder")
+                    appText { this.createReminder }
                 }
             }
 
@@ -258,23 +261,23 @@ fun ScheduleNavPage(
             }) {
                 NavMenuItem(
                     "routine",
-                    "Daily",
+                    appString { daily },
                     selected = reminder == null && view == ScheduleView.Daily
                 )
                 { onViewClick(ScheduleView.Daily) }
                 NavMenuItem(
                     "calendar_view_week",
-                    "Weekly",
+                    appString { weekly },
                     selected = reminder == null && view == ScheduleView.Weekly
                 ) { onViewClick(ScheduleView.Weekly) }
                 NavMenuItem(
                     "calendar_month",
-                    "Monthly",
+                    appString { monthly },
                     selected = reminder == null && view == ScheduleView.Monthly
                 ) { onViewClick(ScheduleView.Monthly) }
                 NavMenuItem(
                     "auto_mode",
-                    "Yearly",
+                    appString { yearly },
                     selected = reminder == null && view == ScheduleView.Yearly
                 ) { onViewClick(ScheduleView.Yearly) }
             }

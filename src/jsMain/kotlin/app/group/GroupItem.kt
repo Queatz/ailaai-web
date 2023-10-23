@@ -84,7 +84,7 @@ fun GroupItem(
                     }
                 }
             }) {
-                Text(group.name("Someone", "New group", listOf(me!!.id!!)))
+                Text(group.name("Someone", appString { newGroup }, listOf(me!!.id!!)))
             }
             Div({
                 classes(AppStyles.groupItemMessage)
@@ -92,10 +92,10 @@ fun GroupItem(
                 when (info) {
                     GroupInfo.LatestMessage -> {
                         if (group.latestMessage?.member == myMember?.member?.id) {
-                            Text("You: ")
+                            Text("${appString { you }}: ")
                         }
                         Text(
-                            group.latestMessage?.preview() ?: "Created ${
+                            group.latestMessage?.preview() ?: "${appString { created }} ${
                                 formatDistanceToNow(
                                     Date(group.group!!.createdAt!!.toEpochMilliseconds()),
                                     js("{ addSuffix: true }")
@@ -156,9 +156,9 @@ fun GroupItem(
                     }
                 }) {
                     if (joinRequestCount == 1) {
-                        Text("$joinRequestCount person waiting")
+                        Text("$joinRequestCount ${appString { inlinePersonWaiting }}")
                     } else {
-                        Text("$joinRequestCount people waiting")
+                        Text("$joinRequestCount ${appString { inlinePeopleWaiting }}")
                     }
                 }
             }

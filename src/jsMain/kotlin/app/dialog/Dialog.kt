@@ -11,8 +11,8 @@ import org.w3c.dom.HTMLDialogElement
 
 suspend fun dialog(
     title: String?,
-    confirmButton: String = "Okay",
-    cancelButton: String? = "Cancel",
+    confirmButton: String = application.appString { okay },
+    cancelButton: String? = application.appString { cancel },
     cancellable: Boolean = true,
     content: @Composable (resolve: (Boolean?) -> Unit) -> Unit = {}
 ): Boolean? {
@@ -97,8 +97,8 @@ suspend fun dialog(
 suspend fun inputDialog(
     title: String,
     placeholder: String = "",
-    confirmButton: String = "Okay",
-    cancelButton: String? = "Cancel",
+    confirmButton: String = application.appString { okay },
+    cancelButton: String? = application.appString { cancel },
     defaultValue: String = "",
     singleLine: Boolean = true
 ): String? {

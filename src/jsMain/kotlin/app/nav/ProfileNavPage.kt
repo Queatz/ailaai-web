@@ -8,6 +8,7 @@ import app.ailaai.api.updateMe
 import app.ailaai.api.updateProfile
 import app.components.EditField
 import appString
+import appText
 import application
 import com.queatz.db.*
 import components.IconButton
@@ -56,8 +57,8 @@ fun ProfileNavPage(onProfileClick: () -> Unit) {
         return success
     }
 
-    NavTopBar(me, "Profile", onProfileClick = onProfileClick) {
-        IconButton("qr_code", "QR code", styles = {
+    NavTopBar(me, appString { this.profile }, onProfileClick = onProfileClick) {
+        IconButton("qr_code", appString { qrCode }, styles = {
         }) {
             scope.launch {
                 dialog("", cancelButton = null) {
@@ -89,9 +90,16 @@ fun ProfileNavPage(onProfileClick: () -> Unit) {
             flexDirection(FlexDirection.Column)
         }
     }) {
-        NavMenuItem("account_circle", me?.name?.notBlank ?: "Your name") {
+        val yourName = appString { yourName }
+        val update = appString { update }
+
+        NavMenuItem("account_circle", me?.name?.notBlank ?: yourName) {
             scope.launch {
-                val name = inputDialog("Your name", confirmButton = "Update", defaultValue = me?.name ?: "")
+                val name = inputDialog(
+                    yourName,
+                    confirmButton = update,
+                    defaultValue = me?.name ?: ""
+                )
 
                 api.updateMe(Person(name = name)) {
                     application.setMe(it)
@@ -100,7 +108,7 @@ fun ProfileNavPage(onProfileClick: () -> Unit) {
         }
 
         if (profile != null) {
-            EditField(profile?.profile?.about ?: "", placeholder = "Introduce yourself here…", styles = {
+            EditField(profile?.profile?.about ?: "", placeholder = appString { introduceYourself }, styles = {
                 margin(.5.r)
             }) {
                 saveAbout(it)
@@ -132,12 +140,16 @@ fun ProfileNavPage(onProfileClick: () -> Unit) {
         }
 
         val signOut = appString { signOut }
+        val signOutQuestion = appString { signOutQuestion }
+
+
         NavMenuItem("logout", signOut) {
             scope.launch {
-                val result = dialog("Sign out?", signOut) {
-                    Text("You will permanently lose access to this account")
+                val result = dialog(signOutQuestion, signOut) {
+                    appText { signOutQuestionLine1 }
                     Wbr()
-                    Text(" if you are not currently signed in on another device.")
+                    Text(" ")
+                    appText { signOutQuestionLine2 }
                 }
 
                 if (result == true) {

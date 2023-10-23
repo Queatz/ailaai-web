@@ -2,6 +2,7 @@ package app
 
 import androidx.compose.runtime.Composable
 import androidx.compose.web.events.SyntheticMouseEvent
+import appString
 import components.IconButton
 import ellipsize
 import org.jetbrains.compose.web.css.*
@@ -51,7 +52,7 @@ fun PageTopBar(title: String, description: String? = null, actions: @Composable 
             }
         }
         actions()
-        IconButton("more_vert", "Options", styles = {
+        IconButton("more_vert", appString { options }, styles = {
             flexShrink(0)
             fontWeight("bold")
         }) {

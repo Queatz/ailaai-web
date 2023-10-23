@@ -9,6 +9,7 @@ import app.components.EditField
 import app.menu.InlineMenu
 import app.menu.Menu
 import app.nav.NavSearchInput
+import appString
 import application
 import com.queatz.db.Card
 import components.*
@@ -100,9 +101,12 @@ fun ExplorePage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Uni
         }
     }
 
+    val inAPage = appString { inAPage }
+    val cancel = appString { cancel }
+
     fun moveToPage() {
         scope.launch {
-            val result = dialog("In a page", "Cancel", null) { resolve ->
+            val result = dialog(inAPage, cancel, null) { resolve ->
                 var value by remember {
                     mutableStateOf("")
                 }
@@ -196,12 +200,15 @@ fun ExplorePage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Uni
     }
 
     if (menuTarget != null) {
+        val titleString = appString { title }
+        val rename = appString { rename }
+
         Menu({ menuTarget = null }, menuTarget!!) {
             val isSaved = saves.cards.value.any { it.id == card.id }
-            item("Open in new tab", icon = "open_in_new") {
+            item(appString { openInNewTab }, icon = "open_in_new") {
                 window.open("/page/${card.id}", target = "_blank")
             }
-            item(if (isSaved) "Unsave" else "Save") {
+            item(if (isSaved) appString { unsave } else appString { save }) {
                 scope.launch {
                     if (isSaved) {
                         saves.unsave(card.id!!)
@@ -211,12 +218,12 @@ fun ExplorePage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Uni
                 }
             }
 
-            item("Rename") {
+            item(rename) {
                 scope.launch {
                     val name = inputDialog(
-                        "Page title",
+                        titleString,
                         "",
-                        "Rename",
+                        rename,
                         defaultValue = card.name ?: ""
                     )
 
@@ -230,12 +237,15 @@ fun ExplorePage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Uni
                 }
             }
 
-            item("Hint") {
+            val hint = appString { hint }
+            val update = appString { update }
+
+            item(hint) {
                 scope.launch {
                     val hint = inputDialog(
-                        "Page hint",
+                        hint,
                         "",
-                        "Update",
+                        update,
                         defaultValue = card.location ?: ""
                     )
 
@@ -249,30 +259,33 @@ fun ExplorePage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Uni
                 }
             }
 
-            item("Location") {
+            val location = appString { location }
+            val close = appString { close }
+
+            item(location) {
                 scope.launch {
                     val name = dialog(
-                        "Location",
-                        "Close",
+                        location,
+                        close,
                         null
                     ) {
                         InlineMenu({
                             it(true)
                         }) {
-                            item("On profile", selected = card.equipped == true, "account_circle") {
+                            item(appString { onProfile }, selected = card.equipped == true, "account_circle") {
                                 scope.launch {
                                     api.updateCard(card.id!!, Card(offline = false, parent = null, equipped = true, geo = null)) {
                                         onCardUpdated(it)
                                     }
                                 }
                             }
-                            item("At a location", selected = card.parent == null && card.offline != true && card.equipped != true && card.geo != null, "location_on") {
+                            item(appString { atALocation }, selected = card.parent == null && card.offline != true && card.equipped != true && card.geo != null, "location_on") {
 
                             }
-                            item("In a page", selected = card.parent != null, "description") {
+                            item(inAPage, selected = card.parent != null, "description") {
                                 moveToPage()
                             }
-                            item("None", selected = card.offline == true) {
+                            item(appString { none }, selected = card.offline == true) {
                                 scope.launch {
                                     api.updateCard(card.id!!, Card(offline = true, parent = null, equipped = false, geo = null)) {
                                         onCardUpdated(it)
@@ -288,7 +301,7 @@ fun ExplorePage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Uni
                 }
             }
 
-            item("Choose photo") {
+            item(appString { choosePhoto }) {
                 pickPhotos(multiple = false) {
                     it.singleOrNull()?.let {
                         scope.launch {
@@ -305,7 +318,7 @@ fun ExplorePage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Uni
             }
 
             if (card.video == null) {
-                item(if (card.photo == null) "Generate photo" else "Regenerate photo") {
+                item(if (card.photo == null) appString { this.generatePhoto } else appString { regeneratePhoto }) {
                     if (card.photo == null) {
                         generatePhoto()
                     } else {
@@ -323,7 +336,7 @@ fun ExplorePage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Uni
             }
 
             if (card.parent != null) {
-                item("Open enclosing page") {
+                item(appString { openEnclosingCard }) {
                     scope.launch {
                         api.card(card.parent!!) {
                             onCard(it)
@@ -332,7 +345,7 @@ fun ExplorePage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Uni
                 }
             }
 
-            item("QR code") {
+            item(appString { qrCode }) {
                 scope.launch {
                     dialog("", cancelButton = null) {
                         val qrCode = remember {
@@ -347,7 +360,7 @@ fun ExplorePage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Uni
                 }
             }
 
-            item("Delete") {
+            item(appString { delete }) {
                 scope.launch {
                     val result = dialog(
                         "Delete this page?",
@@ -371,7 +384,7 @@ fun ExplorePage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Uni
     }
 
     PageTopBar(
-        card.name?.notBlank ?: "New page",
+        card.name?.notBlank ?: appString { newCard },
         card.location,
         actions = {
             Switch(published, { published = it }, {
@@ -443,14 +456,14 @@ fun ExplorePage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Uni
 //                }
 //            }
 
-        EditField(conversation.message, placeholder = "Details", styles = {
+        EditField(conversation.message, placeholder = appString { details }, styles = {
             margin(.5.r, 1.r)
             maxHeight(50.vh)
         }) {
             saveConversation(it)
         }
 
-        NavSearchInput(newCardTitle, { newCardTitle = it }, placeholder = "New page", autoFocus = false) {
+        NavSearchInput(newCardTitle, { newCardTitle = it }, placeholder = appString { newCard }, autoFocus = false) {
             if (newCardTitle.isNotBlank()) {
                 newSubCard(card, it)
                 newCardTitle = ""

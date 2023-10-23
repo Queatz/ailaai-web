@@ -4,6 +4,8 @@ import api
 import app.AppStyles
 import app.components.Empty
 import app.components.Spacer
+import appString
+import appText
 import application
 import com.queatz.ailaai.api.createStory
 import com.queatz.ailaai.api.myStories
@@ -84,19 +86,24 @@ fun StoriesNavPage(storyUpdates: Flow<Story>, selected: StoryNav, onSelected: (S
         }
     }
 
-    NavTopBar(me, "Stories", onProfileClick) {
-        IconButton("search", "Search", styles = {
+    NavTopBar(me, appString { stories }, onProfileClick) {
+        IconButton("search", appString { search }, styles = {
         }) {
             showSearch = !showSearch
         }
-        IconButton("add", "New story", styles = {
+
+        val createStory = appString { createStory }
+        val title = appString { title }
+        val create = appString { create }
+
+        IconButton("add", appString { this.createStory }, styles = {
             marginRight(.5.r)
         }) {
             scope.launch {
                 val title = inputDialog(
-                    "New story",
-                    "Title",
-                    "Create"
+                    createStory,
+                    title,
+                    create
                 )
                 if (title == null) return@launch
                 api.createStory(Story(title = title)) {
@@ -123,10 +130,10 @@ fun StoriesNavPage(storyUpdates: Flow<Story>, selected: StoryNav, onSelected: (S
             }
         }) {
             if (!showSearch) {
-                NavMenuItem("group", "Friends", selected = selected is StoryNav.Friends) {
+                NavMenuItem("group", appString { friends }, selected = selected is StoryNav.Friends) {
                     onSelected(StoryNav.Friends)
                 }
-                NavMenuItem("location_on", "Local", selected = selected is StoryNav.Local) {
+                NavMenuItem("location_on", appString { local }, selected = selected is StoryNav.Local) {
                     onSelected(StoryNav.Local)
                 }
 //                NavMenuItem("favorite", "Saved", selected = false) {
@@ -136,7 +143,7 @@ fun StoriesNavPage(storyUpdates: Flow<Story>, selected: StoryNav, onSelected: (S
             }
             if (shownStories.isEmpty()) {
                 Empty {
-                    Text("No stories")
+                    appText { noStories }
                 }
             } else {
                 shownStories.forEach { StoryItem(it, it == (selected as? StoryNav.Selected)?.story) { onSelected(StoryNav.Selected(it)) } }
@@ -169,7 +176,7 @@ fun StoryItem(story: Story, selected: Boolean, onSelected: () -> Unit) {
             Div({
                 classes(AppStyles.groupItemName)
             }) {
-                Text(story.title ?: "New story")
+                Text(story.title ?: appString { createStory })
             }
             Div({
                 classes(AppStyles.groupItemMessage)

@@ -1,5 +1,6 @@
 package app.messaages
 
+import androidx.compose.runtime.Composable
 import com.queatz.db.*
 import json
 import kotlinx.serialization.json.*
@@ -33,6 +34,7 @@ private fun String.asMessageAttachment(): MessageAttachment? {
 
 fun <T> T?.inList() = this?.let(::listOf) ?: emptyList<T>()
 
+@Composable
 fun Message.attachmentText(): String? = when (val attachment = getAttachment()) {
     is CardAttachment -> {
         if (attachment.card != null) {
@@ -59,6 +61,7 @@ fun Message.attachmentText(): String? = when (val attachment = getAttachment()) 
     else -> null
 }
 
+@Composable
 fun Message.preview(): String? {
     return text?.notBlank ?: attachmentText()
 }

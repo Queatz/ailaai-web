@@ -8,6 +8,7 @@ import app.ailaai.api.cardsCards
 import app.ailaai.api.wildReply
 import app.softwork.routingcompose.Router
 import appString
+import application
 import com.queatz.db.*
 import json
 import kotlinx.browser.window
@@ -22,6 +23,7 @@ import r
 
 @Composable
 fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) -> Unit) {
+    val me by application.me.collectAsState()
     var isLoading by remember { mutableStateOf(false) }
     var card by remember { mutableStateOf<Card?>(null) }
     var cards by remember { mutableStateOf<List<Card>>(emptyList()) }
@@ -171,7 +173,9 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
                                         marginBottom(1.r)
                                     }
 
-                                    placeholder(includeContactString)
+                                    if (me == null) {
+                                        placeholder(includeContactString)
+                                    }
 
                                     if (isSendingReply) {
                                         disabled()

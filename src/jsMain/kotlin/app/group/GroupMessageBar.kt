@@ -211,6 +211,8 @@ fun GroupMessageBar(group: GroupExtended, reloadMessages: suspend () -> Unit) {
                 if (photos.isEmpty()) return@onPaste
 
                 sendPhotos(photos)
+
+                it.preventDefault()
             }
 
             autoFocus()

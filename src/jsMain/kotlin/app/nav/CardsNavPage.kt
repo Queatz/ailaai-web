@@ -6,6 +6,8 @@ import app.ailaai.api.myCards
 import app.ailaai.api.newCard
 import app.components.Spacer
 import app.menu.Menu
+import appString
+import appText
 import application
 import com.queatz.db.Card
 import components.IconButton
@@ -16,7 +18,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
-import org.jetbrains.compose.web.dom.Text
 import org.w3c.dom.DOMRect
 import org.w3c.dom.HTMLElement
 import r
@@ -128,7 +129,7 @@ fun CardsNavPage(cardUpdates: Flow<Card>, nav: CardNav, onSelected: (CardNav) ->
             },
             filterMenuTarget!!
         ) {
-            item("Published", icon = if (CardFilter.Published in filters) "check" else null) {
+            item(appString { published }, icon = if (CardFilter.Published in filters) "check" else null) {
                 if (CardFilter.Published in filters) {
                     filters -= CardFilter.Published
                 } else {
@@ -136,7 +137,7 @@ fun CardsNavPage(cardUpdates: Flow<Card>, nav: CardNav, onSelected: (CardNav) ->
                     filters += CardFilter.Published
                 }
             }
-            item("Not published", icon = if (CardFilter.NotPublished in filters) "check" else null) {
+            item(appString { notPublished }, icon = if (CardFilter.NotPublished in filters) "check" else null) {
                 if (CardFilter.NotPublished in filters) {
                     filters -= CardFilter.NotPublished
                 } else {
@@ -154,29 +155,33 @@ fun CardsNavPage(cardUpdates: Flow<Card>, nav: CardNav, onSelected: (CardNav) ->
         }
     }
 
-    NavTopBar(me, "Pages", onProfileClick = onProfileClick) {
-        IconButton("search", "Search", styles = {
+    NavTopBar(me, appString { cards }, onProfileClick = onProfileClick) {
+        IconButton("search", appString { search }, styles = {
         }) {
             showSearch = !showSearch
         }
-        IconButton("filter_list", "Filter", count = filters.size, styles = {
+        IconButton("filter_list", appString { filter }, count = filters.size, styles = {
         }) {
             filterMenuTarget =
                 if (filterMenuTarget == null) (it.target as HTMLElement).getBoundingClientRect() else null
         }
 
+        val createCard = appString { createCard }
+        val title = appString { title }
+        val create = appString { create }
+
         IconButton(
             "add",
-            "New page",
+            appString { this.createCard },
             styles = {
                 marginRight(.5.r)
             }
         ) {
             scope.launch {
                 val result = inputDialog(
-                    "New page",
-                    "Title",
-                    "Create"
+                    createCard,
+                    title,
+                    create
                 )
 
                 if (result == null) return@launch
@@ -206,13 +211,13 @@ fun CardsNavPage(cardUpdates: Flow<Card>, nav: CardNav, onSelected: (CardNav) ->
             }
         }) {
             if (!showSearch) {
-                NavMenuItem("group", "Friends", selected = nav == CardNav.Friends) {
+                NavMenuItem("group", appString { friends }, selected = nav == CardNav.Friends) {
                     onSelected(CardNav.Friends)
                 }
-                NavMenuItem("location_on", "Local", selected = nav == CardNav.Local) {
+                NavMenuItem("location_on", appString { local }, selected = nav == CardNav.Local) {
                     onSelected(CardNav.Local)
                 }
-                NavMenuItem("favorite", "Saved", selected = nav == CardNav.Saved) {
+                NavMenuItem("favorite", appString { this.saved }, selected = nav == CardNav.Saved) {
                     onSelected(CardNav.Saved)
                 }
                 Spacer()
@@ -227,7 +232,7 @@ fun CardsNavPage(cardUpdates: Flow<Card>, nav: CardNav, onSelected: (CardNav) ->
                         padding(1.r)
                     }
                 }) {
-                    Text("No pages")
+                    appText { noCards }
                 }
             } else {
                 val selected = (nav as? CardNav.Selected)?.let { it.subCard ?: it.card }

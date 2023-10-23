@@ -8,6 +8,7 @@ import app.ailaai.api.occurrences
 import app.reminder.EventRow
 import app.reminder.ReminderPage
 import app.reminder.toEvents
+import appString
 import com.queatz.db.Reminder
 import com.queatz.db.ReminderOccurrence
 import components.IconButton
@@ -157,10 +158,10 @@ fun SchedulePage(
             var today = offset
 
             IconButton("keyboard_arrow_up", when (view) {
-                ScheduleView.Daily -> "Previous day"
-                ScheduleView.Weekly -> "Previous week"
-                ScheduleView.Monthly -> "Previous month"
-                ScheduleView.Yearly -> "Previous year"
+                ScheduleView.Daily -> appString { previousDay }
+                ScheduleView.Weekly -> appString { previousWeek }
+                ScheduleView.Monthly -> appString { previousMonth }
+                ScheduleView.Yearly -> appString { previousYear }
             }) {
                 move(-1.0)
             }
@@ -202,10 +203,10 @@ fun SchedulePage(
             }
 
             IconButton("keyboard_arrow_down", when (view) {
-                ScheduleView.Daily -> "Next day"
-                ScheduleView.Weekly -> "Next week"
-                ScheduleView.Monthly -> "Next month"
-                ScheduleView.Yearly -> "Next year"
+                ScheduleView.Daily -> appString { nextDay }
+                ScheduleView.Weekly -> appString { nextWeek }
+                ScheduleView.Monthly -> appString { nextMonth }
+                ScheduleView.Yearly -> appString { nextYear }
             }) {
                 move(1.0)
             }
@@ -228,7 +229,7 @@ fun Period(
         when (view) {
             ScheduleView.Daily -> {
                 Text(
-                    (if (isToday(start)) "Today, " else if (isYesterday(start)) "Yesterday, " else if (isTomorrow(start)) "Tomorrow, " else "") + format(
+                    (if (isToday(start)) "${appString { today }}, " else if (isYesterday(start)) "${appString { yesterday }}, " else if (isTomorrow(start)) "${appString { tomorrow }}, " else "") + format(
                         start,
                         "EEEE, MMMM do"
                     )
@@ -258,7 +259,7 @@ fun Period(
                     color(Styles.colors.secondary)
                 }
             }) {
-                Text(if (events == null) "Loading…" else "No reminders")
+                Text(if (events == null) "${appString { loading }}…" else appString { noReminders })
             }
         } else {
             events.forEach { event ->

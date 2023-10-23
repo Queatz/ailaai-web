@@ -7,6 +7,7 @@ import app.FullPageLayout
 import app.PageTopBar
 import app.menu.Menu
 import app.nav.StoryNav
+import appString
 import appText
 import application
 import com.queatz.ailaai.api.stories
@@ -74,15 +75,19 @@ fun StoriesPage(selected: StoryNav, onStoryUpdated: (Story) -> Unit) {
     (selected as? StoryNav.Selected)?.story?.let { story ->
         menuTarget?.let { target ->
             Menu({ menuTarget = null }, target) {
-                item("Open in new tab", icon = "open_in_new") {
+                item(appString { openInNewTab }, icon = "open_in_new") {
                     window.open("/story/${story!!.id}", target = "_blank")
                 }
-                item("Rename") {
+
+                val titleString = appString { title }
+                val update = appString { update }
+
+                item(appString { rename }) {
                     scope.launch {
                         val title = inputDialog(
-                            "Story title",
+                            titleString,
                             "",
-                            "Update",
+                            update,
                             defaultValue = story!!.title ?: ""
                         )
 
@@ -97,7 +102,7 @@ fun StoriesPage(selected: StoryNav, onStoryUpdated: (Story) -> Unit) {
                     }
                 }
 
-                item("QR code") {
+                item(appString { qrCode }) {
                     scope.launch {
                         dialog("", cancelButton = null) {
                             val qrCode = remember {

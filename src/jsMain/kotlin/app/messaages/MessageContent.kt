@@ -6,6 +6,7 @@ import api
 import app.AppStyles
 import app.StickerItem
 import app.ailaai.api.message
+import appString
 import baseUrl
 import com.queatz.ailaai.api.story
 import com.queatz.db.*
@@ -231,7 +232,7 @@ fun MessageContent(message: Message, myMember: MemberAndPerson?, isReply: Boolea
                                 fontSize(24.px)
                             }
                         }) {
-                            Text(story.title ?: "New story")
+                            Text(story.title ?: appString { createStory })
                         }
                         Div({
                             style {
@@ -240,7 +241,8 @@ fun MessageContent(message: Message, myMember: MemberAndPerson?, isReply: Boolea
                                 fontSize(16.px)
                             }
                         }) {
-                            Text("${if (story.publishDate != null) "Published" else "Draft"} by ${story.authors?.joinToString { it.name ?: "Someone" }}")
+                            val someone = appString { someone }
+                            Text("${if (story.publishDate != null) appString { published } else appString { draft }} ${appString { inlineBy }} ${story.authors?.joinToString { it.name ?: someone }}")
                         }
                         Div({
                             style {

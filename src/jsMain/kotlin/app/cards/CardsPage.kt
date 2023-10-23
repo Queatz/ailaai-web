@@ -7,6 +7,7 @@ import app.ailaai.api.card
 import app.ailaai.api.cards
 import app.ailaai.api.savedCards
 import app.nav.CardNav
+import appText
 import application
 import com.queatz.db.*
 import components.*
@@ -83,8 +84,8 @@ fun CardsPage(nav: CardNav, onCard: (CardNav) -> Unit, onCardUpdated: (Card) -> 
                         }
                     }) {
                         when (nav) {
-                            is CardNav.Local -> Text("No pages nearby")
-                            is CardNav.Saved -> Text("No saved pages")
+                            is CardNav.Local -> appText { noCardsNearby }
+                            is CardNav.Saved -> appText { noSavedCards }
                             else -> {}
                         }
                     }

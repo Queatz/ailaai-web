@@ -60,6 +60,18 @@ object Strings {
         "Bài viết",
         "Истории"
     )
+    val createStory = Translation(
+        "New story",
+        "Tạo bài viết"
+    )
+    val newStory = Translation(
+        "New story",
+        "Bài viết mới"
+    )
+    val newCard = Translation(
+        "New page",
+        "Trang mới"
+    )
     val someone = Translation(
         "Someone",
         "Một người ai đó",
@@ -145,6 +157,10 @@ object Strings {
         "Hủy",
         "Отмена"
     )
+    val okay = Translation(
+        "Okay",
+        "Đòng ý"
+    )
     val sendMessage = Translation(
         "Send message",
         "Gửi tin nhắn",
@@ -155,8 +171,13 @@ object Strings {
         "Xem trang cá nhân",
         "Просмотреть профиль"
     )
+    val profile = Translation(
+        "Profile",
+        "Trang cá nhân",
+        "Профиль"
+    )
     val includeContact = Translation(
-        "Be sure you include a way to contact you!",
+        "Be sure to include a way to contact you!",
         "Bạn lại nhớ gồm một cách để liên lạc bạn!",
         "Обязательно укажите способ связи с вами!"
     )
@@ -254,6 +275,14 @@ object Strings {
         "No pages",
         "Không tìm được trang để cho bạn xem."
     )
+    val noSavedCards = Translation(
+        "No saved pages",
+        "Bạn chưa lưu trang"
+    )
+    val noCardsNearby = Translation(
+        "No pages",
+        "Không tìm được trang gần đây."
+    )
     val noStories = Translation(
         "No stories",
         "Không tìm được bài viết."
@@ -298,22 +327,252 @@ object Strings {
         "Sign out",
         "Đăng xuất"
     )
-    val profile = Translation(
-        "Profile",
-        "Trang cá nhân"
+    val signOutQuestion = Translation(
+        "Sign out?",
+        "Đăng xuất?"
+    )
+    val signOutQuestionLine1 = Translation(
+        "You will permanently lose access to this account",
+        "Bạn sẽ vĩnh viễn mất quyền truy cập vào tài khoản này"
+    )
+    val signOutQuestionLine2 = Translation(
+        "if you are not currently signed in on another device.",
+        "nếu bạn hiện chưa đăng nhập trên thiết bị khác."
     )
     val and = Translation(
         "and",
         "và"
     )
+    val qrCode = Translation(
+        "QR code",
+        "Mã QR"
+    )
+    val yourName = Translation(
+        "Your name",
+        "Tên của bạn"
+    )
+    val update = Translation(
+        "Update",
+        "Cập nhật"
+    )
+    val introduceYourself = Translation(
+        "Introduce yourself here",
+        "Giới thiệu bản thân đây"
+    )
+    val filter = Translation(
+        "Filter",
+        "Cập nhật"
+    )
+    val published = Translation(
+        "Published",
+        "Xuất bản"
+    )
+    val notPublished = Translation(
+        "Not published",
+        "Không xuất bản"
+    )
+    val createCard = Translation(
+        "New page",
+        "Tạo trang"
+    )
+    val title = Translation(
+        "Title",
+        "Tiêu"
+    )
+    val create = Translation(
+        "Create",
+        "Tạo"
+    )
+    val createGroup = Translation(
+        "Create group",
+        "Tạo nhóm"
+    )
+    val local = Translation(
+        "Local",
+        "Gần đây"
+    )
+    val saved = Translation(
+        "Saved",
+        "Đâ lưu"
+    )
+    val groups = Translation(
+        "Groups",
+        "Nhóm"
+    )
+    val groupName = Translation(
+        "Name",
+        "Tên nhóm"
+    )
+    val reminders = Translation(
+        "Reminders",
+        "Lời nhắc"
+    )
+    val noReminders = Translation(
+        "No reminders",
+        "Không có lời nhắc"
+    )
+    val createReminder = Translation(
+        "New reminder",
+        "Tạo lời nhắc"
+    )
+    val daily = Translation(
+        "Daily",
+        "Theo ngày"
+    )
+    val weekly = Translation(
+        "Weekly",
+        "Theo tuần"
+    )
+    val monthly = Translation(
+        "Monthly",
+        "Theo tháng"
+    )
+    val yearly = Translation(
+        "Yearly",
+        "Theo năm"
+    )
+    val you = Translation(
+        "You",
+        "Bạn"
+    )
+    val newGroup = Translation(
+        "New group",
+        "Nhóm mới"
+    )
+    val created = Translation(
+        "Created",
+        "Dã tạo"
+    )
+    val inlinePersonWaiting = Translation(
+        "person waiting",
+        "người đang chờ"
+    )
+    val inlinePeopleWaiting = Translation(
+        "people waiting",
+        "người đang chờ"
+    )
+    val onProfile = Translation(
+        "On profile",
+        "Trên trang cá nhân"
+    )
+    val atALocation = Translation(
+        "At a location",
+        "Tại một vị trí nào đó"
+    )
+    val inAPage = Translation(
+        "In a page",
+        "Trong trang"
+    )
+    val none = Translation(
+        "None",
+        "Chưa có"
+    )
+    val choosePhoto = Translation(
+        "Choose photo",
+        "Chọn ảnh"
+    )
+    val generatePhoto = Translation(
+        "Generate photo",
+        "Tạo ảnh"
+    )
+    val regeneratePhoto = Translation(
+        "Regenerate photo",
+        "Tạo ảnh mới"
+    )
+    val openEnclosingCard = Translation(
+        "Open enclosing page",
+        "Mở trang có trang này"
+    )
+    val previousDay = Translation(
+        "Previous day",
+        "Ngày trước"
+    )
+    val previousWeek = Translation(
+        "Previous week",
+        "Tuần trước"
+    )
+    val previousMonth = Translation(
+        "Previous month",
+        "Tháng trước"
+    )
+    val previousYear = Translation(
+        "Previous year",
+        "Năm trước"
+    )
+    val nextDay = Translation(
+        "Next day",
+        "Ngày sau"
+    )
+    val nextWeek = Translation(
+        "Next week",
+        "Tuần sau"
+    )
+    val nextMonth = Translation(
+        "Next month",
+        "Tháng sau"
+    )
+    val nextYear = Translation(
+        "Next year",
+        "Năm sau"
+    )
+    val today = Translation(
+        "Today",
+        "Hôm nay"
+    )
+    val yesterday = Translation(
+        "Yesterday",
+        "Hôm qua"
+    )
+    val tomorrow = Translation(
+        "Tomorrow",
+        "Ngày mai"
+    )
+    val loading = Translation(
+        "Loading",
+        "Đang tải"
+    )
+    val rename = Translation(
+        "Rename",
+        "Đổi tên"
+    )
+    val openInNewTab = Translation(
+        "Open in new tab",
+        "Mở ra trong tab mới"
+    )
+    val options = Translation(
+        "Options",
+        "Tùy chọn"
+    )
+    val unsave = Translation(
+        "Unsave",
+        "Bỏ lưu"
+    )
+    val save = Translation(
+        "Save",
+        "Lưu"
+    )
+    val hint = Translation(
+        "Hint",
+        "Lời gợi ý"
+    )
+    val location = Translation(
+        "Location",
+        "Vị trí"
+    )
+    val details = Translation(
+        "Details",
+        "Chi tiết"
+    )
 }
 
-@Composable
-private fun appString(string: Translation) = when (LocalConfiguration.current.language) {
+fun getString(string: Translation, language: String) = when (language) {
     "vi" -> string.vn
     "ru" -> string.ru
     else -> string.en
 }
+
+@Composable
+private fun appString(string: Translation) = getString(string, LocalConfiguration.current.language)
 
 @Composable
 fun appString(block: Strings.() -> Translation) = appString(block(Strings))

@@ -2,6 +2,7 @@ package app
 
 import Styles
 import androidx.compose.runtime.Composable
+import appString
 import components.IconButton
 import org.jetbrains.compose.web.css.Color
 import org.jetbrains.compose.web.css.backgroundColor
@@ -17,7 +18,7 @@ fun AppBottomBar(nav: NavPage, onNavClick: (NavPage) -> Unit) {
             flexShrink(0)
         }
     }) {
-        IconButton("people", "Groups", styles = {
+        IconButton("people", appString { groups }, styles = {
             if (nav == NavPage.Groups) {
                 backgroundColor(Styles.colors.primary)
                 color(Color.white)
@@ -25,7 +26,7 @@ fun AppBottomBar(nav: NavPage, onNavClick: (NavPage) -> Unit) {
         }) {
             onNavClick(NavPage.Groups)
         }
-        IconButton("schedule", "Reminders", styles = {
+        IconButton("schedule", appString { reminders }, styles = {
             if (nav == NavPage.Schedule) {
                 backgroundColor(Styles.colors.primary)
                 color(Color.white)
@@ -33,7 +34,7 @@ fun AppBottomBar(nav: NavPage, onNavClick: (NavPage) -> Unit) {
         }) {
             onNavClick(NavPage.Schedule)
         }
-        IconButton("travel_explore", "Pages", styles = {
+        IconButton("travel_explore", appString { cards }, styles = {
             if (nav == NavPage.Cards) {
                 backgroundColor(Styles.colors.primary)
                 color(Color.white)
@@ -41,7 +42,7 @@ fun AppBottomBar(nav: NavPage, onNavClick: (NavPage) -> Unit) {
         }) {
             onNavClick(NavPage.Cards)
         }
-        IconButton("explore", "Stories", styles = {
+        IconButton("explore", appString { stories }, styles = {
             if (nav == NavPage.Stories) {
                 backgroundColor(Styles.colors.primary)
                 color(Color.white)
