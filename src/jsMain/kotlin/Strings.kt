@@ -10,6 +10,10 @@ data class Translation(
 )
 
 object Strings {
+    val openGroup = Translation(
+        "Open group",
+        "Nhóm mở"
+    )
     val accept = Translation(
         "Accept",
         "Chấp nhận"

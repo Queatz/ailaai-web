@@ -206,12 +206,18 @@ fun GroupTopBar(group: GroupExtended, onGroupUpdated: () -> Unit, onGroupGone: (
         }
     }
 
+    val active = group.members?.filter { it != myMember }?.maxByOrNull {
+        it.person?.seen?.toEpochMilliseconds() ?: 0
+    }?.person?.seen?.let { Date(it.toEpochMilliseconds()) }?.let {
+        "Active ${formatDistanceToNow(it, js("{ addSuffix: true }"))}"
+    }
+
     PageTopBar(
         group.name("Someone", "New group", listOf(me!!.id!!)),
-        group.members?.filter { it != myMember }?.maxByOrNull {
-            it.person?.seen?.toEpochMilliseconds() ?: 0
-        }?.person?.seen?.let { Date(it.toEpochMilliseconds()) }?.let {
-            "Active ${formatDistanceToNow(it, js("{ addSuffix: true }"))}"
+        if (group.group?.open == true) {
+            listOfNotNull(appString { openGroup }, active).joinToString(" • ")
+        } else {
+            active
         }
     ) {
         menuTarget = if (menuTarget == null) (it.target as HTMLElement).getBoundingClientRect() else null
