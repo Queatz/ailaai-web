@@ -144,19 +144,19 @@ fun GroupMessageBar(group: GroupExtended, reloadMessages: suspend () -> Unit) {
 //                    IconButton("mic", "Record audio", styles = { marginLeft(1.r) }) {
 //                        // todo
 //                    }
-                IconButton("image", "Send photo", styles = { marginLeft(1.r) }) {
+                IconButton("image", appString { sendPhoto }, styles = { marginLeft(1.r) }) {
                     pickPhotos {
                         sendPhotos(it)
                     }
                 }
-                IconButton(if (showStickers) "expand_less" else "expand_more", "Stickers", styles = {
+                IconButton(if (showStickers) "expand_less" else "expand_more", appString { stickers }, styles = {
                     marginLeft(1.r)
                     marginRight(1.r)
                 }) {
                     showStickers = !showStickers
                 }
             } else {
-                IconButton("send", "Send message", styles = { marginLeft(1.r) }) {
+                IconButton("send", appString { sendMessage }, styles = { marginLeft(1.r) }) {
                     // todo
                 }
             }

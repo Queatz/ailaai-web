@@ -43,9 +43,9 @@ fun GroupTopBar(group: GroupExtended, onGroupUpdated: () -> Unit, onGroupGone: (
     fun renameGroup() {
         scope.launch {
             val name = inputDialog(
-                "Group name",
+                application.appString { groupName },
                 "",
-                "Rename",
+                application.appString { rename },
                 defaultValue = group.group?.name ?: ""
             )
 
@@ -81,9 +81,9 @@ fun GroupTopBar(group: GroupExtended, onGroupUpdated: () -> Unit, onGroupGone: (
     fun updateIntroduction() {
         scope.launch {
             val introduction = inputDialog(
-                "Introduction",
+                application.appString { introduction },
                 "",
-                "Update",
+                application.appString { update },
                 defaultValue = group.group?.description ?: ""
             )
 
@@ -100,16 +100,16 @@ fun GroupTopBar(group: GroupExtended, onGroupUpdated: () -> Unit, onGroupGone: (
 //            item("Pin") {
 //
 //            }
-            item("Members") {
+            item(appString { members }) {
                 scope.launch {
                     groupMembersDialog(group)
                 }
             }
             if (myMember != null) {
-                item("Rename") {
+                item(appString { rename }) {
                     renameGroup()
                 }
-                item("Introduction") {
+                item(appString { introduction }) {
                     updateIntroduction()
                 }
                 if (myMember.member?.host == true) {
@@ -138,7 +138,7 @@ fun GroupTopBar(group: GroupExtended, onGroupUpdated: () -> Unit, onGroupGone: (
                         }
                     }
                 }
-                item("Hide") {
+                item(appString { hide }) {
                     scope.launch {
                         api.updateMember(
                             myMember.member!!.id!!,
@@ -148,9 +148,9 @@ fun GroupTopBar(group: GroupExtended, onGroupUpdated: () -> Unit, onGroupGone: (
                         }
                     }
                 }
-                item("Leave") {
+                item(appString { leave }) {
                     scope.launch {
-                        val result = dialog("Leave this group?", "Leave")
+                        val result = dialog("Leave this group?", application.appString { leave })
 
                         if (result == true) {
                             api.removeMember(
@@ -209,11 +209,11 @@ fun GroupTopBar(group: GroupExtended, onGroupUpdated: () -> Unit, onGroupGone: (
     val active = group.members?.filter { it != myMember }?.maxByOrNull {
         it.person?.seen?.toEpochMilliseconds() ?: 0
     }?.person?.seen?.let { Date(it.toEpochMilliseconds()) }?.let {
-        "Active ${formatDistanceToNow(it, js("{ addSuffix: true }"))}"
+        "${appString { active }} ${formatDistanceToNow(it, js("{ addSuffix: true }"))}"
     }
 
     PageTopBar(
-        group.name("Someone", "New group", listOf(me!!.id!!)),
+        group.name(appString { someone }, appString { newGroup }, listOf(me!!.id!!)),
         if (group.group?.open == true) {
             listOfNotNull(appString { openGroup }, active).joinToString(" • ")
         } else {

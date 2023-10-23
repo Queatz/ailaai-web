@@ -2,6 +2,8 @@ package app.components
 
 import Styles
 import androidx.compose.runtime.*
+import appString
+import appText
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.attributes.disabled
 import org.jetbrains.compose.web.attributes.placeholder
@@ -112,7 +114,7 @@ fun EditField(value: String, placeholder: String = "", styles: StyleScope.() -> 
                     disabled()
                 }
             }) {
-                Text("Save")
+                appText { save }
             }
 
             Button({
@@ -129,7 +131,7 @@ fun EditField(value: String, placeholder: String = "", styles: StyleScope.() -> 
                     disabled()
                 }
             }) {
-                Text("Discard")
+                appText { discard }
             }
         }
     }

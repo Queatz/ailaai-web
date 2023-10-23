@@ -5,6 +5,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import appText
+import application
 import com.queatz.db.GroupExtended
 import inputDialog
 import joins
@@ -24,9 +26,9 @@ fun JoinGroupLayout(group: GroupExtended) {
     fun join() {
         scope.launch {
             val result = inputDialog(
-                "Join group",
-                placeholder = "Message",
-                confirmButton = "Send request",
+                application.appString { joinGroup },
+                placeholder = application.appString { message },
+                confirmButton = application.appString { sendRequest },
                 singleLine = false
             )
 
@@ -58,7 +60,7 @@ fun JoinGroupLayout(group: GroupExtended) {
                     cancelJoin()
                 }
             }) {
-                Text("Cancel join request")
+                appText { cancelJoinRequest }
             }
         } else {
             Button({
@@ -67,7 +69,7 @@ fun JoinGroupLayout(group: GroupExtended) {
                     join()
                 }
             }) {
-                Text("Join group")
+                appText { joinGroup }
             }
         }
     }

@@ -1,6 +1,8 @@
 package app.group
 
 import app.AppStyles
+import appString
+import application
 import com.queatz.db.GroupExtended
 import components.ProfilePhoto
 import dialog
@@ -13,7 +15,7 @@ import org.jetbrains.compose.web.dom.Text
 import r
 import kotlin.js.Date
 
-suspend fun groupMembersDialog(group: GroupExtended) = dialog("Members (${group.members?.size ?: 0})", cancelButton = null, confirmButton = "Close") {
+suspend fun groupMembersDialog(group: GroupExtended) = dialog("${application.appString { members }} (${group.members?.size ?: 0})", cancelButton = null, confirmButton = application.appString { close }) {
     Div({
         style {
             display(DisplayStyle.Flex)
@@ -41,13 +43,13 @@ suspend fun groupMembersDialog(group: GroupExtended) = dialog("Members (${group.
                         Div({
                             classes(AppStyles.groupItemName)
                         }) {
-                            Text(member.person?.name ?: "Someone")
+                            Text(member.person?.name ?: application.appString { someone })
                         }
                         Div({
                             classes(AppStyles.groupItemMessage)
                         }) {
                             Text(
-                                "Active ${
+                                "${application.appString { active }} ${
                                     formatDistanceToNow(
                                         Date(member.person!!.seen?.toEpochMilliseconds() ?: member.person!!.createdAt!!.toEpochMilliseconds()),
                                         js("{ addSuffix: true }")

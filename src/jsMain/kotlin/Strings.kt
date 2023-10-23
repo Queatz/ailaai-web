@@ -99,7 +99,7 @@ object Strings {
     )
     val friends = Translation(
         "Friends",
-        "Bạn",
+        "Bạn bè",
         "Друзья"
     )
     val explore = Translation(
@@ -164,7 +164,10 @@ object Strings {
     val sendMessage = Translation(
         "Send message",
         "Gửi tin nhắn",
-        "Отправить сообщение"
+    )
+    val sendPhoto = Translation(
+        "Send photo",
+        "Gửi ảnh"
     )
     val viewProfile = Translation(
         "View profile",
@@ -393,14 +396,14 @@ object Strings {
     )
     val saved = Translation(
         "Saved",
-        "Đâ lưu"
+        "Đã lưu"
     )
     val groups = Translation(
         "Groups",
         "Nhóm"
     )
     val groupName = Translation(
-        "Name",
+        "Group name",
         "Tên nhóm"
     )
     val reminders = Translation(
@@ -562,6 +565,42 @@ object Strings {
     val details = Translation(
         "Details",
         "Chi tiết"
+    )
+    val members = Translation(
+        "Members",
+        "Thành viên"
+    )
+    val hide = Translation(
+        "Hide",
+        "Ẩn"
+    )
+    val leave = Translation(
+        "Leave",
+        "Rời khỏi"
+    )
+    val active = Translation(
+        "Active",
+        "Truy cập"
+    )
+    val discard = Translation(
+        "Discard",
+        "Bỏ"
+    )
+    val joinGroup = Translation(
+        "Join group",
+        "Tham gia nhóm"
+    )
+    val sendRequest = Translation(
+        "Send request",
+        "Gửi yêu cầu"
+    )
+    val cancelJoinRequest = Translation(
+        "Cancel join request",
+        "Hủy yêu cầu tham gia"
+    )
+    val stickers = Translation(
+        "Stickers",
+        "Hình dán"
     )
 }
 
