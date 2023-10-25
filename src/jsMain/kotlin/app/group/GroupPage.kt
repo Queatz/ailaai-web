@@ -8,9 +8,11 @@ import app.FullPageLayout
 import app.ailaai.api.exploreGroups
 import app.components.Empty
 import app.nav.GroupNav
+import appString
 import appText
 import application
 import components.Loading
+import components.SearchField
 import defaultGeo
 import notBlank
 import org.jetbrains.compose.web.css.*
@@ -114,6 +116,15 @@ fun GroupPage(
                     padding(1.r)
                 }
             }) {
+                SearchField(
+                    search,
+                    appString { this.search },
+                    {
+                        marginBottom(1.r)
+                    }
+                ) {
+                    search = it
+                }
                 if (groups.isEmpty()) {
                     Empty {
                         appText { noGroups }

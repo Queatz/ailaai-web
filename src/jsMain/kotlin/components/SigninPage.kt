@@ -74,7 +74,7 @@ fun SigninPage() {
             api.signInWithLink(
                 linkDeviceToken!!,
                 onError = {
-                    status = "Error"
+                    status = application.appString { error }
                 }
             ) {
                 application.setToken(it.token)
@@ -93,7 +93,7 @@ fun SigninPage() {
             api.signIn(
                 transferCode = transferCode,
                 onError = {
-                    status = "Error"
+                    status = application.appString { error }
                 }
                 ) {
                 application.setToken(it.token)
@@ -112,7 +112,7 @@ fun SigninPage() {
             api.signUp(
                 inviteCode,
                 onError = {
-                    status = "Error"
+                    status = application.appString { error }
 
                 }
             ) {
@@ -154,11 +154,13 @@ fun SigninPage() {
                 Div({
                     style {
                         color(Styles.colors.secondary)
-                        paddingBottom(1.r)
+                        padding(1.r)
                     }
                 }) {
                     Text(status ?: appString { scanQrCode })
                 }
+
+                val orEnterTransferCode = appString { orEnterTransferCode }
 
                 Input(InputType.Text) {
                     classes(Styles.textarea)
@@ -167,11 +169,7 @@ fun SigninPage() {
                         maxWidth(36.r)
                     }
 
-                    placeholder(
-                        application.appString {
-                            orEnterTransferCode
-                        }
-                    )
+                    placeholder(orEnterTransferCode)
 
                     onInput {
                         if(it.value.length == 16) {
