@@ -90,7 +90,6 @@ fun StoryContents(storyContent: List<StoryContent>, openInNewWindow: Boolean = f
                                 backgroundColor(Styles.colors.background)
                                 backgroundImage("url($baseUrl$photo)")
                                 property("aspect-ratio", "${part.aspect}")
-
                             }
                         })
                     }

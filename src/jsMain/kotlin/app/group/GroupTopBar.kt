@@ -150,7 +150,7 @@ fun GroupTopBar(group: GroupExtended, onGroupUpdated: () -> Unit, onGroupGone: (
                 }
                 item(appString { leave }) {
                     scope.launch {
-                        val result = dialog("Leave this group?", application.appString { leave })
+                        val result = dialog(application.appString { leaveGroup }, application.appString { leave })
 
                         if (result == true) {
                             api.removeMember(

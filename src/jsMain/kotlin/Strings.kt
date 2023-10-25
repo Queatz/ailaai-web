@@ -296,7 +296,7 @@ object Strings {
     )
     val searchCity = Translation(
         "Search Ho Chi Minh City",
-        "Tìm kiếm trong Hồ Chí Mình"
+        "Tìm kiếm trong TP. Hồ Chí Mình"
     )
     val chooseYourCity = Translation(
         "Choose your city",
@@ -360,7 +360,7 @@ object Strings {
     )
     val introduceYourself = Translation(
         "Introduce yourself here",
-        "Giới thiệu bản thân đây"
+        "Viết chút về bạn"
     )
     val filter = Translation(
         "Filter",
@@ -444,7 +444,7 @@ object Strings {
     )
     val created = Translation(
         "Created",
-        "Dã tạo"
+        "Đã tạo"
     )
     val inlinePersonWaiting = Translation(
         "person waiting",
@@ -578,6 +578,10 @@ object Strings {
         "Leave",
         "Rời khỏi"
     )
+    val leaveGroup = Translation(
+        "Leave group?",
+        "Rời khỏi nhóm này không?"
+    )
     val active = Translation(
         "Active",
         "Truy cập"
@@ -631,5 +635,5 @@ class Configuration(
 val LocalConfiguration = compositionLocalOf<Configuration>(
     neverEqualPolicy()
 ) {
-    error("No language provided")
+    Configuration(application.language) {}
 }

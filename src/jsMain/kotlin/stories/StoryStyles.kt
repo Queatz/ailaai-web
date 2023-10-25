@@ -48,6 +48,7 @@ object StoryStyles : StyleSheet() {
         alignItems(AlignItems.Stretch)
         justifyContent(JustifyContent.Stretch)
         lineHeight("0")
+        maxWidth(100.percent)
     }
 
     val contentCards by style {
@@ -79,6 +80,7 @@ object StoryStyles : StyleSheet() {
         borderRadius(1.r)
         height(480.px)
         maxHeight(100.vh)
+        maxWidth(100.percent)
         marginRight(1.r)
         marginBottom(1.r)
 
