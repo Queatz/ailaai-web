@@ -4,6 +4,7 @@ import androidx.compose.runtime.*
 import api
 import app.AppStyles
 import app.PageTopBar
+import app.ailaai.api.createMember
 import app.ailaai.api.removeMember
 import app.ailaai.api.updateGroup
 import app.ailaai.api.updateMember
@@ -27,7 +28,11 @@ import org.w3c.dom.HTMLElement
 import kotlin.js.Date
 
 @Composable
-fun GroupTopBar(group: GroupExtended, onGroupUpdated: () -> Unit, onGroupGone: () -> Unit) {
+fun GroupTopBar(
+    group: GroupExtended,
+    onGroupUpdated: () -> Unit,
+    onGroupGone: () -> Unit
+) {
     val me by application.me.collectAsState()
     val myMember = group.members?.find { it.person?.id == me?.id }
     val scope = rememberCoroutineScope()
@@ -95,11 +100,31 @@ fun GroupTopBar(group: GroupExtended, onGroupUpdated: () -> Unit, onGroupGone: (
         }
     }
 
+    fun addMember(person: Person) {
+        scope.launch {
+            api.createMember(
+                Member().apply {
+                    from = person.id!!
+                    to = group.group!!.id!!
+                }
+            ) {
+                onGroupUpdated()
+            }
+        }
+    }
+
     if (menuTarget != null) {
         Menu({ menuTarget = null }, menuTarget!!) {
 //            item("Pin") {
 //
 //            }
+            item(appString { invite }) {
+                scope.launch {
+                    friendsDialog(group.members?.mapNotNull { it.person?.id } ?: emptyList()) {
+                        addMember(it)
+                    }
+                }
+            }
             item(appString { members }) {
                 scope.launch {
                     groupMembersDialog(group)

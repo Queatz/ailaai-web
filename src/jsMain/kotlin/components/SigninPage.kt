@@ -8,6 +8,7 @@ import app.ailaai.api.signIn
 import app.ailaai.api.signInWithLink
 import app.ailaai.api.signUp
 import app.softwork.routingcompose.Router
+import appString
 import appText
 import application
 import kotlinx.coroutines.delay
@@ -51,7 +52,9 @@ fun SigninPage() {
         }
 
         if (linkDeviceToken == null) {
-            status = "Error"
+            status = application.appString {
+                this.error
+            }
             return@LaunchedEffect
         }
 
@@ -154,7 +157,7 @@ fun SigninPage() {
                         paddingBottom(1.r)
                     }
                 }) {
-                    Text(status ?: "Use your phone to scan the QR code.")
+                    Text(status ?: appString { scanQrCode })
                 }
 
                 Input(InputType.Text) {
@@ -164,7 +167,11 @@ fun SigninPage() {
                         maxWidth(36.r)
                     }
 
-                    placeholder("Or enter a transfer code here")
+                    placeholder(
+                        application.appString {
+                            orEnterTransferCode
+                        }
+                    )
 
                     onInput {
                         if(it.value.length == 16) {

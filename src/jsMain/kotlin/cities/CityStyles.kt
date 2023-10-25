@@ -20,6 +20,12 @@ object CityStyles : StyleSheet() {
                 background("linear-gradient(to bottom, transparent 00%, rgba(255, 255, 255, 0.95) 60%)")
             }
         }
+
+        media("(prefers-color-scheme: dark)") {
+            self style {
+                background("linear-gradient(to bottom, transparent 20%, rgba(0, 0, 0, 0.65) 80%)")
+            }
+        }
     }
 
     val city by style {

@@ -10,6 +10,18 @@ data class Translation(
 )
 
 object Strings {
+    val error = Translation(
+        "Error",
+        "Lỗi"
+    )
+    val orEnterTransferCode = Translation(
+        "Or enter a transfer code here",
+        "Hoặc nhập mã chuyển khoản tại đây"
+    )
+    val scanQrCode = Translation(
+        "Use your phone to scan the QR code.",
+        "Sử dụng điện thoại của bạn để quét mã QR."
+    )
     val openGroup = Translation(
         "Open group",
         "Nhóm mở"
@@ -216,8 +228,8 @@ object Strings {
         ,"Что такое Ай Ла Ай?"
     )
     val homeAboutDescription = Translation(
-        "Hi Town is a collaboration platform that helps you discover and stay connected to your city, enabling you to do more, externalize all of your visions, and go farther than you ever imagined.",
-        "Chào Town là một nền tảng hợp tác giúp bạn khám phá và giữ liên lạc với mọi người trong thành phố của bạn, cho phép bạn làm được nhiều hơn, hiện thực hóa tất cả tầm nhìn của bạn và tiến xa hơn những gì bạn tưởng tượng."
+        "Hi Town is a collaboration platform that helps you discover and stay connected to your city, enabling you to do more, externalize all of your visions, and go farther than you ever imagined. Think of it as a home page for your city!",
+        "Chào Town là một nền tảng hợp tác giúp bạn khám phá và giữ liên lạc với mọi người trong thành phố của bạn, cho phép bạn làm được nhiều hơn, hiện thực hóa tất cả tầm nhìn của bạn và tiến xa hơn những gì bạn tưởng tượng. Hãy nghĩ về Chào Town như một trang chủ cho thành phố của bạn!"
         ,""
     )
     val inviteEmailSubject = Translation(
@@ -569,6 +581,10 @@ object Strings {
     val members = Translation(
         "Members",
         "Thành viên"
+    )
+    val invite = Translation(
+        "Invite",
+        "Mời ai đó"
     )
     val hide = Translation(
         "Hide",

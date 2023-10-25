@@ -15,7 +15,11 @@ import org.jetbrains.compose.web.dom.Text
 import r
 import kotlin.js.Date
 
-suspend fun groupMembersDialog(group: GroupExtended) = dialog("${application.appString { members }} (${group.members?.size ?: 0})", cancelButton = null, confirmButton = application.appString { close }) {
+suspend fun groupMembersDialog(group: GroupExtended) = dialog(
+    "${application.appString { members }} (${group.members?.size ?: 0})",
+    cancelButton = null,
+    confirmButton = application.appString { close }
+) {
     Div({
         style {
             display(DisplayStyle.Flex)

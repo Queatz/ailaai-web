@@ -23,6 +23,12 @@ object Styles : StyleSheet() {
         property("box-shadow", "1px 1px 4px rgba(0, 0, 0, 0.125)")
         backgroundColor(Color.white)
         borderRadius(1.r)
+
+        media("(prefers-color-scheme: dark)") {
+            self style {
+                backgroundColor(colors.dark.background)
+            }
+        }
     }
 
     init {
@@ -180,6 +186,12 @@ object Styles : StyleSheet() {
         padding(1.r)
         marginTop(1.r)
         backgroundColor(Color("#f7f7f7"))
+
+        media("(prefers-color-scheme: dark)") {
+            self style {
+                backgroundColor(colors.dark.background)
+            }
+        }
     }
 
     val mainHeader by style {
@@ -235,6 +247,12 @@ object Styles : StyleSheet() {
         marginLeft(1.r)
         marginRight(1.r)
         property("max-width", "calc(100vw - ${1.r * 2})")
+
+        media("(prefers-color-scheme: dark)") {
+            self style {
+                backgroundColor(colors.dark.background)
+            }
+        }
     }
 
     val navContent by style {
@@ -342,9 +360,9 @@ object Styles : StyleSheet() {
     }
 
     val button by style {
-        borderRadius(1.r * 2)
+        borderRadius(2.r)
         border(0.px)
-        padding(0.r, 1.r * 2)
+        padding(0.r, 2.r)
         height(3.r)
         backgroundColor(colors.primary)
         color(Color.white)
@@ -386,7 +404,6 @@ object Styles : StyleSheet() {
     val textButton by style {
         property("border", "none")
         borderRadius(1.r * 2)
-        padding(0.r, 1.r * 2)
         height(3.r)
         backgroundColor(Color.transparent)
         color(colors.primary)
