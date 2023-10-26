@@ -14,7 +14,7 @@ object Styles : StyleSheet() {
     }
 
     fun CSSBuilder.cardStyle() {
-        borderRadius(1.r * 2)
+        borderRadius(2.r)
         backgroundColor(colors.background)
         property("box-shadow", "2px 2px 8px rgba(0, 0, 0, .25)")
     }
@@ -207,7 +207,7 @@ object Styles : StyleSheet() {
         margin(1.r, 0.r)
         fontSize(32.px)
         color(Color.white)
-        borderRadius(1.r * 2)
+        borderRadius(2.r)
         whiteSpace("pre-wrap")
         fontFamily("Estonia")
         lineHeight("1.25")
@@ -246,7 +246,7 @@ object Styles : StyleSheet() {
         borderRadius(1.r)
         marginLeft(1.r)
         marginRight(1.r)
-        property("max-width", "calc(100vw - ${1.r * 2})")
+        property("max-width", "calc(100vw - ${2.r})")
 
         media("(prefers-color-scheme: dark)") {
             self style {
@@ -381,9 +381,9 @@ object Styles : StyleSheet() {
     }
 
     val outlineButton by style {
-        borderRadius(1.r * 2)
+        borderRadius(2.r)
         border(1.px, LineStyle.Solid, colors.primary)
-        padding(0.r, 1.r * 2)
+        padding(0.r, 2.r)
         height(3.r)
         backgroundColor(Color.transparent)
         color(colors.primary)
@@ -403,7 +403,7 @@ object Styles : StyleSheet() {
 
     val textButton by style {
         property("border", "none")
-        borderRadius(1.r * 2)
+        borderRadius(2.r)
         height(3.r)
         backgroundColor(Color.transparent)
         color(colors.primary)

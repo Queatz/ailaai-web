@@ -94,7 +94,7 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
                 minHeight(100.vh)
                 width(100.percent)
                 flexDirection(FlexDirection.Column)
-                padding(1.r * 2)
+                padding(2.r)
                 alignItems(AlignItems.Center)
                 justifyContent(JustifyContent.FlexStart)
             }

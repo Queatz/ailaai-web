@@ -43,7 +43,7 @@ fun StoryPage(storyUrl: String, onStoryLoaded: (Story) -> Unit) {
                 minHeight(100.vh)
                 width(100.percent)
                 flexDirection(FlexDirection.Column)
-                padding(1.r * 2)
+                padding(2.r)
                 alignItems(AlignItems.Center)
                 justifyContent(JustifyContent.FlexStart)
             }

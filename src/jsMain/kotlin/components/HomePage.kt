@@ -1,5 +1,6 @@
 package components
 
+import LocalConfiguration
 import Styles
 import androidx.compose.runtime.*
 import api
@@ -9,12 +10,18 @@ import appText
 import com.queatz.db.Card
 import com.queatz.db.Geo
 import kotlinx.coroutines.delay
+import org.jetbrains.compose.web.attributes.ATarget
+import org.jetbrains.compose.web.attributes.target
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
 import r
 
 @Composable
 fun HomePage() {
+    var searchText by remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(false) }
+    var searchResults by remember { mutableStateOf(listOf<Card>()) }
+
     Div({
         style {
             property("margin", "${1.r} auto")
@@ -39,10 +46,53 @@ fun HomePage() {
             Text(appString { homeAboutDescription })
             Br()
         }
-        DownloadAppButton()
-        var searchText by remember { mutableStateOf("") }
-        var isLoading by remember { mutableStateOf(false) }
-        var searchResults by remember { mutableStateOf(listOf<Card>()) }
+
+        val lang = LocalConfiguration.current.language
+
+        Div({
+            style {
+                display(DisplayStyle.Flex)
+                marginTop(2.r)
+                overflowX("auto")
+            }
+        }) {
+            repeat(5) {
+                Img(src = "/screenshots/$lang/000${it + 1}.png") {
+                    style {
+                        borderRadius(1.r)
+                        marginRight(1.r)
+                        width(20.vw)
+                    }
+                }
+            }
+        }
+
+        Div({
+            style {
+                display(DisplayStyle.Flex)
+                alignItems(AlignItems.Center)
+                marginTop(2.r)
+            }
+        }) {
+            DownloadAppButton()
+            Span({
+                style {
+                    marginLeft(1.r)
+                    opacity(.5f)
+                }
+            }) {
+                Text("or get it on")
+            }
+            A("https://play.google.com/store/apps/details?id=com.ailaai.app", {
+                target(ATarget.Blank)
+                style {
+                    marginLeft(.5.r)
+                    fontWeight("bold")
+                }
+            }) {
+                Text("Google Play")
+            }
+        }
 
         SearchField(searchText, appString { searchCity }, modifier = {
             marginTop(2.r)

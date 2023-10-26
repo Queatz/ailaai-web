@@ -89,7 +89,7 @@ fun ProfilePage(personId: String? = null, url: String? = null, onProfile: (Perso
                 minHeight(100.vh)
                 width(100.percent)
                 flexDirection(FlexDirection.Column)
-                padding(1.r * 2)
+                padding(2.r)
                 alignItems(AlignItems.Center)
                 justifyContent(JustifyContent.FlexStart)
             }

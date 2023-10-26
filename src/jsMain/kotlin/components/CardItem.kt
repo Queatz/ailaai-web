@@ -114,7 +114,7 @@ fun CardItem(
                 Div({
                     style {
                         backgroundColor(rgba(255, 255, 255, .95))
-                        borderRadius(1.r * 2)
+                        borderRadius(2.r)
                         padding(1.r / 2, 1.r)
                         color(Color.black)
                         position(Position.Absolute)

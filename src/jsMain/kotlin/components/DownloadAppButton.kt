@@ -14,7 +14,6 @@ fun DownloadAppButton() {
         style {
             display(DisplayStyle.InlineBlock)
             padding(1.r, 2.r)
-            marginTop(1.r * 2)
             fontWeight(700)
             fontSize(18.px)
             borderRadius(2.r)
