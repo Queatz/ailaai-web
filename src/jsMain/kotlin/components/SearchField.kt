@@ -17,7 +17,7 @@ fun SearchField(
     value: String,
     placeholder: String,
     modifier: StyleScope.() -> Unit = {},
-    valueChange: (String) -> Unit
+    onValue: (String) -> Unit
 ) {
     Div({
         style {
@@ -39,7 +39,7 @@ fun SearchField(
             placeholder(placeholder)
 
             onInput {
-                valueChange(it.value)
+                onValue(it.value)
             }
 
             autoFocus()

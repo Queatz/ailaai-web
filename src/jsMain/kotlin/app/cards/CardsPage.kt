@@ -6,15 +6,19 @@ import app.FullPageLayout
 import app.ailaai.api.card
 import app.ailaai.api.cards
 import app.ailaai.api.savedCards
+import app.components.TopBarSearch
 import app.nav.CardNav
+import appString
 import appText
 import application
 import com.queatz.db.*
 import components.*
 import defaultGeo
 import kotlinx.coroutines.launch
+import notBlank
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
+import r
 
 @Composable
 fun CardsPage(nav: CardNav, onCard: (CardNav) -> Unit, onCardUpdated: (Card) -> Unit) {
@@ -29,6 +33,10 @@ fun CardsPage(nav: CardNav, onCard: (CardNav) -> Unit, onCardUpdated: (Card) -> 
         mutableStateOf(nav !is CardNav.Selected)
     }
 
+    var search by remember {
+        mutableStateOf("")
+    }
+
     LaunchedEffect(nav) {
         if (nav !is CardNav.Selected) {
             isLoading = true
@@ -40,19 +48,19 @@ fun CardsPage(nav: CardNav, onCard: (CardNav) -> Unit, onCardUpdated: (Card) -> 
 
         when (nav) {
             is CardNav.Friends -> {
-                api.cards(me?.geo?.asGeo() ?: defaultGeo) {
+                api.cards(me?.geo?.asGeo() ?: defaultGeo, search = search.notBlank) {
                     cards = it
                 }
             }
 
             is CardNav.Local -> {
-                api.cards(me?.geo?.asGeo() ?: defaultGeo, public = true) {
+                api.cards(me?.geo?.asGeo() ?: defaultGeo, public = true, search = search.notBlank) {
                     cards = it
                 }
             }
 
             is CardNav.Saved -> {
-                api.savedCards {
+                api.savedCards(search = search.notBlank) {
                     cards = it.mapNotNull { it.card }
                 }
             }
@@ -64,7 +72,7 @@ fun CardsPage(nav: CardNav, onCard: (CardNav) -> Unit, onCardUpdated: (Card) -> 
         isLoading = false
     }
 
-    LaunchedEffect(nav) {
+    LaunchedEffect(nav, search) {
         reload()
     }
 
@@ -84,6 +92,7 @@ fun CardsPage(nav: CardNav, onCard: (CardNav) -> Unit, onCardUpdated: (Card) -> 
                         }
                     }) {
                         when (nav) {
+                            is CardNav.Friends -> appText { noCards }
                             is CardNav.Local -> appText { noCardsNearby }
                             is CardNav.Saved -> appText { noSavedCards }
                             else -> {}
@@ -130,6 +139,6 @@ fun CardsPage(nav: CardNav, onCard: (CardNav) -> Unit, onCardUpdated: (Card) -> 
                 )
             }
         }
+        TopBarSearch(search) { search = it}
     }
 }
-

@@ -5,6 +5,7 @@ import androidx.compose.runtime.*
 import api
 import app.FullPageLayout
 import app.PageTopBar
+import app.components.TopBarSearch
 import app.menu.Menu
 import app.nav.StoryNav
 import appString
@@ -30,6 +31,7 @@ import r
 import stories.StoryContent
 import stories.StoryContents
 import stories.full
+import stories.textContent
 import webBaseUrl
 
 @Composable
@@ -43,14 +45,21 @@ fun StoriesPage(selected: StoryNav, onStoryUpdated: (Story) -> Unit) {
     var menuTarget by remember {
         mutableStateOf<DOMRect?>(null)
     }
+    var search by remember {
+        mutableStateOf("")
+    }
 
-    LaunchedEffect(selected) {
+    LaunchedEffect(selected, search) {
         isLoading = true
+
+        fun List<Story>.search() = if (search.isBlank()) this else filter {
+            it.textContent().lowercase().contains(search.trim().lowercase())
+        }
 
         when (selected) {
             is StoryNav.Friends -> {
                 api.stories(me?.geo?.asGeo() ?: defaultGeo) { stories ->
-                    storyContent = stories.flatMapIndexed { index, it ->
+                    storyContent = stories.search().flatMapIndexed { index, it ->
                         if (index < stories.lastIndex) it.full() + StoryContent.Divider else it.full()
                     }
                 }
@@ -58,7 +67,7 @@ fun StoriesPage(selected: StoryNav, onStoryUpdated: (Story) -> Unit) {
 
             is StoryNav.Local -> {
                 api.stories(me?.geo?.asGeo() ?: defaultGeo, public = true) { stories ->
-                    storyContent = stories.flatMapIndexed { index, it ->
+                    storyContent = stories.search().flatMapIndexed { index, it ->
                         if (index < stories.lastIndex) it.full() + StoryContent.Divider else it.full()
                     }
                 }
@@ -150,13 +159,15 @@ fun StoriesPage(selected: StoryNav, onStoryUpdated: (Story) -> Unit) {
                 }
             }
         }
-        if (selected is StoryNav.Selected) {
-            PageTopBar(
-                ""
+    }
+    if (selected is StoryNav.Selected) {
+        PageTopBar(
+            ""
 //                story.title?.notBlank ?: "New story"
-            ) {
-                menuTarget = if (menuTarget == null) (it.target as HTMLElement).getBoundingClientRect() else null
-            }
+        ) {
+            menuTarget = if (menuTarget == null) (it.target as HTMLElement).getBoundingClientRect() else null
         }
+    } else {
+        TopBarSearch(search) { search = it }
     }
 }

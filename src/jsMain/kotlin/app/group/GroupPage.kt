@@ -7,6 +7,7 @@ import api
 import app.FullPageLayout
 import app.ailaai.api.exploreGroups
 import app.components.Empty
+import app.components.TopBarSearch
 import app.nav.GroupNav
 import appString
 import appText
@@ -41,10 +42,12 @@ fun GroupPage(
     }
 
     LaunchedEffect(nav, search) {
-        groups = emptyList()
+        if (search.isBlank()) {
+            groups = emptyList()
+        }
         when (nav) {
             GroupNav.Friends -> {
-                isLoading = true
+                isLoading = search.isBlank()
                 api.exploreGroups(
                     geo = me?.geo?.asGeo() ?: defaultGeo,
                     search = search.notBlank,
@@ -56,7 +59,7 @@ fun GroupPage(
             }
 
             GroupNav.Local -> {
-                isLoading = true
+                isLoading = search.isBlank()
                 api.exploreGroups(
                     geo = me?.geo?.asGeo() ?: defaultGeo,
                     search = search.notBlank,
@@ -113,18 +116,9 @@ fun GroupPage(
                 style {
                     display(DisplayStyle.Flex)
                     flexDirection(FlexDirection.Column)
-                    padding(1.r)
+                    padding(0.r, 1.r, 1.r, 1.r)
                 }
             }) {
-                SearchField(
-                    search,
-                    appString { this.search },
-                    {
-                        marginBottom(1.r)
-                    }
-                ) {
-                    search = it
-                }
                 if (groups.isEmpty()) {
                     Empty {
                         appText { noGroups }
@@ -136,6 +130,7 @@ fun GroupPage(
                 }
             }
         }
+        TopBarSearch(search) { search = it}
     } else if (nav is GroupNav.Selected) {
         GroupLayout(nav.group, onGroupUpdated, onGroupGone)
     }
