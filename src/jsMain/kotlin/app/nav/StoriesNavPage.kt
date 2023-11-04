@@ -4,6 +4,7 @@ import api
 import app.AppStyles
 import app.components.Empty
 import app.components.Spacer
+import app.dialog.inputDialog
 import appString
 import appText
 import application
@@ -13,7 +14,6 @@ import com.queatz.db.Story
 import components.IconButton
 import components.Loading
 import focusable
-import inputDialog
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch

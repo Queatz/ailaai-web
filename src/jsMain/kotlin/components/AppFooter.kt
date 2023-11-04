@@ -21,11 +21,15 @@ fun AppFooter() {
             whiteSpace("pre-wrap")
         }
     }) {
-        Span { Text(appString { madeWith }) }
         Span({
-            style { color(Color.red) }
-        }) { Text(" ♥ ") }
-        Span { appText { inHCMC } }
+            classes(Styles.menuButton)
+        }) {
+            Span { Text(appString { madeWith }) }
+            Span({
+                style { color(Color.red) }
+            }) { Text(" ♥ ") }
+            Span { appText { inHCMC } }
+        }
         Bullet()
         val cardId = appString { introductionCardId }
         Div({

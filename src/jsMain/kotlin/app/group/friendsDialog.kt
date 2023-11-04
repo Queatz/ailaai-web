@@ -4,12 +4,11 @@ import androidx.compose.runtime.*
 import api
 import app.AppStyles
 import app.ailaai.api.groups
+import app.dialog.dialog
 import application
-import com.queatz.db.GroupExtended
 import com.queatz.db.Person
 import components.Loading
 import components.ProfilePhoto
-import dialog
 import focusable
 import lib.formatDistanceToNow
 import org.jetbrains.compose.web.css.*

@@ -10,9 +10,45 @@ data class Translation(
 )
 
 object Strings {
+    val rootPages = Translation(
+        "Root pages",
+        "Trang gốc"
+    )
+    val actionOpenGroup = Translation(
+        "Open group",
+        "Mở nhóm"
+    )
+    val actionCloseGroup = Translation(
+        "Close group",
+        "Đóng nhóm"
+    )
+    val makeOpenGroup = Translation(
+        "Make group open",
+        "Chuyển sang nhóm mở"
+    )
+    val makeCloseGroup = Translation(
+        "Make group closed",
+        "Chuyển sang nhóm đóng"
+    )
+    val actionOpenGroupDescription = Translation(
+        "Anyone will be able to discover this group, see all members, messages, and request to become a member.",
+        "Bất kì ai cũng có thể khám phá nhóm này, xem tất cả thành viên, tin nhắn và yêu cầu trở thành thành viên."
+    )
+    val actionCloseGroupDescription = Translation(
+        "This group will only be accessible to members.",
+        "Nhóm này sẽ chỉ có thể truy cập được đối với các thành viên."
+    )
+    val clickToHide = Translation(
+        "Click to hide",
+        "Nhấn để mở"
+    )
     val error = Translation(
         "Error",
         "Lỗi"
+    )
+    val note = Translation(
+        "Note",
+        "Ghi chú"
     )
     val orEnterTransferCode = Translation(
         "Or enter a transfer code here",
@@ -51,11 +87,11 @@ object Strings {
         "Quản lý"
     )
     val selectAGroup = Translation(
-    "Select a group",
+        "Select a group",
         "Chọn một nhóm"
     )
     val introduction = Translation(
-        "About",
+        "Introduction",
         "Giới thiệu"
     )
     val introductionCardId = Translation(
@@ -209,7 +245,7 @@ object Strings {
     val homeTagline = Translation(
         "Be the life of the city!",
         "Hãy cùng làm thành phố\n" +
-            "năng động và đầy màu sắc!",
+                "năng động và đầy màu sắc!",
         "Расширяйте и оживляйте свой город"
     )
     val downloadApp = Translation(
@@ -224,13 +260,12 @@ object Strings {
     )
     val homeAboutTitle = Translation(
         "What is Hi Town?",
-        "Chào Town là gì?"
-        ,"Что такое Ай Ла Ай?"
+        "Chào Town là gì?", "Что такое Ай Ла Ай?"
     )
     val homeAboutDescription = Translation(
         "Hi Town is a collaboration platform that helps you discover and stay connected to your city, enabling you to do more, externalize all of your visions, and go farther than you ever imagined. Think of it as a home page for your city!",
-        "Chào Town là một nền tảng hợp tác giúp bạn khám phá và giữ liên lạc với mọi người trong thành phố của bạn, cho phép bạn làm được nhiều hơn, hiện thực hóa tất cả tầm nhìn của bạn và tiến xa hơn những gì bạn tưởng tượng. Hãy nghĩ về Chào Town như một trang chủ cho thành phố của bạn!"
-        ,""
+        "Chào Town là một nền tảng hợp tác giúp bạn khám phá và giữ liên lạc với mọi người trong thành phố của bạn, cho phép bạn làm được nhiều hơn, hiện thực hóa tất cả tầm nhìn của bạn và tiến xa hơn những gì bạn tưởng tượng. Hãy nghĩ về Chào Town như một trang chủ cho thành phố của bạn!",
+        ""
     )
     val inviteEmailSubject = Translation(
         "Hi Town invite to join",
@@ -422,6 +457,10 @@ object Strings {
         "Reminders",
         "Lời nhắc"
     )
+    val reminder = Translation(
+        "Reminder",
+        "Lời nhắc"
+    )
     val noReminders = Translation(
         "No reminders",
         "Không có lời nhắc"
@@ -453,6 +492,10 @@ object Strings {
     val newGroup = Translation(
         "New group",
         "Nhóm mới"
+    )
+    val newReminder = Translation(
+        "New reminder",
+        "Lời nhắc mới"
     )
     val created = Translation(
         "Created",
@@ -549,6 +592,14 @@ object Strings {
     val rename = Translation(
         "Rename",
         "Đổi tên"
+    )
+    val reschedule = Translation(
+        "Reschedule",
+        "Lên lịch lại"
+    )
+    val timezone = Translation(
+        "Timezone",
+        "Múi giờ"
     )
     val openInNewTab = Translation(
         "Open in new tab",
@@ -648,7 +699,7 @@ class Configuration(
     }
 }
 
-val LocalConfiguration = compositionLocalOf<Configuration>(
+val LocalConfiguration = compositionLocalOf(
     neverEqualPolicy()
 ) {
     Configuration(application.language) {}

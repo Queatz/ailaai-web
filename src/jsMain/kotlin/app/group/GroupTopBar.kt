@@ -8,21 +8,22 @@ import app.ailaai.api.createMember
 import app.ailaai.api.removeMember
 import app.ailaai.api.updateGroup
 import app.ailaai.api.updateMember
+import app.dialog.dialog
+import app.dialog.inputDialog
 import app.menu.InlineMenu
 import app.menu.Menu
 import app.nav.name
 import appString
+import appText
 import application
 import com.queatz.db.*
-import dialog
-import inputDialog
+import components.LinkifyText
 import joins
 import kotlinx.coroutines.launch
 import lib.formatDistanceToNow
 import notBlank
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
-import org.jetbrains.compose.web.dom.Text
 import org.w3c.dom.DOMRect
 import org.w3c.dom.HTMLElement
 import kotlin.js.Date
@@ -65,14 +66,10 @@ fun GroupTopBar(
     fun makeOpen(open: Boolean) {
         scope.launch {
             val result = dialog(
-                if (open) "Open group" else "Close group",
-                if (open) "Make group open" else "Make group closed",
+                application.appString { if (open) actionOpenGroup else actionCloseGroup },
+                application.appString { if (open) makeOpenGroup else makeCloseGroup },
             ) {
-                if (open) {
-                    Text("Anyone will be able to discover this group, see all members, messages, and request to become a member.")
-                } else {
-                    Text("This group will only be accessible to members.")
-                }
+                appText { if (open) actionOpenGroupDescription else actionCloseGroupDescription }
             }
 
             if (result != true) return@launch
@@ -150,11 +147,11 @@ fun GroupTopBar(
                                     it(true)
                                 }) {
                                     if (group.group?.open == true) {
-                                        item("Make group closed") {
+                                        item(appString { makeCloseGroup }) {
                                             makeOpen(false)
                                         }
                                     } else {
-                                        item("Make group open") {
+                                        item(appString { makeOpenGroup }) {
                                             makeOpen(true)
                                         }
                                     }
@@ -224,9 +221,9 @@ fun GroupTopBar(
                     showDescription = false
                 }
 
-                title("Click to hide")
+                title(application.appString { clickToHide })
             }) {
-                Text(description)
+                LinkifyText(description)
             }
         }
     }

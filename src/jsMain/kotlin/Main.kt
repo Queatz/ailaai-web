@@ -91,9 +91,10 @@ fun main() {
                     AppFooter()
                 }
 
+                // Deprecated
                 route("card") {
                     string { cardId ->
-                        AppHeader(appString { explore }, showBack = parentCardId != null, onBack = {
+                        AppHeader(appName, showBack = parentCardId != null, onBack = {
                             router.navigate("/page/$parentCardId")
                         })
                         CardPage(cardId, onError = { parentCardId = null }) {
@@ -102,11 +103,15 @@ fun main() {
                         }
                         AppFooter()
                     }
+
+                    noMatch {
+                        router.navigate("/")
+                    }
                 }
 
                 route("page") {
                     string { cardId ->
-                        AppHeader(appString { explore }, showBack = parentCardId != null, onBack = {
+                        AppHeader(appName, showBack = parentCardId != null, onBack = {
                             router.navigate("/page/$parentCardId")
                         })
                         CardPage(cardId, onError = { parentCardId = null }) {
@@ -114,6 +119,10 @@ fun main() {
                             parentCardId = it.parent
                         }
                         AppFooter()
+                    }
+
+                    noMatch {
+                        router.navigate("/")
                     }
                 }
 
@@ -125,6 +134,10 @@ fun main() {
                         }
                         AppFooter()
                     }
+
+                    noMatch {
+                        router.navigate("/")
+                    }
                 }
 
                 route("profile") {
@@ -135,6 +148,10 @@ fun main() {
                             title = it.person.name ?: someoneString
                         }
                         AppFooter()
+                    }
+
+                    noMatch {
+                        router.navigate("/")
                     }
                 }
 
@@ -149,7 +166,9 @@ fun main() {
                 }
 
                 route("cities") {
-                    AppHeader(appString { chooseYourCity }, showMenu = false)
+                    AppHeader(appString { chooseYourCity }, showMenu = false, showBack = true) {
+                        router.navigate("/")
+                    }
                     CitiesPage()
                     AppFooter()
                 }

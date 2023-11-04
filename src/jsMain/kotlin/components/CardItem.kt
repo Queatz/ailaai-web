@@ -112,15 +112,11 @@ fun CardItem(
         (card.cardCount?.takeIf { it > 0 } ?: 0).let { numberOfCards ->
             if (numberOfCards > 0 || showTapToOpen) {
                 Div({
+                    classes(Styles.cardButton)
                     style {
-                        backgroundColor(rgba(255, 255, 255, .95))
-                        borderRadius(2.r)
-                        padding(1.r / 2, 1.r)
-                        color(Color.black)
                         position(Position.Absolute)
                         top(1.r)
                         right(1.r)
-                        property("z-index", "1")
                     }
                 }) {
                     if (showTapToOpen) {

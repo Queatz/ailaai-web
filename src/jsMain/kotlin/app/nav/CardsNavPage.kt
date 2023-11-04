@@ -5,6 +5,7 @@ import api
 import app.ailaai.api.myCards
 import app.ailaai.api.newCard
 import app.components.Spacer
+import app.dialog.inputDialog
 import app.menu.Menu
 import appString
 import appText
@@ -12,7 +13,6 @@ import application
 import com.queatz.db.Card
 import components.IconButton
 import components.Loading
-import inputDialog
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -145,7 +145,7 @@ fun CardsNavPage(cardUpdates: Flow<Card>, nav: CardNav, onSelected: (CardNav) ->
                     filters += CardFilter.NotPublished
                 }
             }
-            item("Root pages", icon = if (CardFilter.NoParent in filters) "check" else null) {
+            item(appString { rootPages }, icon = if (CardFilter.NoParent in filters) "check" else null) {
                 if (CardFilter.NoParent in filters) {
                     filters -= CardFilter.NoParent
                 } else {

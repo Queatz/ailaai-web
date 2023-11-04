@@ -6,6 +6,8 @@ import api
 import app.FullPageLayout
 import app.PageTopBar
 import app.components.TopBarSearch
+import app.dialog.dialog
+import app.dialog.inputDialog
 import app.menu.Menu
 import app.nav.StoryNav
 import appString
@@ -17,8 +19,6 @@ import com.queatz.db.Story
 import com.queatz.db.asGeo
 import components.Loading
 import defaultGeo
-import dialog
-import inputDialog
 import kotlinx.browser.window
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.css.*

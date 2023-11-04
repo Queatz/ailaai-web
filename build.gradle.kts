@@ -42,6 +42,7 @@ kotlin {
                 implementation(npm("@paulmillr/qr", "0.1.1"))
                 implementation(npm("date-fns", "2.30.0"))
                 implementation(npm("date-fns-tz", "2.0.0"))
+                implementation(npm("@vvo/tzdb", "6.110.0"))
             }
         }
     }

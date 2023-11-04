@@ -16,6 +16,7 @@ import components.LinkifyText
 import ellipsize
 import kotlinx.browser.window
 import lib.formatDistanceToNow
+import notBlank
 import org.jetbrains.compose.web.ExperimentalComposeWebApi
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
@@ -200,6 +201,10 @@ fun MessageContent(message: Message, myMember: MemberAndPerson?, isReply: Boolea
             is CardAttachment -> {
                 CardItem(attachment.card!!, openInNewWindow = true) {
                     maxWidth(320.px)
+
+                    if (message.text.isNullOrBlank().not()) {
+                        marginBottom(1.r)
+                    }
                 }
             }
 
@@ -266,7 +271,7 @@ fun MessageContent(message: Message, myMember: MemberAndPerson?, isReply: Boolea
             }
         }
 
-        message.text?.let { text ->
+        message.text?.notBlank?.let { text ->
             Div({
                 classes(
                     listOf(AppStyles.messageItem) + if (isMe) {

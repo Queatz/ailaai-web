@@ -7,14 +7,14 @@ import app.ailaai.api.profile
 import app.ailaai.api.updateMe
 import app.ailaai.api.updateProfile
 import app.components.EditField
+import app.dialog.dialog
+import app.dialog.inputDialog
 import appString
 import appText
 import application
 import com.queatz.db.*
 import components.IconButton
 import components.Wbr
-import dialog
-import inputDialog
 import kotlinx.browser.window
 import kotlinx.coroutines.launch
 import notBlank

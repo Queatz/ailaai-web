@@ -1,11 +1,10 @@
 package app.group
 
 import app.AppStyles
-import appString
+import app.dialog.dialog
 import application
 import com.queatz.db.GroupExtended
 import components.ProfilePhoto
-import dialog
 import focusable
 import kotlinx.browser.window
 import lib.formatDistanceToNow

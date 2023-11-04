@@ -4,6 +4,7 @@ import LocalConfiguration
 import Styles
 import androidx.compose.runtime.*
 import api
+import app.AppStyles
 import app.ailaai.api.cards
 import appString
 import appText
@@ -56,7 +57,7 @@ fun HomePage() {
                 overflowX("auto")
             }
         }) {
-            repeat(5) {
+            repeat(6) {
                 Img(src = "/screenshots/$lang/000${it + 1}.png") {
                     style {
                         borderRadius(1.r)
@@ -68,29 +69,31 @@ fun HomePage() {
         }
 
         Div({
+            classes(Styles.mobileRow)
             style {
-                display(DisplayStyle.Flex)
                 alignItems(AlignItems.Center)
                 marginTop(2.r)
             }
         }) {
             DownloadAppButton()
-            Span({
-                style {
-                    marginLeft(1.r)
-                    opacity(.5f)
+            Div {
+                Span({
+                    style {
+                        marginLeft(1.r)
+                        opacity(.5f)
+                    }
+                }) {
+                    Text("or get it on")
                 }
-            }) {
-                Text("or get it on")
-            }
-            A("https://play.google.com/store/apps/details?id=com.ailaai.app", {
-                target(ATarget.Blank)
-                style {
-                    marginLeft(.5.r)
-                    fontWeight("bold")
+                A("https://play.google.com/store/apps/details?id=com.ailaai.app", {
+                    target(ATarget.Blank)
+                    style {
+                        marginLeft(.5.r)
+                        fontWeight("bold")
+                    }
+                }) {
+                    Text("Google Play")
                 }
-            }) {
-                Text("Google Play")
             }
         }
 

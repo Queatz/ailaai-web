@@ -6,6 +6,8 @@ import api
 import app.PageTopBar
 import app.ailaai.api.*
 import app.components.EditField
+import app.dialog.dialog
+import app.dialog.inputDialog
 import app.menu.InlineMenu
 import app.menu.Menu
 import app.nav.NavSearchInput
@@ -13,8 +15,6 @@ import appString
 import application
 import com.queatz.db.Card
 import components.*
-import dialog
-import inputDialog
 import json
 import kotlinx.browser.window
 import kotlinx.coroutines.launch
@@ -141,7 +141,7 @@ fun ExplorePage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Uni
                         {
                             value = it
                         },
-                        placeholder = "Search",
+                        placeholder = appString { search },
                         styles = {
                             margin(0.r)
                             width(28.r)
@@ -349,7 +349,7 @@ fun ExplorePage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Uni
                 scope.launch {
                     dialog("", cancelButton = null) {
                         val qrCode = remember {
-                            "$webBaseUrl/card/${card.id!!}".qr
+                            "$webBaseUrl/page/${card.id!!}".qr
                         }
                         Img(src = qrCode) {
                             style {

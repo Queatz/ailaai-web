@@ -121,7 +121,7 @@ fun ScheduleNavPage(
                     start = schedule.start,
                     end = schedule.end,
                     timezone = timezone,
-                    utcOffset = getTimezoneOffset(timezone) / (60 * 60 * 1000),
+                    utcOffset = getTimezoneOffset(timezone) / (60.0 * 60.0 * 1000.0),
                     schedule = schedule.reminderSchedule
                 )
             ) {

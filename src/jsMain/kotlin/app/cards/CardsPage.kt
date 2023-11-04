@@ -8,6 +8,7 @@ import app.ailaai.api.cards
 import app.ailaai.api.savedCards
 import app.components.TopBarSearch
 import app.nav.CardNav
+import app.nav.GroupNav
 import appString
 import appText
 import application
@@ -139,6 +140,8 @@ fun CardsPage(nav: CardNav, onCard: (CardNav) -> Unit, onCardUpdated: (Card) -> 
                 )
             }
         }
-        TopBarSearch(search) { search = it}
+        if (nav !is CardNav.Selected) {
+            TopBarSearch(search) { search = it }
+        }
     }
 }

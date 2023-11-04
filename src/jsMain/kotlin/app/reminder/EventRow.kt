@@ -5,6 +5,8 @@ import androidx.compose.runtime.*
 import api
 import app.ailaai.api.deleteReminderOccurrence
 import app.ailaai.api.updateReminderOccurrence
+import app.dialog.dialog
+import app.dialog.inputDialog
 import app.menu.Menu
 import app.page.ReminderEvent
 import app.page.ReminderEventType
@@ -12,9 +14,7 @@ import app.page.SchedulePageStyles
 import app.page.ScheduleView
 import com.queatz.db.ReminderOccurrence
 import components.IconButton
-import dialog
 import focusable
-import inputDialog
 import kotlinx.coroutines.launch
 import kotlinx.datetime.toKotlinInstant
 import lib.format

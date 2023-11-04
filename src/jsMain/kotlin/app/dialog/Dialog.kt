@@ -1,10 +1,12 @@
+package app.dialog
+
+import Styles
 import androidx.compose.runtime.*
-import app.nav.NavSearchInput
+import application
 import kotlinx.browser.document
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
 import org.jetbrains.compose.web.attributes.autoFocus
-import org.jetbrains.compose.web.css.margin
 import org.jetbrains.compose.web.dom.*
 import org.jetbrains.compose.web.renderComposable
 import org.w3c.dom.HTMLDialogElement
@@ -92,44 +94,4 @@ suspend fun dialog(
         dialog.close()
         null
     }
-}
-
-suspend fun inputDialog(
-    title: String,
-    placeholder: String = "",
-    confirmButton: String = application.appString { okay },
-    cancelButton: String? = application.appString { cancel },
-    defaultValue: String = "",
-    singleLine: Boolean = true
-): String? {
-    var text: String = defaultValue
-    val result = dialog(
-        title,
-        confirmButton,
-        cancelButton,
-    ) { resolve ->
-        var value by remember {
-            mutableStateOf(defaultValue)
-        }
-
-        NavSearchInput(
-            value,
-            {
-                value = it
-                text = it
-            },
-            placeholder = placeholder,
-            selectAll = true,
-            styles = {
-                margin(0.r)
-            },
-            onDismissRequest = {
-                resolve(false)
-            }
-        ) {
-            resolve(true)
-        }
-    }
-
-    return if (result == true) text else null
 }

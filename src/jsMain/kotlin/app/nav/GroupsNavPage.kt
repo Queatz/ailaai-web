@@ -7,6 +7,7 @@ import app.ailaai.api.group
 import app.ailaai.api.groups
 import app.ailaai.api.updateGroup
 import app.components.Spacer
+import app.dialog.inputDialog
 import app.group.GroupItem
 import appString
 import appText
@@ -16,7 +17,6 @@ import com.queatz.db.GroupExtended
 import com.queatz.db.Member
 import components.IconButton
 import components.Loading
-import inputDialog
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first

@@ -17,6 +17,12 @@ object Styles : StyleSheet() {
         borderRadius(2.r)
         backgroundColor(colors.background)
         property("box-shadow", "2px 2px 8px rgba(0, 0, 0, .25)")
+
+        media("(prefers-color-scheme: dark)") {
+            self style {
+                backgroundColor(colors.dark.background)
+            }
+        }
     }
 
     fun CSSBuilder.elevated() {
@@ -36,6 +42,16 @@ object Styles : StyleSheet() {
             color(colors.primary)
             fontWeight("bold")
             textDecoration("none")
+        }
+    }
+
+    val mobileRow by style {
+        display(DisplayStyle.Flex)
+
+        media(mediaMaxWidth(640.px)) {
+            self style {
+                flexDirection(FlexDirection.Column)
+            }
         }
     }
 
@@ -190,6 +206,12 @@ object Styles : StyleSheet() {
         media("(prefers-color-scheme: dark)") {
             self style {
                 backgroundColor(colors.dark.background)
+            }
+        }
+
+        media(mediaMaxWidth(640.px)) {
+            self style {
+                flexDirection(FlexDirection.Column)
             }
         }
     }
@@ -357,6 +379,28 @@ object Styles : StyleSheet() {
         boxSizing("border-box")
         overflowY("auto")
         fontSize(18.px)
+
+        media("(prefers-color-scheme: dark)") {
+            self style {
+                backgroundColor(rgba(0, 0, 0, .92))
+                color(Color.white)
+            }
+        }
+    }
+
+    val cardButton by style {
+        backgroundColor(rgba(255, 255, 255, .92))
+        borderRadius(2.r)
+        padding(1.r / 2, 1.r)
+        color(Color.black)
+        property("z-index", "1")
+
+        media("(prefers-color-scheme: dark)") {
+            self style {
+                backgroundColor(rgba(0, 0, 0, .92))
+                color(Color.white)
+            }
+        }
     }
 
     val button by style {
