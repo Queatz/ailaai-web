@@ -115,10 +115,12 @@ fun GroupTopBar(
 //            item("Pin") {
 //
 //            }
-            item(appString { invite }) {
-                scope.launch {
-                    friendsDialog(group.members?.mapNotNull { it.person?.id } ?: emptyList()) {
-                        addMember(it)
+            if (myMember != null) {
+                item(appString { invite }) {
+                    scope.launch {
+                        friendsDialog(group.members?.mapNotNull { it.person?.id } ?: emptyList()) {
+                            addMember(it)
+                        }
                     }
                 }
             }

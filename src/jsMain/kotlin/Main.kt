@@ -27,7 +27,6 @@ val json = Json {
     ignoreUnknownKeys = true
 }
 
-
 val http = HttpClient(Js) {
     expectSuccess = true
     install(ContentNegotiation) {

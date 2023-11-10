@@ -117,7 +117,7 @@ fun ReminderPage(
                     searchDialog(
                         configuration,
                         application.appString { timezone },
-                        defaultValue = reminder.timezone ?: "",
+                        defaultValue = reminder.timezone?.replace("_", " ") ?: "",
                         load = {
                             rawTimeZones.toList()
                         },

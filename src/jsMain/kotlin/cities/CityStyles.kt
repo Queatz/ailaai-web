@@ -1,4 +1,5 @@
 package cities
+import app.dark
 import org.jetbrains.compose.web.css.*
 import r
 
@@ -21,10 +22,8 @@ object CityStyles : StyleSheet() {
             }
         }
 
-        media("(prefers-color-scheme: dark)") {
-            self style {
-                background("linear-gradient(to bottom, transparent 20%, rgba(0, 0, 0, 0.65) 80%)")
-            }
+        dark(self) {
+            background("linear-gradient(to bottom, transparent 20%, rgba(0, 0, 0, 0.65) 80%)")
         }
     }
 

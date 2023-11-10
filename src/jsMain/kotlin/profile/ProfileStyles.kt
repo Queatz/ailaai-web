@@ -1,5 +1,6 @@
 package profile
 import Styles
+import app.dark
 import ellipsize
 import org.jetbrains.compose.web.css.*
 import r
@@ -41,6 +42,10 @@ object ProfileStyles : StyleSheet() {
                 margin(1.r * 1.5f, 0.r, 1.r * 1.5f, 1.r * 1.5f)
                 property("margin-bottom", "calc(-128px + 2.5rem)")
             }
+        }
+
+        dark(self) {
+            border(6.px, LineStyle.Solid, Styles.colors.dark.background)
         }
 
         self + className(nophoto) style {

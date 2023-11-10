@@ -1,3 +1,15 @@
+0.9.66
+======
+
+ - Snooze group notifications
+
+0.9.65
+======
+
+ - Fixed crash saving images to device
+ - Fixed bug where pages would load forever
+ - Added caching on main screens
+
 0.9.64
 ======
 

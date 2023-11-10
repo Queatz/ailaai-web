@@ -2,6 +2,7 @@ package app.page
 
 import Styles
 import Styles.elevated
+import app.dark
 import org.jetbrains.compose.web.css.*
 import r
 
@@ -22,11 +23,9 @@ object SchedulePageStyles : StyleSheet() {
         overflow("hidden")
         elevated()
 
-        media("(prefers-color-scheme: dark)") {
-            self style {
-                backgroundColor(Styles.colors.dark.background)
-                property("border", "none")
-            }
+        dark(self) {
+            backgroundColor(Styles.colors.dark.background)
+            property("border", "none")
         }
     }
 
@@ -65,7 +64,7 @@ object SchedulePageStyles : StyleSheet() {
             }
         }
 
-        media("(prefers-color-scheme: dark)") {
+        dark(self) {
             self + hover style {
                 backgroundColor(Color.black)
             }

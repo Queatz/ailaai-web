@@ -8,6 +8,7 @@ import app.page.SchedulePageStyles
 import app.page.ScheduleView
 import com.queatz.db.Reminder
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
 import org.jetbrains.compose.web.css.margin
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Text
@@ -25,7 +26,7 @@ fun ReminderEvents(reminder: Reminder) {
         api.reminderOccurrences(
             reminder.id!!,
             start = reminder.start!!,
-            end = reminder.end
+            end = reminder.end ?: Clock.System.now()
         ) {
             events = it.toEvents().asReversed()
         }

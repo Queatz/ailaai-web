@@ -1,3 +1,4 @@
+import app.dark
 import org.jetbrains.compose.web.ExperimentalComposeWebApi
 import org.jetbrains.compose.web.css.*
 
@@ -18,10 +19,8 @@ object Styles : StyleSheet() {
         backgroundColor(colors.background)
         property("box-shadow", "2px 2px 8px rgba(0, 0, 0, .25)")
 
-        media("(prefers-color-scheme: dark)") {
-            self style {
-                backgroundColor(colors.dark.background)
-            }
+        dark(self) {
+            backgroundColor(colors.dark.background)
         }
     }
 
@@ -30,10 +29,8 @@ object Styles : StyleSheet() {
         backgroundColor(Color.white)
         borderRadius(1.r)
 
-        media("(prefers-color-scheme: dark)") {
-            self style {
-                backgroundColor(colors.dark.background)
-            }
+        dark(self) {
+            backgroundColor(colors.dark.background)
         }
     }
 
@@ -75,11 +72,9 @@ object Styles : StyleSheet() {
             opacity(.5)
         }
 
-        media("(prefers-color-scheme: dark)") {
-            self style {
-                backgroundColor(colors.dark.background)
-                color(Color.white)
-            }
+        dark(self) {
+            backgroundColor(colors.dark.background)
+            color(Color.white)
         }
 
         child(self, selector("header")) style {
@@ -111,10 +106,8 @@ object Styles : StyleSheet() {
         backgroundColor(Color("#e4e4e4"))
         property("transition", ".5s")
 
-        media("(prefers-color-scheme: dark)") {
-            self style {
-                backgroundColor(colors.dark.background)
-            }
+        dark(self) {
+            backgroundColor(colors.dark.background)
         }
 
         self + before style {
@@ -164,10 +157,8 @@ object Styles : StyleSheet() {
         property("font", "inherit")
         border(1.px, LineStyle.Solid, Color("#444444"))
 
-        media("(prefers-color-scheme: dark)") {
-            self style {
-                backgroundColor(colors.dark.background)
-            }
+        dark(self) {
+            backgroundColor(colors.dark.background)
         }
 
         child(self, selector("option")) style {
@@ -203,10 +194,8 @@ object Styles : StyleSheet() {
         marginTop(1.r)
         backgroundColor(Color("#f7f7f7"))
 
-        media("(prefers-color-scheme: dark)") {
-            self style {
-                backgroundColor(colors.dark.background)
-            }
+        dark(self) {
+            backgroundColor(colors.dark.background)
         }
 
         media(mediaMaxWidth(640.px)) {
@@ -270,10 +259,8 @@ object Styles : StyleSheet() {
         marginRight(1.r)
         property("max-width", "calc(100vw - ${2.r})")
 
-        media("(prefers-color-scheme: dark)") {
-            self style {
-                backgroundColor(colors.dark.background)
-            }
+        dark(self) {
+            backgroundColor(colors.dark.background)
         }
     }
 
@@ -380,11 +367,9 @@ object Styles : StyleSheet() {
         overflowY("auto")
         fontSize(18.px)
 
-        media("(prefers-color-scheme: dark)") {
-            self style {
-                backgroundColor(rgba(0, 0, 0, .92))
-                color(Color.white)
-            }
+        dark(self) {
+            backgroundColor(rgba(0, 0, 0, .92))
+            color(Color.white)
         }
     }
 
@@ -395,11 +380,9 @@ object Styles : StyleSheet() {
         color(Color.black)
         property("z-index", "1")
 
-        media("(prefers-color-scheme: dark)") {
-            self style {
-                backgroundColor(rgba(0, 0, 0, .92))
-                color(Color.white)
-            }
+        dark(self) {
+            backgroundColor(rgba(0, 0, 0, .92))
+            color(Color.white)
         }
     }
 
@@ -488,19 +471,15 @@ object Styles : StyleSheet() {
         property("font-size", "inherit")
         fontFamily("inherit")
         boxSizing("border-box")
-
         backgroundColor(Color.white)
-        media("(prefers-color-scheme: dark)") {
-            self style {
-                backgroundColor(colors.dark.background)
-                color(Color.white)
-                border(1.px, LineStyle.Solid, Color("#444444"))
-            }
-        }
 
-        self + selector("::placeholder") style {
-            media("(prefers-color-scheme: dark)") {
-                self style {
+        dark(self) {
+            backgroundColor(colors.dark.background)
+            color(Color.white)
+            border(1.px, LineStyle.Solid, Color("#444444"))
+
+            self + selector("::placeholder") style {
+                dark(self) {
                     color(Color.white)
                     opacity(.5)
                 }
@@ -516,10 +495,8 @@ object Styles : StyleSheet() {
         justifyContent(JustifyContent.Center)
         flexShrink(0)
 
-        media("(prefers-color-scheme: dark)") {
-            self style {
-                backgroundColor(Color.black)
-            }
+        dark(self) {
+            backgroundColor(Color.black)
         }
     }
 
@@ -530,20 +507,16 @@ object Styles : StyleSheet() {
         backgroundSize("cover")
         flexShrink(0)
 
-        media("(prefers-color-scheme: dark)") {
-            self style {
-                backgroundColor(Color.black)
-            }
+        dark(self) {
+            backgroundColor(Color.black)
         }
     }
 
     val profilePhotoBorder by style {
         border(3.px, LineStyle.Solid, Color.white)
 
-        media("(prefers-color-scheme: dark)") {
-            self style {
-                border(3.px, LineStyle.Solid, Color.black)
-            }
+        dark(self) {
+            border(3.px, LineStyle.Solid, Color.black)
         }
     }
 }

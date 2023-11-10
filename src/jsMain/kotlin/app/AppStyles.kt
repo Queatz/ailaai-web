@@ -19,10 +19,8 @@ object AppStyles : StyleSheet() {
         cursor("pointer")
         overflow("hidden")
 
-        media("(prefers-color-scheme: dark)") {
-            self style {
-                backgroundColor(Styles.colors.dark.background)
-            }
+        dark(self) {
+            backgroundColor(Styles.colors.dark.background)
         }
     }
 
@@ -36,10 +34,8 @@ object AppStyles : StyleSheet() {
         property("transform", "translateX(-100%)")
         property("user-select", "none")
 
-        media("(prefers-color-scheme: dark)") {
-            self style {
-                backgroundColor(Styles.colors.dark.background)
-            }
+        dark(self) {
+            backgroundColor(Styles.colors.dark.background)
         }
     }
 
@@ -48,10 +44,8 @@ object AppStyles : StyleSheet() {
         borderRadius(1.r)
         property("user-select", "none")
 
-        media("(prefers-color-scheme: dark)") {
-            self style {
-                backgroundColor(Styles.colors.dark.background)
-            }
+        dark(self) {
+            backgroundColor(Styles.colors.dark.background)
         }
     }
 
@@ -73,7 +67,7 @@ object AppStyles : StyleSheet() {
             backgroundColor(Styles.colors.background)
         }
 
-        media("(prefers-color-scheme: dark)") {
+        dark(self) {
             self + hover style {
                 backgroundColor(Color.black)
             }
@@ -91,11 +85,9 @@ object AppStyles : StyleSheet() {
         overflow("hidden")
         display(DisplayStyle.Flex)
 
-        media("(prefers-color-scheme: dark)") {
-            self style {
-                backgroundColor(Color.black)
-                color(Color.white)
-            }
+        dark(self) {
+            backgroundColor(Color.black)
+            color(Color.white)
         }
     }
     val sideLayout by style {
@@ -110,10 +102,8 @@ object AppStyles : StyleSheet() {
         property("z-index", "1")
         elevated()
 
-        media("(prefers-color-scheme: dark)") {
-            self style {
-                backgroundColor(Styles.colors.dark.background)
-            }
+        dark(self) {
+            backgroundColor(Styles.colors.dark.background)
         }
     }
     val mainLayout by style {
@@ -197,11 +187,9 @@ object AppStyles : StyleSheet() {
             }
         }
 
-        media("(prefers-color-scheme: dark)") {
-            self style {
-                self + hover style {
-                    backgroundColor(Color.black)
-                }
+        dark(self) {
+            self + hover style {
+                backgroundColor(Color.black)
             }
 
             self + className(groupItemOnSurface) style {
@@ -233,10 +221,8 @@ object AppStyles : StyleSheet() {
     val groupItemSelected by style {
         backgroundColor(Styles.colors.background)
 
-        media("(prefers-color-scheme: dark)") {
-            self style {
-                backgroundColor(Color.black)
-            }
+        dark(self) {
+            backgroundColor(Color.black)
         }
     }
 
@@ -294,19 +280,15 @@ object AppStyles : StyleSheet() {
             property("border", "none")
         }
 
-        media("(prefers-color-scheme: dark)") {
-            self style {
-                self + className(myMessage) style {
-                    backgroundColor(Styles.colors.dark.background)
-                }
+        dark(self) {
+            self + className(myMessage) style {
+                backgroundColor(Styles.colors.dark.background)
             }
         }
 
-        media("(prefers-color-scheme: dark)") {
-            self style {
-                backgroundColor(Color.black)
-                border(1.px, LineStyle.Solid, Color("#444444"))
-            }
+        dark(self) {
+            backgroundColor(Color.black)
+            border(1.px, LineStyle.Solid, Color("#444444"))
         }
     }
 
@@ -340,11 +322,9 @@ object AppStyles : StyleSheet() {
             property("border-right", "4px solid ${Styles.colors.background}")
         }
 
-        media("(prefers-color-scheme: dark)") {
-            self style {
-                backgroundColor(Styles.colors.dark.background)
-                property("border-left", "4px solid ${Color("#444")}")
-            }
+        dark(self) {
+            backgroundColor(Styles.colors.dark.background)
+            property("border-left", "4px solid ${Color("#444")}")
 
             self + className(myMessageReply) style {
                 property("border-right", "4px solid ${Color("#444")}")
@@ -360,10 +340,8 @@ object AppStyles : StyleSheet() {
         backgroundColor(Styles.colors.background)
         cursor("pointer")
 
-        media("(prefers-color-scheme: dark)") {
-            self style {
-                backgroundColor(Styles.colors.dark.background)
-            }
+        dark(self) {
+            backgroundColor(Styles.colors.dark.background)
         }
     }
 
@@ -391,11 +369,8 @@ object AppStyles : StyleSheet() {
         fontWeight("bold")
         property("transform", "translate(9px, -9px)")
 
-        media("(prefers-color-scheme: dark)") {
-            self style {
-                backgroundColor(Color.black)
-
-            }
+        dark(self) {
+            backgroundColor(Color.black)
         }
     }
 
@@ -410,11 +385,9 @@ object AppStyles : StyleSheet() {
         border(1.px, LineStyle.Solid, Color("#e4e4e4"))
         borderRadius(1.r)
 
-        media("(prefers-color-scheme: dark)") {
-            self style {
-                backgroundColor(Styles.colors.dark.background)
-                border(1.px, LineStyle.Solid, Color("#444444"))
-            }
+        dark(self) {
+            backgroundColor(Styles.colors.dark.background)
+            border(1.px, LineStyle.Solid, Color("#444444"))
         }
     }
 
@@ -428,11 +401,9 @@ object AppStyles : StyleSheet() {
         cursor("pointer")
         property("object-fit", "cover")
 
-        media("(prefers-color-scheme: dark)") {
-            self style {
-                backgroundColor(Color.black)
-                border(3.px, LineStyle.Solid, Color.black)
-            }
+        dark(self) {
+            backgroundColor(Color.black)
+            border(3.px, LineStyle.Solid, Color.black)
         }
     }
 
@@ -443,11 +414,9 @@ object AppStyles : StyleSheet() {
         whiteSpace("nowrap")
         property("z-index", "1")
 
-        media("(prefers-color-scheme: dark)") {
-            self style {
-                backgroundColor(Styles.colors.dark.background)
-                color(Color.white)
-            }
+        dark(self) {
+            backgroundColor(Styles.colors.dark.background)
+            color(Color.white)
         }
     }
 
@@ -460,10 +429,8 @@ object AppStyles : StyleSheet() {
         overflow("hidden")
         maxWidth(36.r)
 
-        media("(prefers-color-scheme: dark)") {
-            self style {
-                backgroundColor(Styles.colors.dark.background)
-            }
+    dark(self) {
+            backgroundColor(Styles.colors.dark.background)
         }
     }
 }
