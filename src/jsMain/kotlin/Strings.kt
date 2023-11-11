@@ -673,6 +673,10 @@ object Strings {
         "Stickers",
         "Hình dán"
     )
+    val loadingGroup = Translation(
+        "Loading group…",
+        "Đang tải nhóm…"
+    )
 }
 
 fun getString(string: Translation, language: String) = when (language) {

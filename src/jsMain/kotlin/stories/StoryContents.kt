@@ -1,12 +1,19 @@
 package stories
 
 import Styles
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import api
+import app.AppStyles
+import app.ailaai.api.group
+import app.group.GroupInfo
+import app.group.GroupItem
 import appString
 import baseUrl
+import com.queatz.db.GroupExtended
 import components.CardItem
 import components.Icon
 import components.LinkifyText
+import components.LoadingText
 import kotlinx.datetime.Instant
 import lib.format
 import lib.isThisYear
@@ -17,11 +24,18 @@ import org.jetbrains.compose.web.dom.*
 import kotlin.js.Date
 
 @Composable
-fun storyStatus(publishDate: Instant?) = publishDate?.let { Date(it.toEpochMilliseconds()) }?.let { format(it, "MMMM do${if (isThisYear(it)) "" else ", yyyy"}") } ?: appString { draft }
+fun storyStatus(publishDate: Instant?) = publishDate?.let { Date(it.toEpochMilliseconds()) }?.let {
+    format(it, "MMMM do${if (isThisYear(it)) "" else ", yyyy"}")
+} ?: appString { draft }
 
 @Composable
-fun StoryContents(storyContent: List<StoryContent>, openInNewWindow: Boolean = false) {
+fun StoryContents(
+    storyContent: List<StoryContent>,
+    onGroupClick: (GroupExtended) -> Unit,
+    openInNewWindow: Boolean = false
+) {
     Style(StoryStyles)
+    Style(AppStyles)
     storyContent.forEach { part ->
         when (part) {
             is StoryContent.Title -> {
@@ -68,6 +82,37 @@ fun StoryContents(storyContent: List<StoryContent>, openInNewWindow: Boolean = f
                     classes(StoryStyles.contentText)
                 }) {
                     LinkifyText(part.text)
+                }
+            }
+            is StoryContent.Groups -> {
+                Div({
+                    classes(StoryStyles.contentGroups)
+                }) {
+                    part.groups.forEach { groupId ->
+                        var group by remember(groupId) {
+                            mutableStateOf<GroupExtended?>(null)
+                        }
+
+                        LaunchedEffect(groupId) {
+                            api.group(groupId) {
+                                group = it
+                            }
+                        }
+
+                        LoadingText(group != null, appString { loadingGroup }) {
+                            group?.let { group ->
+                                GroupItem(
+                                    group,
+                                    selectable = true,
+                                    selected = false,
+                                    onSelected = {
+                                        onGroupClick(group)
+                                    },
+                                    info = GroupInfo.LatestMessage
+                                )
+                            }
+                        }
+                    }
                 }
             }
             is StoryContent.Cards -> {

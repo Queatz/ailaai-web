@@ -1,5 +1,6 @@
 package stories
 import Styles
+import app.AppStyles
 import org.jetbrains.compose.web.css.*
 import r
 
@@ -62,6 +63,20 @@ object StoryStyles : StyleSheet() {
                 width(320.px)
                 marginRight(1.r)
                 marginBottom(1.r)
+            }
+        }
+    }
+
+    val contentGroups by style {
+        boxSizing("border-box")
+        display(DisplayStyle.Flex)
+        flexDirection(FlexDirection.Column)
+        position(Position.Relative)
+        width(100.percent)
+
+        child(self, className(AppStyles.groupItem)) style {
+            self style {
+                minWidth(320.px)
             }
         }
     }

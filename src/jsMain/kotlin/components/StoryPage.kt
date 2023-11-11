@@ -3,6 +3,7 @@ package components
 import Styles
 import androidx.compose.runtime.*
 import api
+import app.softwork.routingcompose.Router
 import appString
 import com.queatz.ailaai.api.storyByUrl
 import com.queatz.db.Story
@@ -58,6 +59,7 @@ fun StoryPage(storyUrl: String, onStoryLoaded: (Story) -> Unit) {
                 Div({
                     classes(Styles.navContainer)
                     style {
+                        width(100.percent)
                         maxWidth(800.px)
                         alignSelf(AlignSelf.Center)
                         marginBottom(1.r)
@@ -69,8 +71,13 @@ fun StoryPage(storyUrl: String, onStoryLoaded: (Story) -> Unit) {
                         Div({
                             classes(Styles.cardContent)
                         }) {
+                            val router = Router.current
+
                             if (storyContent != null) {
-                                StoryContents(storyContent!!)
+                                StoryContents(storyContent!!, onGroupClick = {
+                                    // todo if signed in, go to group
+                                    router.navigate("/signin")
+                                })
                             }
                         }
                     }

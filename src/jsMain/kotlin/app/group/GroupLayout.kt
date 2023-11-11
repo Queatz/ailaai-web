@@ -117,7 +117,7 @@ fun GroupLayout(
             messages.forEachIndexed { index, it ->
                 MessageItem(
                     it,
-                    if (index < messages.lastIndex - 1) messages[index + 1] else null,
+                    if (index < messages.lastIndex) messages[index + 1] else null,
                     group.members?.find { member -> member.member?.id == it.member },
                     myMember
                 )

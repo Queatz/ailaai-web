@@ -185,11 +185,18 @@ fun AppPage() {
                     }
                 }
 
-                NavPage.Stories -> StoriesPage(story) {
-                    scope.launch {
-                        storyUpdates.emit(it)
+                NavPage.Stories -> StoriesPage(
+                    story,
+                    onStoryUpdated = {
+                        scope.launch {
+                            storyUpdates.emit(it)
+                        }
+                    },
+                    onGroupClick = {
+                        group = GroupNav.Selected(it)
+                        nav = NavPage.Groups
                     }
-                }
+                )
                 NavPage.Profile -> {
 
                 }

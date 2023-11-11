@@ -41,7 +41,7 @@ fun GroupItem(
     styles: StyleScope.() -> Unit = {}
 ) {
     val me by application.me.collectAsState()
-    val myMember = group.members?.find { it.person?.id == me!!.id }
+    val myMember = group.members?.takeIf { me != null }?.find { it.person?.id == me?.id }
 
     val joinRequestCount by joins.joins
         .map { it.count { it.joinRequest?.group == group.group?.id } }
@@ -68,7 +68,7 @@ fun GroupItem(
 
         focusable()
     }) {
-        GroupPhoto(group, me!!)
+        GroupPhoto(group, me)
         Div({
             style {
                 width(0.px)
@@ -84,7 +84,7 @@ fun GroupItem(
                     }
                 }
             }) {
-                Text(group.name("Someone", appString { newGroup }, listOf(me!!.id!!)))
+                Text(group.name("Someone", appString { newGroup }, listOfNotNull(me?.id)))
             }
             Div({
                 classes(AppStyles.groupItemMessage)

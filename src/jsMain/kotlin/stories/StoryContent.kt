@@ -18,6 +18,8 @@ sealed class StoryContent {
     @Serializable
     class Text(var text: String) : StoryContent()
     @Serializable
+    class Groups(var groups: List<String>) : StoryContent()
+    @Serializable
     class Cards(var cards: List<String>) : StoryContent()
     @Serializable
     class Photos(var photos: List<String>, var aspect: Float = 0.75f) : StoryContent()
@@ -29,6 +31,7 @@ fun JsonObject.toStoryContent(): StoryContent? = get("content")?.jsonObject?.let
     when (get("type")?.jsonPrimitive?.content) {
         "section" -> json.decodeFromJsonElement<StoryContent.Section>(content)
         "text" -> json.decodeFromJsonElement<StoryContent.Text>(content)
+        "groups" -> json.decodeFromJsonElement<StoryContent.Groups>(content)
         "cards" -> json.decodeFromJsonElement<StoryContent.Cards>(content)
         "photos" -> json.decodeFromJsonElement<StoryContent.Photos>(content)
         "audio" -> json.decodeFromJsonElement<StoryContent.Audio>(content)

@@ -15,6 +15,7 @@ import appText
 import application
 import com.queatz.ailaai.api.stories
 import com.queatz.ailaai.api.updateStory
+import com.queatz.db.GroupExtended
 import com.queatz.db.Story
 import com.queatz.db.asGeo
 import components.Loading
@@ -35,7 +36,11 @@ import stories.textContent
 import webBaseUrl
 
 @Composable
-fun StoriesPage(selected: StoryNav, onStoryUpdated: (Story) -> Unit) {
+fun StoriesPage(
+    selected: StoryNav,
+    onStoryUpdated: (Story) -> Unit,
+    onGroupClick: (GroupExtended) -> Unit
+) {
     val me by application.me.collectAsState()
     val scope = rememberCoroutineScope()
     var storyContent by remember { mutableStateOf<List<StoryContent>>(emptyList()) }
@@ -155,7 +160,7 @@ fun StoriesPage(selected: StoryNav, onStoryUpdated: (Story) -> Unit) {
                         appText { noStories }
                     }
                 } else {
-                    StoryContents(storyContent, openInNewWindow = true)
+                    StoryContents(storyContent, onGroupClick, openInNewWindow = true)
                 }
             }
         }
