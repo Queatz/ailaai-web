@@ -39,9 +39,13 @@ fun JsonObject.toStoryContent(): StoryContent? = get("content")?.jsonObject?.let
     }
 }
 
-fun Story.contents() = json.parseToJsonElement(content ?: "[]").jsonArray.toList().mapNotNull { part ->
-    part.jsonObject.toStoryContent()
-}
+fun Story.contents(): List<StoryContent> = (content ?: "[]").asStoryContents()
+
+fun String.asStoryContents() = json
+    .decodeFromString<List<JsonElement>>(this)
+    .mapNotNull {
+        it.jsonObject.toStoryContent()
+    }
 
 fun Story.textContent(): String = contents().mapNotNull {
     when (it) {
