@@ -7,9 +7,11 @@ import app.AppStyles
 import app.ailaai.api.group
 import app.group.GroupInfo
 import app.group.GroupItem
+import app.widget.ImpactEffortTable
 import appString
 import baseUrl
 import com.queatz.db.GroupExtended
+import com.queatz.widgets.Widgets
 import components.CardItem
 import components.Icon
 import components.LinkifyText
@@ -45,6 +47,7 @@ fun StoryContents(
                     Text(part.title)
                 }
             }
+
             is StoryContent.Authors -> {
                 Div({
                     classes(StoryStyles.contentAuthors)
@@ -70,6 +73,7 @@ fun StoryContents(
                     }
                 }
             }
+
             is StoryContent.Section -> {
                 Div({
                     classes(StoryStyles.contentSection)
@@ -77,6 +81,7 @@ fun StoryContents(
                     Text(part.section)
                 }
             }
+
             is StoryContent.Text -> {
                 Div({
                     classes(StoryStyles.contentText)
@@ -84,6 +89,7 @@ fun StoryContents(
                     LinkifyText(part.text)
                 }
             }
+
             is StoryContent.Groups -> {
                 Div({
                     classes(StoryStyles.contentGroups)
@@ -115,6 +121,7 @@ fun StoryContents(
                     }
                 }
             }
+
             is StoryContent.Cards -> {
                 Div({
                     classes(StoryStyles.contentCards)
@@ -124,6 +131,7 @@ fun StoryContents(
                     }
                 }
             }
+
             is StoryContent.Photos -> {
                 Div({
                     classes(StoryStyles.contentPhotos)
@@ -140,6 +148,7 @@ fun StoryContents(
                     }
                 }
             }
+
             is StoryContent.Audio -> {
                 Audio({
                     classes(StoryStyles.contentAudio)
@@ -154,11 +163,20 @@ fun StoryContents(
                     })
                 }
             }
+
             is StoryContent.Divider -> {
                 Div({
                     classes(StoryStyles.divider)
                 }) {
                     Icon("flare")
+                }
+            }
+
+            is StoryContent.Widget -> {
+                when (part.widget) {
+                    Widgets.ImpactEffortTable -> {
+                        ImpactEffortTable(part.id)
+                    }
                 }
             }
         }

@@ -7,11 +7,16 @@ import app.ailaai.api.card
 import app.ailaai.api.cardsCards
 import app.softwork.routingcompose.Router
 import appString
-import com.queatz.db.*
+import com.queatz.db.Card
+import com.queatz.db.CardOptions
+import com.queatz.db.ConversationItem
 import json
 import kotlinx.browser.window
+import notBlank
 import org.jetbrains.compose.web.css.*
-import org.jetbrains.compose.web.dom.*
+import org.jetbrains.compose.web.dom.Div
+import org.jetbrains.compose.web.dom.Span
+import org.jetbrains.compose.web.dom.Text
 import r
 
 @Composable
@@ -118,7 +123,7 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
                                     }
                                 }
                             }
-                            cardConversation?.message?.let { message ->
+                            cardConversation?.message?.notBlank?.let { message ->
                                 Div({
                                     style {
                                         whiteSpace("pre-wrap")

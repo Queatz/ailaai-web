@@ -60,8 +60,9 @@ object Styles : StyleSheet() {
         padding(1.5.r)
         boxSizing("border-box")
         backgroundColor(colors.background)
-        display(DisplayStyle.Flex)
-        flexDirection(FlexDirection.Column)
+        // todo these mke the body scroll to bottom when the dialog is opened?
+        // display(DisplayStyle.Flex)
+        // flexDirection(FlexDirection.Column)
         property("max-height", "calc(100vh - 2rem)")
         property("max-width", "calc(100vw - 2rem)")
         property("border", "none")

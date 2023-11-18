@@ -1,6 +1,7 @@
 import androidx.compose.runtime.*
 import app.softwork.routingcompose.BrowserRouter
 import app.softwork.routingcompose.Router
+import app.widget.WidgetStyles
 import components.*
 import io.ktor.client.*
 import io.ktor.client.engine.js.*
@@ -37,6 +38,7 @@ val http = HttpClient(Js) {
 fun main() {
     renderComposableInBody {
         Style(Styles)
+        Style(WidgetStyles)
 
         var language by remember {
             mutableStateOf(

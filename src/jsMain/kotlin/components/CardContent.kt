@@ -3,6 +3,7 @@ package components
 import androidx.compose.runtime.*
 import app.softwork.routingcompose.Router
 import com.queatz.db.Card
+import notEmpty
 import stories.StoryContents
 import stories.asStoryContents
 
@@ -13,7 +14,7 @@ fun CardContent(card: Card) {
 
         val router = Router.current
 
-        if (storyContent != null) {
+        if (storyContent?.notEmpty != null) {
             StoryContents(
                 storyContent!!,
                 onGroupClick = {

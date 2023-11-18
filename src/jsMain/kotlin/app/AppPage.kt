@@ -7,6 +7,7 @@ import app.nav.*
 import app.page.SchedulePage
 import app.page.ScheduleView
 import app.page.StoriesPage
+import app.widget.WidgetStyles
 import application
 import com.queatz.db.Card
 import com.queatz.db.Reminder
@@ -29,6 +30,7 @@ enum class NavPage {
 @Composable
 fun AppPage() {
     Style(AppStyles)
+    Style(WidgetStyles)
 
     val scope = rememberCoroutineScope()
 

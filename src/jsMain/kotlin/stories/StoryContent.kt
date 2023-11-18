@@ -2,12 +2,15 @@ package stories
 
 import com.queatz.db.Person
 import com.queatz.db.Story
+import com.queatz.db.Widget
+import com.queatz.widgets.Widgets
 import json
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.*
 import notBlank
 
+// todo move these to ailaai-shared
 @Serializable
 sealed class StoryContent {
     object Divider : StoryContent()
@@ -25,8 +28,11 @@ sealed class StoryContent {
     class Photos(var photos: List<String>, var aspect: Float = 0.75f) : StoryContent()
     @Serializable
     class Audio(var audio: String) : StoryContent()
+    @Serializable
+    class Widget(var widget: Widgets, var id: String) : StoryContent()
 }
 
+// todo move these to ailaai-shared
 fun JsonObject.toStoryContent(): StoryContent? = get("content")?.jsonObject?.let { content ->
     when (get("type")?.jsonPrimitive?.content) {
         "section" -> json.decodeFromJsonElement<StoryContent.Section>(content)
@@ -35,6 +41,7 @@ fun JsonObject.toStoryContent(): StoryContent? = get("content")?.jsonObject?.let
         "cards" -> json.decodeFromJsonElement<StoryContent.Cards>(content)
         "photos" -> json.decodeFromJsonElement<StoryContent.Photos>(content)
         "audio" -> json.decodeFromJsonElement<StoryContent.Audio>(content)
+        "widget" -> json.decodeFromJsonElement<StoryContent.Widget>(content)
         else -> null
     }
 }
