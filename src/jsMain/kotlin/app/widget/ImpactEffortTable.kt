@@ -14,8 +14,7 @@ import components.getConversation
 import json
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
-import org.jetbrains.compose.web.css.cursor
-import org.jetbrains.compose.web.css.opacity
+import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
 import updateWidget
 import widget
@@ -101,207 +100,216 @@ fun ImpactEffortTable(widgetId: String) {
         }
     }
 
-    Table({
-        classes(WidgetStyles.table)
-    }) {
-        Thead {
-            Tr {
-                Th({
-                    if (sort == 0) {
-                        classes(WidgetStyles.columnSelected)
-                    }
-
-                    classes(WidgetStyles.tableCenter)
-
-                    onClick {
-                        if (sort == 0) {
-                            desc = !desc
-                        } else {
-                            sort = 0
-                        }
-                    }
-                }) {
-                    Text("Priority")
-                }
-                Th({
-                    if (sort == 1) {
-                        classes(WidgetStyles.columnSelected)
-                    }
-
-                    classes(WidgetStyles.tableCenter)
-
-                    onClick {
-                        if (sort == 1) {
-                            desc = !desc
-                        } else {
-                            sort = 1
-                        }
-                    }
-                }) {
-                    Text("Impact")
-                }
-                Th({
-                    if (sort == 2) {
-                        classes(WidgetStyles.columnSelected)
-                    }
-
-                    classes(WidgetStyles.tableCenter)
-
-                    onClick {
-                        if (sort == 2) {
-                            desc = !desc
-                        } else {
-                            sort = 2
-                        }
-                    }
-                }) {
-                    Text("Effort")
-                }
-                Th({
-                    if (sort == 3) {
-                        classes(WidgetStyles.columnSelected)
-                    }
-
-                    classes(WidgetStyles.tableCenter)
-
-                    onClick {
-                        if (sort == 3) {
-                            desc = !desc
-                        } else {
-                            sort = 3
-                        }
-                    }
-                }) {
-                    Text("Name")
-                }
-                Th({
-                    if (sort == 4) {
-                        classes(WidgetStyles.columnSelected)
-                    }
-
-                    onClick {
-                        if (sort == 4) {
-                            desc = !desc
-                        } else {
-                            sort = 4
-                        }
-                    }
-                }) {
-                    Text("Details")
-                }
+    Div(
+        {
+            style {
+                overflowX("auto")
+                width(100.percent)
             }
         }
-        Tbody {
-            sorted.forEach { card ->
-                key(card.id!!) {
-                    Tr {
-                        Td({
-                            classes(WidgetStyles.tableCenter)
+    ) {
+        Table({
+            classes(WidgetStyles.table)
+        }) {
+            Thead {
+                Tr {
+                    Th({
+                        if (sort == 0) {
+                            classes(WidgetStyles.columnSelected)
+                        }
 
-                            style {
+                        classes(WidgetStyles.tableCenter)
 
-                                if (priority[card.id!!] == null) {
-                                    opacity(.25f)
-                                }
-                            }
-                        }) {
-                            B {
-                                Text("P${priority[card.id!!]?.times(10f)?.toInt()?.toString() ?: "?"}")
+                        onClick {
+                            if (sort == 0) {
+                                desc = !desc
+                            } else {
+                                sort = 0
                             }
                         }
-                        Td({
-                            classes(WidgetStyles.tableCenter)
-
-                            style {
-                                if (me?.id == widget?.person) {
-                                    cursor("pointer")
-                                }
-
-                                if (data?.points?.get(card.id!!)?.impact == null) {
-                                    opacity(.25f)
-                                }
-                            }
-
-                            if (me?.id == widget?.person) {
-                                onClick {
-                                    scope.launch {
-                                        val result = inputDialog(
-                                            "Impact",
-                                            placeholder = "1-10",
-                                            confirmButton = "Update",
-                                            defaultValue = data?.points?.get(card.id!!)?.impact?.toString() ?: ""
-                                        )
-
-                                        result?.let { value ->
-                                            data = data!!.copy(
-                                                points = (data?.points?.toMutableMap() ?: mutableMapOf()).apply {
-                                                    put(
-                                                        card.id!!,
-                                                        getOrElse(card.id!!) { ImpactEffortTablePoint() }.copy(
-                                                            impact = value.toIntOrNull()?.coerceIn(1, 10)
-                                                        )
-                                                    )
-                                                }.toMap()
-                                            )
-                                            save(data!!)
-                                        }
-                                    }
-                                }
-                            }
-                        }) {
-                            Text(data?.points?.get(card.id!!)?.impact?.toString() ?: "None")
+                    }) {
+                        Text("Priority")
+                    }
+                    Th({
+                        if (sort == 1) {
+                            classes(WidgetStyles.columnSelected)
                         }
-                        Td({
-                            classes(WidgetStyles.tableCenter)
 
-                            style {
-                                if (me?.id == widget?.person) {
-                                    cursor("pointer")
-                                }
+                        classes(WidgetStyles.tableCenter)
 
-                                if (data?.points?.get(card.id!!)?.effort == null) {
-                                    opacity(.25f)
-                                }
+                        onClick {
+                            if (sort == 1) {
+                                desc = !desc
+                            } else {
+                                sort = 1
                             }
-
-                            if (me?.id == widget?.person) {
-                                onClick {
-                                    scope.launch {
-                                        val result = inputDialog(
-                                            "Effort",
-                                            placeholder = "1-10",
-                                            confirmButton = "Update",
-                                            defaultValue = data?.points?.get(card.id!!)?.effort?.toString() ?: ""
-                                        )
-
-                                        result?.let { value ->
-                                            data = data!!.copy(
-                                                points = (data?.points?.toMutableMap() ?: mutableMapOf()).apply {
-                                                    put(
-                                                        card.id!!,
-                                                        getOrElse(card.id!!) { ImpactEffortTablePoint() }.copy(
-                                                            effort = value.toIntOrNull()?.coerceIn(1, 10)
-                                                        )
-                                                    )
-                                                }.toMap()
-                                            )
-                                            save(data!!)
-                                        }
-                                    }
-                                }
-                            }
-                        }) {
-                            Text(data?.points?.get(card.id!!)?.effort?.toString() ?: "None")
                         }
-                        Td(
-                            {
+                    }) {
+                        Text("Impact")
+                    }
+                    Th({
+                        if (sort == 2) {
+                            classes(WidgetStyles.columnSelected)
+                        }
+
+                        classes(WidgetStyles.tableCenter)
+
+                        onClick {
+                            if (sort == 2) {
+                                desc = !desc
+                            } else {
+                                sort = 2
+                            }
+                        }
+                    }) {
+                        Text("Effort")
+                    }
+                    Th({
+                        if (sort == 3) {
+                            classes(WidgetStyles.columnSelected)
+                        }
+
+                        classes(WidgetStyles.tableCenter)
+
+                        onClick {
+                            if (sort == 3) {
+                                desc = !desc
+                            } else {
+                                sort = 3
+                            }
+                        }
+                    }) {
+                        Text("Name")
+                    }
+                    Th({
+                        if (sort == 4) {
+                            classes(WidgetStyles.columnSelected)
+                        }
+
+                        onClick {
+                            if (sort == 4) {
+                                desc = !desc
+                            } else {
+                                sort = 4
+                            }
+                        }
+                    }) {
+                        Text("Details")
+                    }
+                }
+            }
+            Tbody {
+                sorted.forEach { card ->
+                    key(card.id!!) {
+                        Tr {
+                            Td({
                                 classes(WidgetStyles.tableCenter)
+
+                                style {
+
+                                    if (priority[card.id!!] == null) {
+                                        opacity(.25f)
+                                    }
+                                }
+                            }) {
+                                B {
+                                    Text("P${priority[card.id!!]?.times(10f)?.toInt()?.toString() ?: "?"}")
+                                }
                             }
-                        ) {
-                            Text(card.name ?: appString { newCard })
-                        }
-                        Td {
-                            Text(card.getConversation().message)
+                            Td({
+                                classes(WidgetStyles.tableCenter)
+
+                                style {
+                                    if (me?.id == widget?.person) {
+                                        cursor("pointer")
+                                    }
+
+                                    if (data?.points?.get(card.id!!)?.impact == null) {
+                                        opacity(.25f)
+                                    }
+                                }
+
+                                if (me?.id == widget?.person) {
+                                    onClick {
+                                        scope.launch {
+                                            val result = inputDialog(
+                                                "Impact",
+                                                placeholder = "1-10",
+                                                confirmButton = "Update",
+                                                defaultValue = data?.points?.get(card.id!!)?.impact?.toString() ?: ""
+                                            )
+
+                                            result?.let { value ->
+                                                data = data!!.copy(
+                                                    points = (data?.points?.toMutableMap() ?: mutableMapOf()).apply {
+                                                        put(
+                                                            card.id!!,
+                                                            getOrElse(card.id!!) { ImpactEffortTablePoint() }.copy(
+                                                                impact = value.toIntOrNull()?.coerceIn(1, 10)
+                                                            )
+                                                        )
+                                                    }.toMap()
+                                                )
+                                                save(data!!)
+                                            }
+                                        }
+                                    }
+                                }
+                            }) {
+                                Text(data?.points?.get(card.id!!)?.impact?.toString() ?: "None")
+                            }
+                            Td({
+                                classes(WidgetStyles.tableCenter)
+
+                                style {
+                                    if (me?.id == widget?.person) {
+                                        cursor("pointer")
+                                    }
+
+                                    if (data?.points?.get(card.id!!)?.effort == null) {
+                                        opacity(.25f)
+                                    }
+                                }
+
+                                if (me?.id == widget?.person) {
+                                    onClick {
+                                        scope.launch {
+                                            val result = inputDialog(
+                                                "Effort",
+                                                placeholder = "1-10",
+                                                confirmButton = "Update",
+                                                defaultValue = data?.points?.get(card.id!!)?.effort?.toString() ?: ""
+                                            )
+
+                                            result?.let { value ->
+                                                data = data!!.copy(
+                                                    points = (data?.points?.toMutableMap() ?: mutableMapOf()).apply {
+                                                        put(
+                                                            card.id!!,
+                                                            getOrElse(card.id!!) { ImpactEffortTablePoint() }.copy(
+                                                                effort = value.toIntOrNull()?.coerceIn(1, 10)
+                                                            )
+                                                        )
+                                                    }.toMap()
+                                                )
+                                                save(data!!)
+                                            }
+                                        }
+                                    }
+                                }
+                            }) {
+                                Text(data?.points?.get(card.id!!)?.effort?.toString() ?: "None")
+                            }
+                            Td(
+                                {
+                                    classes(WidgetStyles.tableCenter)
+                                }
+                            ) {
+                                Text(card.name ?: appString { newCard })
+                            }
+                            Td {
+                                Text(card.getConversation().message)
+                            }
                         }
                     }
                 }
