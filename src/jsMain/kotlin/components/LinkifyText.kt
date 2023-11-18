@@ -7,7 +7,7 @@ import org.jetbrains.compose.web.dom.A
 import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text
 
-val autolinkPattern = "((https|http)://)?[a-zA-Z0-9@:.-]+(\\.[a-zA-Z0-9@%:-]{2,}){1,3}(#?/?[a-zA-Z0-9-@%:_#z?=&./,]+)*".toRegex()
+val autolinkPattern = "((https|http)://)?[a-zA-Z0-9@:.-]+(\\.[a-zA-Z0-9@%:-]{2,}){1,3}(#?/?[a-zA-Z0-9-@%:_#z?=&./,()]+)*".toRegex()
 
 fun Regex.splitInclusive(input: String): List<Pair<String, Boolean>> {
     return buildList {
