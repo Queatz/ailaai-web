@@ -8,7 +8,12 @@ import org.jetbrains.compose.web.dom.Div
 import r
 
 @Composable
-fun TopBarSearch(value: String, onValue: (String) -> Unit, styles: (StyleScope.() -> Unit)? = null) {
+fun TopBarSearch(
+    value: String,
+    onValue: (String) -> Unit,
+    focus: Boolean = true,
+    styles: (StyleScope.() -> Unit)? = null
+) {
     Div({
         style {
             display(DisplayStyle.Flex)
@@ -21,7 +26,8 @@ fun TopBarSearch(value: String, onValue: (String) -> Unit, styles: (StyleScope.(
         SearchField(
             value,
             appString { this.search },
-            {
+            focus = focus,
+            styles = {
                 if (styles != null) {
                     styles()
                 } else {

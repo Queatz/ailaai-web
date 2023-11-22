@@ -7,6 +7,7 @@ import app.ailaai.api.activeCardsOfPerson
 import app.ailaai.api.profile
 import app.ailaai.api.profileByUrl
 import app.ailaai.api.profileCards
+import app.components.Empty
 import app.components.TopBarSearch
 import app.softwork.routingcompose.Router
 import appString
@@ -253,10 +254,16 @@ fun ProfilePage(personId: String? = null, url: String? = null, onProfile: (Perso
                 Div({
                     classes(Styles.content)
                 }) {
-                    cards.forEach { card ->
-                        CardItem(card, styles = {
-                            margin(1.r)
-                        })
+                    if (search.isNotBlank() && cards.isEmpty()) {
+                        Empty {
+                            Text(appString { noCards })
+                        }
+                    } else {
+                        cards.forEach { card ->
+                            CardItem(card, styles = {
+                                margin(1.r)
+                            })
+                        }
                     }
                 }
             }

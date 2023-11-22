@@ -4,7 +4,6 @@ import LocalConfiguration
 import Styles
 import androidx.compose.runtime.*
 import api
-import app.AppStyles
 import app.ailaai.api.cards
 import appString
 import appText
@@ -97,7 +96,7 @@ fun HomePage() {
             }
         }
 
-        SearchField(searchText, appString { searchCity }, modifier = {
+        SearchField(searchText, appString { searchCity }, styles = {
             marginTop(2.r)
         }) {
             searchText = it

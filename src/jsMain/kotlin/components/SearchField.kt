@@ -16,13 +16,14 @@ import r
 fun SearchField(
     value: String,
     placeholder: String,
-    modifier: StyleScope.() -> Unit = {},
+    focus: Boolean = true,
+    styles: StyleScope.() -> Unit = {},
     onValue: (String) -> Unit
 ) {
     Div({
         style {
             position(Position.Relative)
-            modifier()
+            styles()
         }
     }) {
         Input(InputType.Text) {
@@ -42,7 +43,9 @@ fun SearchField(
                 onValue(it.value)
             }
 
-            autoFocus()
+            if (focus) {
+                autoFocus()
+            }
         }
         Span({
             classes("material-symbols-outlined")

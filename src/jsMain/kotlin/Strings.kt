@@ -330,7 +330,7 @@ object Strings {
         "Bạn chưa lưu trang"
     )
     val noCardsNearby = Translation(
-        "No pages",
+        "No pages nearby",
         "Không tìm được trang gần đây."
     )
     val noStories = Translation(

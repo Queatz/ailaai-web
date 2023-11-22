@@ -28,7 +28,7 @@ fun CitiesPage() {
         }
     }) {
         var searchText by remember { mutableStateOf("") }
-        SearchField(searchText, appString { search }, modifier = {
+        SearchField(searchText, appString { search }, styles = {
             marginTop(1.r)
             marginBottom(1.r)
         }) {
