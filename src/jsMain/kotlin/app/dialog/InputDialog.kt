@@ -4,6 +4,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import app.components.EditField
+import app.components.TextBox
 import app.nav.NavSearchInput
 import application
 import org.jetbrains.compose.web.css.margin
@@ -27,22 +29,39 @@ suspend fun inputDialog(
             mutableStateOf(defaultValue)
         }
 
-        NavSearchInput(
-            value,
-            {
-                value = it
-                text = it
-            },
-            placeholder = placeholder,
-            selectAll = true,
-            styles = {
-                margin(0.r)
-            },
-            onDismissRequest = {
-                resolve(false)
+        if (singleLine) {
+            NavSearchInput(
+                value,
+                {
+                    value = it
+                    text = it
+                },
+                placeholder = placeholder,
+                selectAll = true,
+                styles = {
+                    margin(0.r)
+                },
+                onDismissRequest = {
+                    resolve(false)
+                }
+            ) {
+                resolve(true)
             }
-        ) {
-            resolve(true)
+        } else {
+            TextBox(
+                value,
+                {
+                    value = it
+                    text = it
+                },
+                placeholder = placeholder,
+                selectAll = true,
+                styles = {
+                    margin(0.r)
+                },
+            ) {
+                resolve(true)
+            }
         }
     }
 

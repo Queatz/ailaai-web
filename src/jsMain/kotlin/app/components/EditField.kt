@@ -10,13 +10,18 @@ import org.jetbrains.compose.web.attributes.placeholder
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Button
 import org.jetbrains.compose.web.dom.Div
-import org.jetbrains.compose.web.dom.Text
 import org.jetbrains.compose.web.dom.TextArea
 import org.w3c.dom.events.Event
 import r
 
 @Composable
-fun EditField(value: String, placeholder: String = "", styles: StyleScope.() -> Unit, onSave: suspend (String) -> Boolean) {
+fun EditField(
+    value: String,
+    placeholder: String = "",
+    selectAll: Boolean = false,
+    styles: StyleScope.() -> Unit,
+    onSave: suspend (String) -> Boolean
+) {
     val scope = rememberCoroutineScope()
 
     var messageText by remember(value) {
@@ -46,7 +51,6 @@ fun EditField(value: String, placeholder: String = "", styles: StyleScope.() -> 
         }
     }
 
-    // todo can be EditField
     TextArea(messageText) {
         classes(Styles.textarea)
         style {
@@ -84,6 +88,10 @@ fun EditField(value: String, placeholder: String = "", styles: StyleScope.() -> 
             element.style.height = "${element.scrollHeight + 2}px"
 
             onValueChange = { element.dispatchEvent(Event("change")) }
+
+            if (selectAll) {
+                element.select()
+            }
 
             onDispose {
                 onValueChange = {}

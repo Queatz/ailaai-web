@@ -3,6 +3,7 @@ package app.widget
 import androidx.compose.runtime.*
 import api
 import app.ailaai.api.cardsCards
+import app.ailaai.api.updateCard
 import app.dialog.inputDialog
 import appString
 import application
@@ -11,6 +12,7 @@ import com.queatz.db.Widget
 import com.queatz.widgets.widgets.ImpactEffortTableData
 import com.queatz.widgets.widgets.ImpactEffortTablePoint
 import components.getConversation
+import isMine
 import json
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
@@ -61,7 +63,7 @@ fun ImpactEffortTable(widgetId: String) {
                 }
         )
     }
-    val sorted by remember(priority, sort, desc) {
+    val sorted by remember(priority, cards, sort, desc) {
         // todo this isn't really mutable
         mutableStateOf(
             when (sort) {
@@ -97,6 +99,17 @@ fun ImpactEffortTable(widgetId: String) {
             api.updateWidget(widgetId, Widget(data = json.encodeToString(data))) {
 
             }
+        }
+    }
+
+    suspend fun saveConversation(card: Card, value: String) {
+        val conversation = card.getConversation()
+        conversation.message = value
+        api.updateCard(card.id!!, Card(conversation = json.encodeToString(conversation))) {
+
+        }
+        api.cardsCards(data?.card ?: return) {
+            cards = it
         }
     }
 
@@ -235,7 +248,7 @@ fun ImpactEffortTable(widgetId: String) {
                                             val result = inputDialog(
                                                 "Impact",
                                                 placeholder = "1-10",
-                                                confirmButton = "Update",
+                                                confirmButton = application.appString { update },
                                                 defaultValue = data?.points?.get(card.id!!)?.impact?.toString() ?: ""
                                             )
 
@@ -277,7 +290,7 @@ fun ImpactEffortTable(widgetId: String) {
                                             val result = inputDialog(
                                                 "Effort",
                                                 placeholder = "1-10",
-                                                confirmButton = "Update",
+                                                confirmButton = application.appString { update },
                                                 defaultValue = data?.points?.get(card.id!!)?.effort?.toString() ?: ""
                                             )
 
@@ -307,7 +320,28 @@ fun ImpactEffortTable(widgetId: String) {
                             ) {
                                 Text(card.name ?: appString { newCard })
                             }
-                            Td {
+                            Td({
+                                if (card.isMine(me?.id)) {
+                                    style {
+                                        cursor("pointer")
+                                    }
+
+                                    onClick {
+                                        scope.launch {
+                                            val result = inputDialog(
+                                                application.appString { details },
+                                                singleLine = false,
+                                                confirmButton = application.appString { update },
+                                                defaultValue = card.getConversation().message
+                                            )
+
+                                            if (result != null) {
+                                                saveConversation(card, result)
+                                            }
+                                        }
+                                    }
+                                }
+                            }) {
                                 Text(card.getConversation().message)
                             }
                         }

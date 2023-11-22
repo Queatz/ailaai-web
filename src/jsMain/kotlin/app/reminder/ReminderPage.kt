@@ -189,9 +189,13 @@ fun ReminderPage(
             overflowX("hidden")
         }
     }) {
-        EditField(reminder.note ?: "", appString { note }, {
-            margin(1.r, 1.r, 0.r, 1.r)
-        }) {
+        EditField(
+            reminder.note ?: "",
+            appString { note },
+            styles = {
+                margin(1.r, 1.r, 0.r, 1.r)
+            }
+        ) {
             var success = false
             api.updateReminder(reminder.id!!, Reminder(note = it)) {
                 success = true

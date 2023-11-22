@@ -396,7 +396,7 @@ fun ExplorePage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Uni
                         onCardUpdated(it)
                     }
                 }
-            }, title = "Page is ${if (published) "published" else "not published"}") {
+            }, title = "Page is ${if (published) "published" else "not published"}") { // todo: translate
                 margin(1.r)
             }
         }
