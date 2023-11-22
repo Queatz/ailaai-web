@@ -113,6 +113,15 @@ fun ImpactEffortTable(widgetId: String) {
         }
     }
 
+    suspend fun saveName(card: Card, value: String) {
+        api.updateCard(card.id!!, Card(name = value)) {
+
+        }
+        api.cardsCards(data?.card ?: return) {
+            cards = it
+        }
+    }
+
     Div(
         {
             style {
@@ -316,6 +325,26 @@ fun ImpactEffortTable(widgetId: String) {
                             Td(
                                 {
                                     classes(WidgetStyles.tableCenter)
+
+                                    if (card.isMine(me?.id)) {
+                                        style {
+                                            cursor("pointer")
+                                        }
+
+                                        onClick {
+                                            scope.launch {
+                                                val result = inputDialog(
+                                                    application.appString { rename },
+                                                    confirmButton = application.appString { update },
+                                                    defaultValue = card.name ?: ""
+                                                )
+
+                                                if (result != null) {
+                                                    saveName(card, result)
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             ) {
                                 Text(card.name ?: appString { newCard })
