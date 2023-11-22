@@ -8,9 +8,6 @@ import app.ailaai.api.cards
 import app.ailaai.api.savedCards
 import app.components.TopBarSearch
 import app.nav.CardNav
-import app.nav.GroupNav
-import app.widget.WidgetStyles
-import appString
 import appText
 import application
 import com.queatz.db.*
@@ -20,7 +17,6 @@ import kotlinx.coroutines.launch
 import notBlank
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
-import r
 
 @Composable
 fun CardsPage(nav: CardNav, onCard: (CardNav) -> Unit, onCardUpdated: (Card) -> Unit) {
@@ -142,7 +138,7 @@ fun CardsPage(nav: CardNav, onCard: (CardNav) -> Unit, onCardUpdated: (Card) -> 
             }
         }
         if (nav !is CardNav.Selected) {
-            TopBarSearch(search) { search = it }
+            TopBarSearch(search, { search = it })
         }
     }
 }

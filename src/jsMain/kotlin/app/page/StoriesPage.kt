@@ -173,6 +173,6 @@ fun StoriesPage(
             menuTarget = if (menuTarget == null) (it.target as HTMLElement).getBoundingClientRect() else null
         }
     } else {
-        TopBarSearch(search) { search = it }
+        TopBarSearch(search, { search = it })
     }
 }

@@ -9,11 +9,9 @@ import app.ailaai.api.exploreGroups
 import app.components.Empty
 import app.components.TopBarSearch
 import app.nav.GroupNav
-import appString
 import appText
 import application
 import components.Loading
-import components.SearchField
 import defaultGeo
 import notBlank
 import org.jetbrains.compose.web.css.*
@@ -130,7 +128,7 @@ fun GroupPage(
                 }
             }
         }
-        TopBarSearch(search) { search = it}
+        TopBarSearch(search, { search = it})
     } else if (nav is GroupNav.Selected) {
         GroupLayout(nav.group, onGroupUpdated, onGroupGone)
     }

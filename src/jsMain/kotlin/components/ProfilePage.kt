@@ -3,9 +3,11 @@ package components
 import Styles
 import androidx.compose.runtime.*
 import api
+import app.ailaai.api.activeCardsOfPerson
 import app.ailaai.api.profile
 import app.ailaai.api.profileByUrl
 import app.ailaai.api.profileCards
+import app.components.TopBarSearch
 import app.softwork.routingcompose.Router
 import appString
 import baseUrl
@@ -31,6 +33,10 @@ fun ProfilePage(personId: String? = null, url: String? = null, onProfile: (Perso
     var profile by remember { mutableStateOf<PersonProfile?>(null) }
     var cards by remember { mutableStateOf<List<Card>>(emptyList()) }
     var isLoading by remember { mutableStateOf(false) }
+
+    var search by remember {
+        mutableStateOf("")
+    }
 
     if (personId == null && url == null) {
         router.navigate("/")
@@ -73,10 +79,16 @@ fun ProfilePage(personId: String? = null, url: String? = null, onProfile: (Perso
         isLoading = false
     }
 
-    LaunchedEffect(personId) {
+    LaunchedEffect(personId, search) {
         if (personId != null) {
-            api.profileCards(personId!!) {
-                cards = it
+            if (search.isBlank()) {
+                api.profileCards(personId!!) {
+                    cards = it
+                }
+            } else {
+                api.activeCardsOfPerson(personId!!, search) {
+                    cards = it
+                }
             }
         }
     }
@@ -231,6 +243,13 @@ fun ProfilePage(personId: String? = null, url: String? = null, onProfile: (Perso
                         }
                     }
                 }
+
+                TopBarSearch(search, { search = it }) {
+                    marginTop(2.r)
+                    marginLeft(1.r)
+                    marginRight(1.r)
+                }
+
                 Div({
                     classes(Styles.content)
                 }) {
