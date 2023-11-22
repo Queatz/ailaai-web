@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import notBlank
+import opensavvy.compose.lazy.LazyColumn
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import push
@@ -161,6 +162,7 @@ fun GroupsNavPage(
             style {
                 overflowY("auto")
                 overflowX("hidden")
+                property("scrollbar-width", "none")
                 padding(1.r / 2)
             }
         }) {
@@ -187,14 +189,18 @@ fun GroupsNavPage(
                     appText { noGroups }
                 }
             } else {
-                shownGroups.forEach { group ->
-                    GroupItem(
-                        group,
-                        selected = (selected as? GroupNav.Selected)?.group?.group?.id == group.group?.id,
-                        onSelected = {
-                            onSelected(GroupNav.Selected(group))
-                        },
-                    )
+                key(shownGroups) { // todo remove after LazyColumn library is updated
+                    LazyColumn {
+                        items(shownGroups) { group ->
+                            GroupItem(
+                                group,
+                                selected = (selected as? GroupNav.Selected)?.group?.group?.id == group.group?.id,
+                                onSelected = {
+                                    onSelected(GroupNav.Selected(group))
+                                },
+                            )
+                        }
+                    }
                 }
             }
         }

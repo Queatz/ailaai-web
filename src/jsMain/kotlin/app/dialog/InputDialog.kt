@@ -9,6 +9,9 @@ import app.components.TextBox
 import app.nav.NavSearchInput
 import application
 import org.jetbrains.compose.web.css.margin
+import org.jetbrains.compose.web.css.maxWidth
+import org.jetbrains.compose.web.css.percent
+import org.jetbrains.compose.web.css.width
 import r
 
 suspend fun inputDialog(
@@ -55,9 +58,11 @@ suspend fun inputDialog(
                     text = it
                 },
                 placeholder = placeholder,
-                selectAll = true,
+                selectAll = false,
                 styles = {
                     margin(0.r)
+                    width(32.r)
+                    maxWidth(100.percent)
                 },
             ) {
                 resolve(true)

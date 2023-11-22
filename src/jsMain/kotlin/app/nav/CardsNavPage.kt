@@ -16,6 +16,7 @@ import components.Loading
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import opensavvy.compose.lazy.LazyColumn
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import org.w3c.dom.DOMRect
@@ -207,6 +208,7 @@ fun CardsNavPage(cardUpdates: Flow<Card>, nav: CardNav, onSelected: (CardNav) ->
             style {
                 overflowY("auto")
                 overflowX("hidden")
+                property("scrollbar-width", "none")
                 padding(1.r / 2)
             }
         }) {
@@ -236,35 +238,39 @@ fun CardsNavPage(cardUpdates: Flow<Card>, nav: CardNav, onSelected: (CardNav) ->
                 }
             } else {
                 val selected = (nav as? CardNav.Selected)?.let { it.subCard ?: it.card }
-                shownCards.forEach {
-                    CardItem(
-                        it,
-                        (nav as? CardNav.Selected)?.subCard == null,
-                        selected == it,
-                        saved.any { save -> save.id == it.id },
-                        it.active == true
-                    ) { _ ->
-                        onSelected(CardNav.Selected(it))
-                    }
-                    if (it.id == cardId && childCards.isNotEmpty()) {
-                        Div({
-                            style { marginLeft(1.r) }
-                        }) {
+                key(shownCards) { // todo remove after LazyColumn library is updated
+                    LazyColumn {
+                        items(shownCards) {
+                            CardItem(
+                                it,
+                                (nav as? CardNav.Selected)?.subCard == null,
+                                selected == it,
+                                saved.any { save -> save.id == it.id },
+                                it.active == true
+                            ) { _ ->
+                                onSelected(CardNav.Selected(it))
+                            }
+                            if (it.id == cardId && childCards.isNotEmpty()) {
+                                Div({
+                                    style { marginLeft(1.r) }
+                                }) {
 //                    val selectedSubCard = (nav as? CardNav.Selected)?.let { it.subCard }
-                            childCards.forEach {
-                                CardItem(
-                                    it,
-                                    true,
-                                    selected == it,
-                                    saved.any { save -> save.id == it.id },
-                                    it.active == true
-                                ) { navigate ->
-                                    val card = (nav as CardNav.Selected).card
+                                    childCards.forEach {
+                                        CardItem(
+                                            it,
+                                            true,
+                                            selected == it,
+                                            saved.any { save -> save.id == it.id },
+                                            it.active == true
+                                        ) { navigate ->
+                                            val card = (nav as CardNav.Selected).card
 
-                                    if (navigate) {
-                                        onSelected(CardNav.Selected(it))
-                                    } else {
-                                        onSelected(CardNav.Selected(card, it))
+                                            if (navigate) {
+                                                onSelected(CardNav.Selected(it))
+                                            } else {
+                                                onSelected(CardNav.Selected(card, it))
+                                            }
+                                        }
                                     }
                                 }
                             }

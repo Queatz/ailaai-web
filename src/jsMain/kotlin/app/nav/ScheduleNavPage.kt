@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import lib.getTimezoneOffset
 import lib.systemTimezone
+import opensavvy.compose.lazy.LazyColumn
 import org.jetbrains.compose.web.attributes.autoFocus
 import org.jetbrains.compose.web.attributes.disabled
 import org.jetbrains.compose.web.attributes.placeholder
@@ -167,6 +168,7 @@ fun ScheduleNavPage(
         style {
             overflowY("auto")
             overflowX("hidden")
+            property("scrollbar-width", "none")
             padding(1.r / 2)
             display(DisplayStyle.Flex)
             flexDirection(FlexDirection.Column)
@@ -287,9 +289,13 @@ fun ScheduleNavPage(
         if (isLoading) {
             Loading()
         } else {
-            shownReminders.forEach {
-                ReminderItem(it, selected = reminder?.id == it.id) {
-                    onReminder(it)
+            key(shownReminders) { // todo remove after LazyColumn library is updated
+                LazyColumn {
+                    items(shownReminders) {
+                        ReminderItem(it, selected = reminder?.id == it.id) {
+                            onReminder(it)
+                        }
+                    }
                 }
             }
         }

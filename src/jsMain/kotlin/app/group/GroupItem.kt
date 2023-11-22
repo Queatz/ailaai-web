@@ -84,7 +84,7 @@ fun GroupItem(
                     }
                 }
             }) {
-                Text(group.name("Someone", appString { newGroup }, listOfNotNull(me?.id)))
+                Text(group.name(appString { someone }, appString { newGroup }, listOfNotNull(me?.id)))
             }
             Div({
                 classes(AppStyles.groupItemMessage)
@@ -93,6 +93,8 @@ fun GroupItem(
                     GroupInfo.LatestMessage -> {
                         if (group.latestMessage?.member == myMember?.member?.id) {
                             Text("${appString { you }}: ")
+                        } else if (group.members!!.size > 2) {
+                            Text("${group.members?.find { it.member?.id == group.latestMessage?.member }?.person?.name ?: appString { someone }}: ")
                         }
                         Text(
                             group.latestMessage?.preview() ?: "${appString { created }} ${

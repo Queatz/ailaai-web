@@ -17,6 +17,7 @@ import focusable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import opensavvy.compose.lazy.LazyColumn
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Text
@@ -126,6 +127,7 @@ fun StoriesNavPage(storyUpdates: Flow<Story>, selected: StoryNav, onSelected: (S
             style {
                 overflowY("auto")
                 overflowX("hidden")
+                property("scrollbar-width", "none")
                 padding(1.r / 2)
             }
         }) {
@@ -146,7 +148,19 @@ fun StoriesNavPage(storyUpdates: Flow<Story>, selected: StoryNav, onSelected: (S
                     appText { noStories }
                 }
             } else {
-                shownStories.forEach { StoryItem(it, it == (selected as? StoryNav.Selected)?.story) { onSelected(StoryNav.Selected(it)) } }
+                key(shownStories) { // todo remove after LazyColumn library is updated
+                    LazyColumn {
+                        items(shownStories) {
+                            StoryItem(it, it == (selected as? StoryNav.Selected)?.story) {
+                                onSelected(
+                                    StoryNav.Selected(
+                                        it
+                                    )
+                                )
+                            }
+                        }
+                    }
+                }
             }
         }
     }
