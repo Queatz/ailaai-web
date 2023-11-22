@@ -19,25 +19,28 @@ class Joins {
     fun start(scope: CoroutineScope) {
         scope.launch {
             reload()
-            reloadMine()
             push.events.filter {
                 it.action == PushAction.JoinRequest ||
                 it.action == PushAction.Group
             }.collectLatest {
                 reload()
-                reloadMine()
             }
         }
     }
 
     suspend fun reload() {
+        reloadJoins()
+        reloadMine()
+    }
+
+    private suspend fun reloadJoins() {
         application.bearerToken.first { it != null }
         api.joinRequests {
             joins.emit(it)
         }
     }
 
-    suspend fun reloadMine() {
+    private suspend fun reloadMine() {
         application.bearerToken.first { it != null }
         api.myJoinRequests {
             myJoins.emit(it)
@@ -51,12 +54,11 @@ class Joins {
 
     suspend fun accept(joinRequest: String) {
         api.acceptJoinRequest(joinRequest)
-        reload()
+        reloadJoins()
     }
 
     suspend fun delete(joinRequest: String) {
         api.deleteJoinRequest(joinRequest)
         reload()
-        reloadMine()
     }
 }

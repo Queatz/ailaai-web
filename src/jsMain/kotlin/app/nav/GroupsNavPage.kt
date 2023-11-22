@@ -17,6 +17,7 @@ import com.queatz.db.GroupExtended
 import com.queatz.db.Member
 import components.IconButton
 import components.Loading
+import joins
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
@@ -87,6 +88,7 @@ fun GroupsNavPage(
                 GroupNav.Selected(it)
             } ?: GroupNav.None)
         }
+        joins.reload()
     }
 
     // todo remove selectedGroup

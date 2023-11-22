@@ -3,6 +3,7 @@ package components
 import androidx.compose.runtime.*
 import api
 import app.ailaai.api.wildReply
+import app.dialog.dialog
 import appString
 import application
 import com.queatz.db.*
@@ -48,11 +49,15 @@ fun CardReply(
         api.wildReply(
             body,
             onError = {
-                window.alert(didntWorkString)
+                scope.launch {
+                    dialog(didntWorkString, cancelButton = null)
+                }
             }
         ) {
             onMessageSent()
-            window.alert(sentString)
+            scope.launch {
+                dialog(sentString, cancelButton = null)
+            }
         }
         isSendingReply = false
     }
