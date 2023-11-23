@@ -2,7 +2,6 @@ package stories
 
 import com.queatz.db.Person
 import com.queatz.db.Story
-import com.queatz.db.Widget
 import com.queatz.widgets.Widgets
 import json
 import kotlinx.datetime.Instant
@@ -46,6 +45,11 @@ fun JsonObject.toStoryContent(): StoryContent? = get("content")?.jsonObject?.let
     }
 }
 
+fun Story.asContents() = listOf(
+    StoryContent.Title(title ?: "", id!!),
+    StoryContent.Authors(publishDate, authors ?: emptyList()),
+) + contents()
+
 fun Story.contents(): List<StoryContent> = (content ?: "[]").asStoryContents()
 
 fun String.asStoryContents() = json
@@ -54,7 +58,11 @@ fun String.asStoryContents() = json
         it.jsonObject.toStoryContent()
     }
 
-fun Story.textContent(): String = contents().mapNotNull {
+fun Story.asTextContent(): String = asContents().asText()
+
+fun Story.textContent(): String = contents().asText()
+
+fun List<StoryContent>.asText() = mapNotNull {
     when (it) {
         is StoryContent.Title -> it.title.notBlank
         is StoryContent.Section -> it.section.notBlank
@@ -62,6 +70,7 @@ fun Story.textContent(): String = contents().mapNotNull {
         else -> null
     }
 }.joinToString("\n")
+
 
 fun Story.full(): List<StoryContent> = contents().let { parts ->
     listOf(

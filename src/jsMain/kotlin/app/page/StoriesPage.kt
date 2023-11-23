@@ -29,10 +29,7 @@ import org.w3c.dom.DOMRect
 import org.w3c.dom.HTMLElement
 import qr
 import r
-import stories.StoryContent
-import stories.StoryContents
-import stories.full
-import stories.textContent
+import stories.*
 import webBaseUrl
 
 @Composable
@@ -58,7 +55,7 @@ fun StoriesPage(
         isLoading = true
 
         fun List<Story>.search() = if (search.isBlank()) this else filter {
-            it.textContent().lowercase().contains(search.trim().lowercase())
+            it.asTextContent().lowercase().contains(search.trim().lowercase())
         }
 
         when (selected) {

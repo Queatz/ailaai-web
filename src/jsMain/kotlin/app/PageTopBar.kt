@@ -13,7 +13,12 @@ import org.w3c.dom.HTMLDivElement
 import r
 
 @Composable
-fun PageTopBar(title: String, description: String? = null, actions: @Composable ElementScope<HTMLDivElement>.() -> Unit = {}, onMenu: ((SyntheticMouseEvent) -> Unit)? = null) {
+fun PageTopBar(
+    title: String,
+    description: String? = null,
+    actions: @Composable ElementScope<HTMLDivElement>.() -> Unit = {},
+    onMenu: ((SyntheticMouseEvent) -> Unit)? = null
+) {
     Div({
         style {
             display(DisplayStyle.Flex)

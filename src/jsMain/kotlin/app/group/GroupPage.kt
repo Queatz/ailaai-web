@@ -113,7 +113,8 @@ fun GroupPage(
                         }
                     } else if (search.isNotBlank()) {
                         Tip(
-                            text = "Create an open group about \"${search.trim()}\"",
+                            // todo: translate
+                            text = "Create an open group about \"${search.trim()}\".",
                             action = appString { createGroup }
                         ) {
                             scope.launch {

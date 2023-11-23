@@ -8,12 +8,16 @@ import app.ailaai.api.*
 import app.components.EditField
 import app.dialog.dialog
 import app.dialog.inputDialog
+import app.dialog.searchDialog
+import app.group.GroupInfo
+import app.group.GroupItem
 import app.menu.InlineMenu
 import app.menu.Menu
 import app.nav.NavSearchInput
 import appString
 import application
 import com.queatz.db.Card
+import com.queatz.db.GroupExtended
 import components.*
 import json
 import kotlinx.browser.localStorage
@@ -99,7 +103,7 @@ fun ExplorePage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Uni
     fun generatePhoto() {
         scope.launch {
             api.generateCardPhoto(card.id!!) {
-                oldPhoto = card.photo
+                oldPhoto = card.photo ?: ""
                 if (localStorage["app.config.ai.disclaimer.show"] != json.encodeToString(false)) {
                     // todo: translate
                     dialog("Generating", cancelButton = null) {
@@ -151,11 +155,17 @@ fun ExplorePage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Uni
         }
     }
 
-    val configuration = LocalConfiguration.current
-
     fun moveToPage(cardId: String) {
         scope.launch {
-            api.updateCard(card.id!!, Card(offline = false, parent = cardId, equipped = false, geo = null)) {
+            api.updateCard(card.id!!, Card(offline = false, parent = cardId, group = null, equipped = false, geo = null)) {
+                onCardUpdated(it)
+            }
+        }
+    }
+
+    fun moveToGroup(groupId: String) {
+        scope.launch {
+            api.updateCard(card.id!!, Card(offline = false, parent = null, group = groupId, equipped = false, geo = null)) {
                 onCardUpdated(it)
             }
         }
@@ -163,101 +173,69 @@ fun ExplorePage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Uni
 
     val inAPage = appString { inAPage }
     val cancel = appString { cancel }
+    val configuration = LocalConfiguration.current
+
+    fun moveToGroup() {
+        scope.launch {
+            val result =  searchDialog(
+                configuration = configuration,
+                title = application.appString { inAGroup },
+                confirmButton = cancel,
+                load = {
+                    var groups = emptyList<GroupExtended>()
+                    api.groups {
+                        groups = it
+                    }
+                    groups
+                },
+                filter = { it, value ->
+                    (it.group?.name?.contains(value, true)
+                        ?: false) || (it.members?.any { it.person?.name?.contains(value, true) ?: false } ?: false)
+                }
+            ) { it, resolve ->
+                GroupItem(
+                    it,
+                    selectable = true,
+                    onSelected = {
+                        moveToGroup(it.group!!.id!!)
+                        resolve(false)
+                    },
+                    info = GroupInfo.LatestMessage
+                )
+            }
+        }
+    }
 
     fun moveToPage() {
         scope.launch {
-            val result = dialog(inAPage, cancel, null) { resolve ->
-                var value by remember {
-                    mutableStateOf("")
-                }
-                var loading by remember {
-                    mutableStateOf(true)
-                }
-
-                var allCards by remember { mutableStateOf(emptyList<Card>()) }
-                var cards by remember { mutableStateOf(emptyList<Card>()) }
-                val saved by saves.cards.collectAsState()
-
-                LaunchedEffect(Unit) {
+            val result =  searchDialog(
+                configuration = configuration,
+                title = inAPage,
+                confirmButton = cancel,
+                load = {
+                    var cards = emptyList<Card>()
                     api.myCollaborations {
-                        allCards = it
+                        cards = it
                     }
-                    loading = false
-                }
-
-                LaunchedEffect(allCards, value) {
-                    cards = if (value.isBlank()) {
-                        allCards
-                    } else {
-                        allCards.filter { (it.name?.contains(value, true) ?: false) }
-                    }.filter {
-                        it.id != card.id
-                    }.sortedByDescending { saved.any { save -> it.id == save.id } }
-                }
-
-                CompositionLocalProvider(LocalConfiguration provides configuration) {
-                    NavSearchInput(
-                        value,
-                        {
-                            value = it
-                        },
-                        placeholder = appString { search },
-                        styles = {
-                            margin(0.r)
-                            width(28.r)
-                            maxWidth(100.percent)
-                        },
-                        onDismissRequest = {
-                            resolve(false)
-                        }
-                    ) {
-                        resolve(true)
+                    cards.sortedByDescending {
+                        saves.cards.value.any { save -> it.id == save.id }
                     }
-
-                    if (loading) {
-                        Div({
-                            style {
-                                padding(1.r)
-                            }
-                        }) {
-                            Loading()
-                        }
-                    } else {
-                        Div({
-                            style {
-                                overflowY("auto")
-                                overflowX("hidden")
-                                width(28.r)
-                                maxWidth(100.percent)
-                                padding(1.r / 2, 0.r)
-                            }
-                        }) {
-                            key(cards) {
-                                LazyColumn {
-                                    items(cards) { card ->
-                                        app.nav.CardItem(
-                                            card,
-                                            false,
-                                            false,
-                                            saved.any { save -> save.id == card.id },
-                                            card.active == true
-                                        ) {
-                                            if (!it) {
-                                                moveToPage(card.id!!)
-                                                resolve(false)
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                },
+                filter = { it, value ->
+                    (it.name?.contains(value, true) ?: false)
                 }
-            }
-
-            if (result == true) {
-                if (cards.isNotEmpty()) {
-                    moveToPage(cards.first().id!!)
+            ) { card, resolve ->
+                app.nav.CardItem(
+                    card = card,
+                    scroll = false,
+                    selected = false,
+                    saved = saves.cards.value.any { save -> save.id == card.id },
+                    published = card.active == true
+                ) {
+                    if (!it) {
+                        moveToPage(card.id!!)
+                        resolve(false)
+                    }
                 }
             }
         }
@@ -343,8 +321,11 @@ fun ExplorePage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Uni
                                     }
                                 }
                             }
+                            item(appString { inAGroup }, selected = card.parent == null && card.offline != true && card.equipped != true && card.group != null, "group") {
+                                moveToGroup()
+                            }
                             item(appString { atALocation }, selected = card.parent == null && card.offline != true && card.equipped != true && card.geo != null, "location_on") {
-
+                                // todo: needs map
                             }
                             item(inAPage, selected = card.parent != null, "description") {
                                 moveToPage()

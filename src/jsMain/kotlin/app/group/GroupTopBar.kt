@@ -17,6 +17,8 @@ import appString
 import appText
 import application
 import com.queatz.db.*
+import components.Icon
+import components.IconButton
 import components.LinkifyText
 import joins
 import kotlinx.coroutines.launch
@@ -26,13 +28,16 @@ import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import org.w3c.dom.DOMRect
 import org.w3c.dom.HTMLElement
+import r
 import kotlin.js.Date
 
 @Composable
 fun GroupTopBar(
     group: GroupExtended,
     onGroupUpdated: () -> Unit,
-    onGroupGone: () -> Unit
+    onGroupGone: () -> Unit,
+    showCards: Boolean,
+    onShowCards: () -> Unit
 ) {
     val me by application.me.collectAsState()
     val myMember = group.members?.find { it.person?.id == me?.id }
@@ -44,6 +49,10 @@ fun GroupTopBar(
 
     var showDescription by remember(group) {
         mutableStateOf(true)
+    }
+
+    var cards by remember(group) {
+        mutableStateOf(emptyList<Card>())
     }
 
     fun renameGroup() {
@@ -130,6 +139,11 @@ fun GroupTopBar(
                 }
             }
             if (myMember != null) {
+                if (cards.isEmpty()) {
+                    item(appString { this.cards }) {
+                        onShowCards()
+                    }
+                }
                 item(appString { rename }) {
                     renameGroup()
                 }
@@ -214,7 +228,7 @@ fun GroupTopBar(
                 }
             }
         }
-    } else if (showDescription) {
+    } else if (showDescription && !showCards) {
         group.group?.description?.notBlank?.let { description ->
             Div({
                 classes(AppStyles.groupDescription)
@@ -237,11 +251,25 @@ fun GroupTopBar(
     }
 
     PageTopBar(
-        group.name(appString { someone }, appString { newGroup }, listOf(me!!.id!!)),
-        if (group.group?.open == true) {
+        title = group.name(appString { someone }, appString { newGroup }, listOf(me!!.id!!)),
+        description = if (group.group?.open == true) {
             listOfNotNull(appString { openGroup }, active).joinToString(" • ")
         } else {
             active
+        },
+        actions = {
+            group.cardCount?.takeIf { it > 0 }?.let {
+                IconButton(
+                    name = "travel_explore",
+                    title = appString { this.cards },
+                    count = it,
+                    styles = {
+                        marginRight(.5.r)
+                    }
+                ) {
+                    onShowCards()
+                }
+            }
         }
     ) {
         menuTarget = if (menuTarget == null) (it.target as HTMLElement).getBoundingClientRect() else null

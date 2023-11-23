@@ -11,6 +11,7 @@ import r
 fun Tip(
     text: String,
     action: String,
+    styles: StyleScope.() -> Unit = {},
     onAction: () -> Unit
 ) {
     Div({
@@ -22,6 +23,7 @@ fun Tip(
             padding(2.r)
             borderRadius(1.r)
             overflow("hidden")
+            styles()
         }
     }) {
         Div({

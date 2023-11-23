@@ -422,7 +422,7 @@ object Strings {
         "Không xuất bản"
     )
     val createCard = Translation(
-        "New page",
+            "New page",
         "Tạo trang"
     )
     val title = Translation(
@@ -516,6 +516,10 @@ object Strings {
     val onProfile = Translation(
         "On profile",
         "Trên trang cá nhân"
+    )
+    val inAGroup = Translation(
+        "In a group",
+        "Trong nhóm"
     )
     val atALocation = Translation(
         "At a location",

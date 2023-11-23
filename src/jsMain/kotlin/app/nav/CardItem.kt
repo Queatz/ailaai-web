@@ -76,7 +76,7 @@ fun CardItem(
             Div({
                 classes(AppStyles.groupItemName)
             }) {
-                Text(card.name?.notBlank ?: "New page")
+                Text(card.name?.notBlank ?: appString { newCard })
             }
             if (!card.location.isNullOrBlank()) {
                 Div({
@@ -108,14 +108,14 @@ fun CardItem(
                 }
             }
             if (published) {
-                Icon("toggle_on", title = "Page is published") {
+                Icon("toggle_on", title = "Page is published") { // todo: translate
                     fontSize(22.px)
                     color(Styles.colors.primary)
                     marginLeft(.5.r)
                 }
             }
             if (saved) {
-                Icon("favorite", title = "Page is saved") {
+                Icon("favorite", title = "Page is saved") { // todo: translate
                     fontSize(18.px)
                     color(Styles.colors.secondary)
                     marginLeft(.5.r)

@@ -145,6 +145,14 @@ object AppStyles : StyleSheet() {
         overflowX("hidden")
     }
 
+    val groupCards by style {
+        flex(1)
+        display(DisplayStyle.Flex)
+        flexDirection(FlexDirection.Column)
+        overflowY("auto")
+        overflowX("hidden")
+    }
+
     val messageBar by style {
         flexShrink(0)
         display(DisplayStyle.Flex)
@@ -367,10 +375,11 @@ object AppStyles : StyleSheet() {
         borderRadius(100.percent)
         backgroundColor(Styles.colors.background)
         fontWeight("bold")
+        color(Styles.colors.primary)
         property("transform", "translate(9px, -9px)")
 
         dark(self) {
-            backgroundColor(Color.black)
+            backgroundColor(Styles.colors.dark.background)
         }
     }
 

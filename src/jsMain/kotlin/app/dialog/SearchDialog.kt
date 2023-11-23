@@ -7,11 +7,12 @@ import app.nav.NavSearchInput
 import appString
 import application
 import components.Loading
+import opensavvy.compose.lazy.LazyColumn
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import r
 
-suspend fun <T> searchDialog(
+suspend fun <T : Any> searchDialog(
     configuration: Configuration,
     title: String,
     placeholder: String = application.appString { search },
@@ -78,8 +79,12 @@ suspend fun <T> searchDialog(
                     padding(1.r / 2, 0.r)
                 }
             }) {
-                items.forEach {
-                    item(it, resolve)
+                key(items) {
+                    LazyColumn {
+                        items(items) {
+                            item(it, resolve)
+                        }
+                    }
                 }
             }
         }
