@@ -437,6 +437,10 @@ object Strings {
         "Create group",
         "Tạo nhóm"
     )
+    val createOpenGroup = Translation(
+        "Create open group",
+        "Tạo nhóm mở"
+    )
     val local = Translation(
         "Local",
         "Gần đây"

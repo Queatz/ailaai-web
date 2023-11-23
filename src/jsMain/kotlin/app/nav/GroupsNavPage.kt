@@ -191,7 +191,7 @@ fun GroupsNavPage(
                     appText { noGroups }
                 }
             } else {
-                key(shownGroups) { // todo remove after LazyColumn library is updated
+                key(shownGroups, selected) { // todo remove after LazyColumn library is updated
                     LazyColumn {
                         items(shownGroups) { group ->
                             GroupItem(

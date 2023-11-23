@@ -6,7 +6,10 @@ import org.jetbrains.compose.web.css.marginBottom
 import r
 
 @Composable
-fun GroupList(groups: List<GroupExtended>, onSelected: (GroupExtended) -> Unit) {
+fun GroupList(
+    groups: List<GroupExtended>,
+    onSelected: (GroupExtended) -> Unit
+) {
     groups.forEach {
         GroupItem(
             it,

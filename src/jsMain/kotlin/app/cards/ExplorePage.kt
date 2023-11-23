@@ -16,24 +16,26 @@ import application
 import com.queatz.db.Card
 import components.*
 import json
+import kotlinx.browser.localStorage
 import kotlinx.browser.window
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import notBlank
 import opensavvy.compose.lazy.LazyColumn
 import org.jetbrains.compose.web.css.*
-import org.jetbrains.compose.web.dom.Br
-import org.jetbrains.compose.web.dom.Div
-import org.jetbrains.compose.web.dom.Img
-import org.jetbrains.compose.web.dom.Text
+import org.jetbrains.compose.web.dom.*
 import org.w3c.dom.DOMRect
 import org.w3c.dom.HTMLElement
+import org.w3c.dom.get
+import org.w3c.dom.set
 import pickPhotos
 import qr
 import r
 import saves
 import toScaledBytes
 import webBaseUrl
+import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun ExplorePage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Unit, onCardDeleted: (card: Card) -> Unit) {
@@ -52,6 +54,10 @@ fun ExplorePage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Uni
         mutableStateOf(true)
     }
 
+    var oldPhoto by remember(card.id) {
+        mutableStateOf<String?>(null)
+    }
+
     var menuTarget by remember {
         mutableStateOf<DOMRect?>(null)
     }
@@ -68,6 +74,19 @@ fun ExplorePage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Uni
         reload()
     }
 
+    LaunchedEffect(oldPhoto) {
+        var tries = 0
+        while(tries++ < 5 && oldPhoto != null) {
+            delay(3.seconds)
+            api.card(card.id!!) {
+                if (it.photo != oldPhoto) {
+                    onCardUpdated(it)
+                    oldPhoto = null
+                }
+            }
+        }
+    }
+
     fun newSubCard(inCard: Card, name: String) {
         scope.launch {
             api.newCard(Card(name = name, parent = inCard.id!!)) {
@@ -80,12 +99,52 @@ fun ExplorePage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Uni
     fun generatePhoto() {
         scope.launch {
             api.generateCardPhoto(card.id!!) {
-                dialog("Generating", cancelButton = null) {
-                    Div {
-                        Text("The page will be updated when the photo is generated.")
-                        Br()
-                        Br()
-                        Text("Page title, hint, and details are shared with a 3rd party.")
+                oldPhoto = card.photo
+                if (localStorage["app.config.ai.disclaimer.show"] != json.encodeToString(false)) {
+                    // todo: translate
+                    dialog("Generating", cancelButton = null) {
+                        Div {
+                            Text("The page will be updated when the photo is generated.")
+                            Br()
+                            Br()
+                            Text("Page title, hint, and details are shared with a 3rd party.")
+                        }
+                        Div({
+                            style {
+                                marginTop(1.r)
+                            }
+                        }) {
+                            Label {
+                                var dontShow by remember {
+                                    mutableStateOf(false)
+                                }
+                                CheckboxInput(dontShow) {
+                                    style {
+                                        margin(0.r, .5.r, 0.r, 0.r)
+                                    }
+
+                                    onInput {
+                                        if (!it.value) {
+                                            localStorage["app.config.ai.disclaimer.show"] = json.encodeToString(false)
+                                        } else {
+                                            localStorage.removeItem("app.config.ai.disclaimer.skip")
+                                        }
+                                    }
+
+                                    onChange {
+                                        dontShow = it.value
+                                    }
+                                }
+                                Span({
+                                    style {
+                                        fontWeight("bold")
+                                        fontSize(14.px)
+                                    }
+                                }) {
+                                    Text("Don't show this again")
+                                }
+                            }
+                        }
                     }
                 }
             }

@@ -1,18 +1,26 @@
 package app.group
 
 import GroupLayout
-import com.queatz.db.*
 import androidx.compose.runtime.*
 import api
 import app.FullPageLayout
+import app.ailaai.api.createGroup
 import app.ailaai.api.exploreGroups
-import app.components.Empty
+import app.ailaai.api.group
+import app.ailaai.api.updateGroup
 import app.components.TopBarSearch
+import app.dialog.inputDialog
 import app.nav.GroupNav
+import appString
 import appText
 import application
+import com.queatz.db.Group
+import com.queatz.db.GroupExtended
+import com.queatz.db.asGeo
 import components.Loading
+import components.Tip
 import defaultGeo
+import kotlinx.coroutines.launch
 import notBlank
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
@@ -26,6 +34,7 @@ fun GroupPage(
     onGroupGone: () -> Unit
 ) {
     val me by application.me.collectAsState()
+    val scope = rememberCoroutineScope()
 
     var isLoading by remember {
         mutableStateOf(true)
@@ -86,50 +95,56 @@ fun GroupPage(
         }) {
             appText { selectAGroup }
         }
-    } else if (isLoading) {
-        Loading()
-    } else if (nav is GroupNav.Friends) {
-        FullPageLayout {
-            Div({
-                style {
-                    display(DisplayStyle.Flex)
-                    flexDirection(FlexDirection.Column)
-                    padding(1.r)
-                }
-            }) {
-                if (groups.isEmpty()) {
-                    Empty {
-                        appText { noGroups }
+    } else if (nav is GroupNav.Local || nav is GroupNav.Friends) {
+        if (isLoading) {
+            Loading()
+        } else {
+            FullPageLayout {
+                Div({
+                    style {
+                        display(DisplayStyle.Flex)
+                        flexDirection(FlexDirection.Column)
+                        padding(0.r, 1.r, 1.r, 1.r)
                     }
-                } else {
-                    GroupList(groups) {
-                        onGroup(it)
-                    }
-                }
-            }
-        }
-    } else if (nav is GroupNav.Local) {
-        FullPageLayout {
-            Div({
-                style {
-                    display(DisplayStyle.Flex)
-                    flexDirection(FlexDirection.Column)
-                    padding(0.r, 1.r, 1.r, 1.r)
-                }
-            }) {
-                if (groups.isEmpty()) {
-                    Empty {
-                        appText { noGroups }
-                    }
-                } else {
-                    GroupList(groups) {
-                        onGroup(it)
+                }) {
+                    if (groups.isNotEmpty()) {
+                        GroupList(groups) {
+                            onGroup(it)
+                        }
+                    } else if (search.isNotBlank()) {
+                        Tip(
+                            text = "Create an open group about \"${search.trim()}\"",
+                            action = appString { createGroup }
+                        ) {
+                            scope.launch {
+                                val result = inputDialog(
+                                    title = application.appString { createOpenGroup },
+                                    defaultValue = search.trim(),
+                                    confirmButton = application.appString { create }
+                                )
+
+                                if (result == null) return@launch
+
+                                api.createGroup(emptyList()) { group ->
+                                    api.updateGroup(group.id!!, Group(name = result, open = true))
+                                    api.group(group.id!!) {
+                                        onGroup(it)
+                                    }
+                                }
+
+                                search = ""
+                            }
+                        }
                     }
                 }
             }
         }
         TopBarSearch(search, { search = it})
     } else if (nav is GroupNav.Selected) {
-        GroupLayout(nav.group, onGroupUpdated, onGroupGone)
+        if (isLoading) {
+            Loading()
+        } else {
+            GroupLayout(nav.group, onGroupUpdated, onGroupGone)
+        }
     }
 }

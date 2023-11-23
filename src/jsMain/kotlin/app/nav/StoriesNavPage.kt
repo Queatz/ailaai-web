@@ -149,7 +149,7 @@ fun StoriesNavPage(storyUpdates: Flow<Story>, selected: StoryNav, onSelected: (S
                     appText { noStories }
                 }
             } else {
-                key(shownStories) { // todo remove after LazyColumn library is updated
+                key(shownStories, selected) { // todo remove after LazyColumn library is updated
                     LazyColumn {
                         items(shownStories) {
                             StoryItem(it, it == (selected as? StoryNav.Selected)?.story) {

@@ -238,7 +238,7 @@ fun CardsNavPage(cardUpdates: Flow<Card>, nav: CardNav, onSelected: (CardNav) ->
                 }
             } else {
                 val selected = (nav as? CardNav.Selected)?.let { it.subCard ?: it.card }
-                key(shownCards) { // todo remove after LazyColumn library is updated
+                key(shownCards, selected) { // todo remove after LazyColumn library is updated
                     LazyColumn {
                         items(shownCards) {
                             CardItem(

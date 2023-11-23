@@ -289,7 +289,7 @@ fun ScheduleNavPage(
         if (isLoading) {
             Loading()
         } else {
-            key(shownReminders) { // todo remove after LazyColumn library is updated
+            key(shownReminders, reminder) { // todo remove after LazyColumn library is updated
                 LazyColumn {
                     items(shownReminders) {
                         ReminderItem(it, selected = reminder?.id == it.id) {
