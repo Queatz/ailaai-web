@@ -17,6 +17,7 @@ import focusable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import notBlank
 import opensavvy.compose.lazy.LazyColumn
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
@@ -190,7 +191,7 @@ fun StoryItem(story: Story, selected: Boolean, onSelected: () -> Unit) {
             Div({
                 classes(AppStyles.groupItemName)
             }) {
-                Text(story.title ?: appString { createStory })
+                Text(story.title?.notBlank ?: appString { createStory })
             }
             Div({
                 classes(AppStyles.groupItemMessage)

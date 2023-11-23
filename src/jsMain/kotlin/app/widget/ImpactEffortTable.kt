@@ -25,23 +25,22 @@ import widget
 fun ImpactEffortTable(widgetId: String) {
     val me by application.me.collectAsState()
 
-    var widget by remember {
+    var widget by remember(widgetId) {
         mutableStateOf<Widget?>(null)
     }
-
-    var cards by remember {
+    var cards by remember(widgetId) {
         mutableStateOf<List<Card>>(emptyList())
     }
-
-    var sort by remember {
+    var sort by remember(widgetId) {
         mutableStateOf(0)
     }
-    var desc by remember {
+    var desc by remember(widgetId) {
         mutableStateOf(false)
     }
     var data by remember(widgetId) {
         mutableStateOf<ImpactEffortTableData?>(null)
     }
+
     val priority by remember(cards, data) {
         val all = cards.mapNotNull {
             val impact = (data?.points?.get(it.id)?.impact ?: return@mapNotNull null).toFloat()

@@ -52,6 +52,7 @@ fun main() {
         CompositionLocalProvider(LocalConfiguration provides Configuration(language) { language = it }) {
             var title by remember { mutableStateOf<String?>(null) }
             var parentCardId by remember { mutableStateOf<String?>(null) }
+            var personId by remember { mutableStateOf<String?>(null) }
             val appName = appString { appName }
 
             LaunchedEffect(title) {
@@ -112,12 +113,17 @@ fun main() {
 
                 route("page") {
                     string { cardId ->
-                        AppHeader(appName, showBack = parentCardId != null, onBack = {
-                            router.navigate("/page/$parentCardId")
+                        AppHeader(appName, showBack = parentCardId != null || personId != null, onBack = {
+                            if (parentCardId != null) {
+                                router.navigate("/page/$parentCardId")
+                            } else if (personId != null) {
+                                router.navigate("/profile/$personId")
+                            }
                         })
                         CardPage(cardId, onError = { parentCardId = null }) {
                             title = it.name
                             parentCardId = it.parent
+                            personId = if (it.equipped == true) it.person else null
                         }
                         AppFooter()
                     }

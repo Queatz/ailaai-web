@@ -67,6 +67,7 @@ object Styles : StyleSheet() {
         property("max-width", "calc(100vw - 2rem)")
         property("border", "none")
         property("box-shadow", "2px 2px 8px rgba(0, 0, 0, .25)")
+        property("scrollbar-width", "none")
 
         self + selector("::backdrop") style {
             backgroundColor(colors.primary)

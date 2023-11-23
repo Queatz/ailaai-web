@@ -20,6 +20,7 @@ import kotlinx.browser.window
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import notBlank
+import opensavvy.compose.lazy.LazyColumn
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Br
 import org.jetbrains.compose.web.dom.Div
@@ -172,17 +173,21 @@ fun ExplorePage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Uni
                                 padding(1.r / 2, 0.r)
                             }
                         }) {
-                            cards.forEach { card ->
-                                app.nav.CardItem(
-                                    card,
-                                    false,
-                                    false,
-                                    saved.any { save -> save.id == card.id },
-                                    card.active == true
-                                ) {
-                                    if (!it) {
-                                        moveToPage(card.id!!)
-                                        resolve(false)
+                            key(cards) {
+                                LazyColumn {
+                                    items(cards) { card ->
+                                        app.nav.CardItem(
+                                            card,
+                                            false,
+                                            false,
+                                            saved.any { save -> save.id == card.id },
+                                            card.active == true
+                                        ) {
+                                            if (!it) {
+                                                moveToPage(card.id!!)
+                                                resolve(false)
+                                            }
+                                        }
                                     }
                                 }
                             }
