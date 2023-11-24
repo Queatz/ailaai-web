@@ -86,12 +86,11 @@ suspend fun dialog(
     dialog.showModal()
 
     return try {
-        result.await().also {
-            dialog.close()
-        }
+        result.await()
     } catch (e: CancellationException) {
         e.printStackTrace()
-        dialog.close()
         null
+    } finally {
+        dialog.close()
     }
 }

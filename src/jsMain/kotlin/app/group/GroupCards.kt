@@ -1,15 +1,16 @@
 import androidx.compose.runtime.*
 import app.AppStyles
-import app.ailaai.api.cardsCards
 import app.ailaai.api.groupCards
-import app.ailaai.api.profileCards
+import app.ailaai.api.newCard
 import app.cards.CardsPageStyles
 import app.components.TopBarSearch
+import app.dialog.inputDialog
 import com.queatz.db.Card
 import com.queatz.db.GroupExtended
 import components.CardItem
 import components.Loading
 import components.Tip
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 
@@ -17,11 +18,13 @@ import org.jetbrains.compose.web.dom.Div
 fun GroupCards(group: GroupExtended) {
     Style(CardsPageStyles)
 
+    val scope = rememberCoroutineScope()
+
     var isLoading by remember {
         mutableStateOf(true)
     }
 
-    var cards by remember(group.group?.id) {
+    var cards by remember(group) {
         mutableStateOf(listOf<Card>())
     }
 
@@ -37,7 +40,7 @@ fun GroupCards(group: GroupExtended) {
         isLoading = false
     }
 
-    LaunchedEffect(group.group?.id) {
+    LaunchedEffect(group) {
         reload()
     }
 
@@ -51,6 +54,28 @@ fun GroupCards(group: GroupExtended) {
                 }
             }
         )
+    }
+
+    fun newCard() {
+        scope.launch {
+            val result = inputDialog(
+                application.appString { createCard },
+                application.appString { title },
+                application.appString { create }
+            )
+
+            if (result == null) return@launch
+
+
+            api.newCard(
+                Card(
+                    group = group.group!!.id!!,
+                    name = result
+                )
+            ) {
+                reload()
+            }
+        }
     }
 
     if (isLoading) {
@@ -68,10 +93,10 @@ fun GroupCards(group: GroupExtended) {
                         margin(1.r)
                     }
                 ) {
-                    // todo: create card
+                    newCard()
                 }
             } else {
-                if (cards.size > 10) {
+                if (cards.size > 0) {
                     TopBarSearch(search, { search = it }) {
                         marginTop(1.r)
                         marginBottom(1.r)

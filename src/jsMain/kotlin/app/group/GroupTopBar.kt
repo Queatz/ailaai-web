@@ -4,20 +4,17 @@ import androidx.compose.runtime.*
 import api
 import app.AppStyles
 import app.PageTopBar
-import app.ailaai.api.createMember
-import app.ailaai.api.removeMember
-import app.ailaai.api.updateGroup
-import app.ailaai.api.updateMember
+import app.ailaai.api.*
 import app.dialog.dialog
 import app.dialog.inputDialog
 import app.menu.InlineMenu
 import app.menu.Menu
+import app.nav.CardNav
 import app.nav.name
 import appString
 import appText
 import application
 import com.queatz.db.*
-import components.Icon
 import components.IconButton
 import components.LinkifyText
 import joins
@@ -51,16 +48,12 @@ fun GroupTopBar(
         mutableStateOf(true)
     }
 
-    var cards by remember(group) {
-        mutableStateOf(emptyList<Card>())
-    }
-
     fun renameGroup() {
         scope.launch {
             val name = inputDialog(
-                application.appString { groupName },
-                "",
-                application.appString { rename },
+                title = application.appString { groupName },
+                placeholder = "",
+                confirmButton = application.appString { rename },
                 defaultValue = group.group?.name ?: ""
             )
 
@@ -106,6 +99,22 @@ fun GroupTopBar(
         }
     }
 
+    fun createCard() {
+        scope.launch {
+            val result = inputDialog(
+                application.appString { createCard },
+                application.appString { title },
+                application.appString { create }
+            )
+
+            if (result == null) return@launch
+
+            api.newCard(Card(name = result, group = group.group!!.id!!)) {
+                onGroupUpdated()
+            }
+        }
+    }
+
     fun addMember(person: Person) {
         scope.launch {
             api.createMember(
@@ -139,10 +148,8 @@ fun GroupTopBar(
                 }
             }
             if (myMember != null) {
-                if (cards.isEmpty()) {
-                    item(appString { this.cards }) {
-                        onShowCards()
-                    }
+                item(appString { this.cards }) {
+                    onShowCards()
                 }
                 item(appString { rename }) {
                     renameGroup()
@@ -217,8 +224,8 @@ fun GroupTopBar(
             style {
                 display(DisplayStyle.Flex)
                 flexDirection(FlexDirection.Column)
-                overflowX("hidden")
                 overflowY("auto")
+                overflowX("hidden")
                 maxHeight(25.vh)
             }
         }) {
@@ -258,16 +265,39 @@ fun GroupTopBar(
             active
         },
         actions = {
-            group.cardCount?.takeIf { it > 0 }?.let {
+            if (showCards) {
+                if (myMember != null) {
+                    IconButton(
+                        name = "add",
+                        title = appString { createCard },
+                        styles = {
+                            marginRight(.5.r)
+                        }
+                    ) {
+                        createCard()
+                    }
+                }
                 IconButton(
-                    name = "travel_explore",
-                    title = appString { this.cards },
-                    count = it,
+                    name = "forum",
+                    title = appString { goBack },
                     styles = {
                         marginRight(.5.r)
                     }
                 ) {
                     onShowCards()
+                }
+            } else {
+                group.cardCount?.takeIf { it > 0 }?.let {
+                    IconButton(
+                        name = "travel_explore",
+                        title = appString { this.cards },
+                        count = it,
+                        styles = {
+                            marginRight(.5.r)
+                        }
+                    ) {
+                        onShowCards()
+                    }
                 }
             }
         }

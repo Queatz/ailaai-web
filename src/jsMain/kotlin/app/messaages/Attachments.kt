@@ -34,6 +34,7 @@ private fun String.asMessageAttachment(): MessageAttachment? {
 
 fun <T> T?.inList() = this?.let(::listOf) ?: emptyList<T>()
 
+// todo: translate
 @Composable
 fun Message.attachmentText(): String? = when (val attachment = getAttachment()) {
     is CardAttachment -> {

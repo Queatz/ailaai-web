@@ -1,10 +1,10 @@
 
-val ktorVersion = "2.3.4"
+val ktorVersion = "2.3.6"
 
 plugins {
-    kotlin("multiplatform") version "1.9.20-RC"
-    kotlin("plugin.serialization") version "1.9.20-RC"
-    id("org.jetbrains.compose") version "1.5.10-rc01"
+    kotlin("multiplatform") version "1.9.20"
+    kotlin("plugin.serialization") version "1.9.20"
+    id("org.jetbrains.compose") version "1.5.10"
 }
 
 group = "app.ailaai"

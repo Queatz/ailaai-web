@@ -93,7 +93,7 @@ fun GroupItem(
                     GroupInfo.LatestMessage -> {
                         if (group.latestMessage?.member == myMember?.member?.id) {
                             Text("${appString { you }}: ")
-                        } else if (group.members!!.size > 2) {
+                        } else if (group.members!!.size > 2 && group.latestMessage != null) {
                             Text("${group.members?.find { it.member?.id == group.latestMessage?.member }?.person?.name ?: appString { someone }}: ")
                         }
                         Text(

@@ -37,7 +37,7 @@ fun IconButton(
             Div({
                 classes(AppStyles.iconButtonCount)
             }) {
-                Text("$count")
+                Text("${count.coerceAtMost(99)}")
             }
         }
     }

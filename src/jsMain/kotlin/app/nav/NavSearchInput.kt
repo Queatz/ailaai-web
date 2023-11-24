@@ -33,6 +33,8 @@ fun NavSearchInput(
                 it.stopPropagation()
                 onDismissRequest()
             } else if (it.key == "Enter") {
+                it.preventDefault()
+                it.stopPropagation()
                 onSubmit(value)
             }
         }
