@@ -6,6 +6,7 @@ import api
 import app.AppStyles
 import app.StickerItem
 import app.ailaai.api.message
+import app.dialog.photoDialog
 import appString
 import baseUrl
 import com.queatz.ailaai.api.story
@@ -15,6 +16,7 @@ import components.Icon
 import components.LinkifyText
 import ellipsize
 import kotlinx.browser.window
+import kotlinx.coroutines.launch
 import lib.formatDistanceToNow
 import notBlank
 import org.jetbrains.compose.web.ExperimentalComposeWebApi
@@ -28,6 +30,7 @@ import kotlin.js.Date
 @OptIn(ExperimentalComposeWebApi::class)
 @Composable
 fun MessageContent(message: Message, myMember: MemberAndPerson?, isReply: Boolean = false) {
+    val scope = rememberCoroutineScope()
     val isMe = message.member == myMember?.member?.id
 
     val attachment = remember(message) {
@@ -113,7 +116,9 @@ fun MessageContent(message: Message, myMember: MemberAndPerson?, isReply: Boolea
                         Img(src = "$baseUrl$photo") {
                             classes(AppStyles.messageItemPhoto)
                             onClick {
-                                window.open("$baseUrl$photo", target = "_blank")
+                                scope.launch {
+                                    photoDialog("$baseUrl$photo")
+                                }
                             }
                         }
                     }
