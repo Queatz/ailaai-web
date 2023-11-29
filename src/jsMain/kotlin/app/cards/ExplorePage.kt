@@ -26,7 +26,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import notBlank
-import opensavvy.compose.lazy.LazyColumn
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
 import org.w3c.dom.DOMRect
@@ -42,7 +41,12 @@ import webBaseUrl
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
-fun ExplorePage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Unit, onCardDeleted: (card: Card) -> Unit) {
+fun ExplorePage(
+    card: Card,
+    onCard: (Card) -> Unit,
+    onCardUpdated: (Card) -> Unit,
+    onCardDeleted: (card: Card) -> Unit
+) {
     val me by application.me.collectAsState()
     val scope = rememberCoroutineScope()
 
@@ -80,7 +84,7 @@ fun ExplorePage(card: Card, onCard: (Card) -> Unit, onCardUpdated: (Card) -> Uni
 
     LaunchedEffect(oldPhoto) {
         var tries = 0
-        while(tries++ < 5 && oldPhoto != null) {
+        while (tries++ < 5 && oldPhoto != null) {
             delay(3.seconds)
             api.card(card.id!!) {
                 if (it.photo != oldPhoto) {
