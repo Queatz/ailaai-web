@@ -147,10 +147,10 @@ fun GroupTopBar(
                     groupMembersDialog(group)
                 }
             }
+            item(appString { this.cards }) {
+                onShowCards()
+            }
             if (myMember != null) {
-                item(appString { this.cards }) {
-                    onShowCards()
-                }
                 item(appString { rename }) {
                     renameGroup()
                 }
