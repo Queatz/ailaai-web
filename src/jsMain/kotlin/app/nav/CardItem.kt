@@ -7,6 +7,7 @@ import appString
 import com.queatz.db.Card
 import components.Icon
 import focusable
+import hint
 import notBlank
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
@@ -78,11 +79,11 @@ fun CardItem(
             }) {
                 Text(card.name?.notBlank ?: appString { newCard })
             }
-            if (!card.location.isNullOrBlank()) {
+            if (card.hint.isNotBlank()) {
                 Div({
                     classes(AppStyles.groupItemMessage)
                 }) {
-                    Text(card.location ?: "")
+                    Text(card.hint)
                 }
             }
         }

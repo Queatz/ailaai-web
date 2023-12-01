@@ -473,6 +473,10 @@ object Strings {
         "New reminder",
         "Tạo lời nhắc"
     )
+    val hourly = Translation(
+        "Hourly",
+        "Theo giờ"
+    )
     val daily = Translation(
         "Daily",
         "Theo ngày"
@@ -488,6 +492,26 @@ object Strings {
     val yearly = Translation(
         "Yearly",
         "Theo năm"
+    )
+    val inlineHour = Translation(
+        "hour",
+        "giờ"
+    )
+    val inlineDay = Translation(
+        "day",
+        "ngày"
+    )
+    val inlineWeekly = Translation(
+        "week",
+        "tuần"
+    )
+    val inlineMonthly = Translation(
+        "month",
+        "tháng"
+    )
+    val inlineYearly = Translation(
+        "year",
+        "năm"
     )
     val you = Translation(
         "You",
@@ -684,6 +708,18 @@ object Strings {
     val loadingGroup = Translation(
         "Loading group…",
         "Đang tải nhóm…"
+    )
+    val addPay = Translation(
+        "Add pay",
+        "Thêm lương"
+    )
+    val changePay = Translation(
+        "Change pay",
+        "Đổi lương"
+    )
+    val pay = Translation(
+        "Pay",
+        "Lương"
     )
 }
 

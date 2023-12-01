@@ -8,6 +8,7 @@ import app.softwork.routingcompose.Router
 import appString
 import baseUrl
 import com.queatz.db.*
+import hint
 import kotlinx.browser.window
 import notBlank
 import org.jetbrains.compose.web.css.*
@@ -140,7 +141,7 @@ fun CardItem(
                     marginBottom(1.r)
                 }
             }) {
-                NameAndLocation(card.name, card.location)
+                NameAndLocation(card.name, card.hint)
                 card.categories?.firstOrNull()?.let { category ->
                     Div({
                         classes(Styles.category)

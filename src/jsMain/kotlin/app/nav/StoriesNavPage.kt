@@ -34,7 +34,12 @@ sealed class StoryNav {
 }
 
 @Composable
-fun StoriesNavPage(storyUpdates: Flow<Story>, selected: StoryNav, onSelected: (StoryNav) -> Unit, onProfileClick: () -> Unit) {
+fun StoriesNavPage(
+    storyUpdates: Flow<Story>,
+    selected: StoryNav,
+    onSelected: (StoryNav) -> Unit,
+    onProfileClick: () -> Unit
+) {
     val me by application.me.collectAsState()
     val scope = rememberCoroutineScope()
 
@@ -88,7 +93,7 @@ fun StoriesNavPage(storyUpdates: Flow<Story>, selected: StoryNav, onSelected: (S
         }
     }
 
-    NavTopBar(me, appString { stories }, onProfileClick) {
+    NavTopBar(me, appString { explore }, onProfileClick) {
         IconButton("search", appString { search }, styles = {
         }) {
             showSearch = !showSearch

@@ -3,6 +3,7 @@ package app.cards
 import LocalConfiguration
 import androidx.compose.runtime.*
 import api
+import app.AppStyles
 import app.PageTopBar
 import app.ailaai.api.*
 import app.components.EditField
@@ -18,14 +19,20 @@ import appString
 import application
 import com.queatz.db.Card
 import com.queatz.db.GroupExtended
+import com.queatz.db.Pay
+import com.queatz.db.PayFrequency
 import components.*
+import focusable
+import hint
 import json
 import kotlinx.browser.localStorage
 import kotlinx.browser.window
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
+import lib.formatDistanceToNow
 import notBlank
+import org.jetbrains.compose.web.attributes.autoFocus
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
 import org.w3c.dom.DOMRect
@@ -38,6 +45,7 @@ import r
 import saves
 import toScaledBytes
 import webBaseUrl
+import kotlin.js.Date
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
@@ -350,6 +358,92 @@ fun ExplorePage(
                 }
             }
 
+            item(appString { if (card.pay == null) addPay else changePay }) {
+                scope.launch {
+                    var updatedPay = card.pay ?: Pay(pay = "")
+
+                    val result = dialog(
+                        application.appString { pay },
+                        confirmButton = application.appString { this.update }
+                    ) { resolve ->
+                        var pay by remember {
+                            mutableStateOf(updatedPay.pay ?: "")
+                        }
+
+                        var payFrequency by remember {
+                            mutableStateOf(updatedPay.frequency)
+                        }
+
+                        LaunchedEffect(pay, payFrequency) {
+                            updatedPay.pay = pay
+                            updatedPay.frequency = payFrequency
+                        }
+
+                        TextInput(pay) {
+                            classes(Styles.textarea)
+                            style {
+                                width(100.percent)
+                                marginBottom(1.r)
+                            }
+
+                            onKeyDown {
+                                if (it.key == "Enter") {
+                                    it.preventDefault()
+                                    it.stopPropagation()
+                                    resolve(true)
+                                }
+                            }
+
+                            onInput {
+                                pay = it.value
+                            }
+
+                            autoFocus()
+
+                            ref {
+                                it.select()
+
+                                onDispose {
+
+                                }
+                            }
+                        }
+
+                        PayFrequency.entries.forEach { frequency ->
+                            Div({
+                                classes(
+                                    listOf(AppStyles.groupItem, AppStyles.groupItemOnSurface)
+                                )
+
+                                if (payFrequency == frequency) {
+                                    classes(AppStyles.groupItemSelected)
+                                }
+
+                                onClick {
+                                    payFrequency = if (payFrequency == frequency) null else frequency
+                                }
+
+                                focusable()
+                            }) {
+                                Div {
+                                    Div({
+                                        classes(AppStyles.groupItemName)
+                                    }) {
+                                        Text(frequency.appString)
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (result == true) {
+                        api.updateCard(card.id!!, Card(pay = updatedPay)) {
+                            onCardUpdated(it)
+                        }
+                    }
+                }
+            }
+
             item(appString { choosePhoto }) {
                 pickPhotos(multiple = false) {
                     it.singleOrNull()?.let {
@@ -434,7 +528,7 @@ fun ExplorePage(
 
     PageTopBar(
         card.name?.notBlank ?: appString { newCard },
-        card.location,
+        card.hint,
         actions = {
             Switch(published, { published = it }, {
                 scope.launch {

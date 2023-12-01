@@ -10,6 +10,7 @@ import appString
 import com.queatz.db.Card
 import com.queatz.db.CardOptions
 import com.queatz.db.ConversationItem
+import hint
 import json
 import kotlinx.browser.window
 import notBlank
@@ -90,7 +91,7 @@ fun CardPage(cardId: String, onError: () -> Unit = {}, cardLoaded: (card: Card) 
                         card?.let { card ->
                             Div {
                                 Div {
-                                    NameAndLocation(card.name, card.location)
+                                    NameAndLocation(card.name, card.hint)
                                     val viewProfileString = appString { viewProfile }
                                     Span({
                                         classes("material-symbols-outlined")
